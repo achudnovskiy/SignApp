@@ -7,15 +7,9 @@
 //
 
 import UIKit
+import CoreLocation
 
-struct SignLocation {
-    var lastHitDate: Date?
-    var latitude: Double
-    let locationTag: String?
-    let longitude: Double
-    let businessName: String
-}
-class SignObject: NSObject {
+public class SignObject: NSObject {
     
     let objectId:String
     
@@ -23,25 +17,36 @@ class SignObject: NSObject {
     let image:UIImage
     let infographic:UIImage
     var isDiscovered: Bool = true
-//    var mysteryText: String
     
-    let location:SignLocation 
     
+    let location:CLLocation
+    let locationName:String
+    let LocationDescription:String
+    
+    var lastVisitedDate:Date?
     var sharedDate:Date?
 
-    init(title:String, image:UIImage, infographic:UIImage, location:SignLocation) {
+    init(title:String,
+         image:UIImage,
+         infographic:UIImage,
+         latitude: CLLocationDegrees,
+         longitude: CLLocationDegrees,
+         locationName:String,
+         locationDescription:String) {
         objectId = UUID().uuidString
         self.title = title
         self.image = image
         self.infographic = infographic
-        self.location = location
+        self.location = CLLocation(latitude: latitude, longitude: longitude)
+        self.locationName = locationName
+        self.LocationDescription = locationDescription
     }
     
-    override var hash: Int {
+    override public var hash: Int {
         return self.objectId.hash
     }
     
-    override func isEqual(_ object: Any?) -> Bool {
+    override public func isEqual(_ object: Any?) -> Bool {
         if let object = object as? SignObject {
             return self.objectId == object.objectId
         }

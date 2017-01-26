@@ -14,12 +14,15 @@ class SignDataSource: NSObject {
     
     override init() {
         
-        let testRamenLocation = SignLocation(lastHitDate: nil, latitude: 49.290084, locationTag: nil, longitude: -123.133972, businessName: "Hokkaido Santouka")
-        let testFrenchLocation = SignLocation(lastHitDate: nil, latitude: 49.278409, locationTag: nil, longitude: -123.118361, businessName: "Homer St. Cafe")
-        let testCoffeeLocation = SignLocation(lastHitDate: nil, latitude: 49.283170, locationTag: nil, longitude: -123.109484, businessName: "Revolver")
-        let testEspressoLocation = SignLocation(lastHitDate: nil, latitude: 49.284614, locationTag: nil, longitude: -123.117142, businessName: "Mario's Cafe")
-        let testChocolateLocation = SignLocation(lastHitDate: nil, latitude: 49.284789, locationTag: nil, longitude: -123.122712, businessName: "Therry Chocolatier")
-        let testGalleryLocation = SignLocation(lastHitDate: nil, latitude: 49.27841, locationTag: nil, longitude: -123.118711, businessName: "Buzz Cafe")
+        SignLocation(locationId: "345678", latitude: 49.283170, longitude: -123.109484, name: "Revolver", description: "Something clever")
+        
+        let testRamenLocation = SignLocation(locationId: "12345", latitude: 49.290084, longitude: -123.133972, name: "Hokkaido Santouka", description: "Something clever")
+        let testFrenchLocation = SignLocation(locationId: "23456", latitude: 49.278409, longitude: -123.118361, name: "Homer St. Cafe", description: "Something clever")
+        let testCoffeeLocation = SignLocation(locationId: "345678", latitude: 49.283170, longitude: -123.109484, name: "Revolver", description: "Something clever")
+        
+        let testEspressoLocation = SignLocation(latitude: 49.284614, locationTag: nil, longitude: -123.117142, businessName: "Mario's Cafe")
+        let testChocolateLocation = SignLocation(latitude: 49.284789, locationTag: nil, longitude: -123.122712, businessName: "Therry Chocolatier")
+        let testGalleryLocation = SignLocation(latitude: 49.27841, locationTag: nil, longitude: -123.118711, businessName: "Buzz Cafe")
         
         
         let ramenSign = SignObject(title: "Ramen",
