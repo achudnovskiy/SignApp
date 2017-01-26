@@ -7,14 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		550728431E33052E0060D88B /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728421E33052E0060D88B /* MapViewController.swift */; };
+		550728451E34627F0060D88B /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728441E34627F0060D88B /* UIView+Extension.swift */; };
+		550728471E354B020060D88B /* SignDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728461E354B020060D88B /* SignDataSource.swift */; };
 		5559F72A1E248475007354BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7291E248475007354BE /* AppDelegate.swift */; };
-		5559F72C1E248475007354BE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F72B1E248475007354BE /* ViewController.swift */; };
 		5559F72F1E248475007354BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5559F72D1E248475007354BE /* Main.storyboard */; };
 		5559F7321E248475007354BE /* The_Sign.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7301E248475007354BE /* The_Sign.xcdatamodeld */; };
 		5559F7341E248475007354BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5559F7331E248475007354BE /* Assets.xcassets */; };
 		5559F7371E248475007354BE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5559F7351E248475007354BE /* LaunchScreen.storyboard */; };
 		5559F7421E248475007354BE /* The_SignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7411E248475007354BE /* The_SignTests.swift */; };
 		5559F74D1E248475007354BE /* The_SignUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F74C1E248475007354BE /* The_SignUITests.swift */; };
+		55FF72581E2AD15D00562B65 /* SignCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72571E2AD15D00562B65 /* SignCard.swift */; };
+		55FF725A1E2AD1D900562B65 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72591E2AD1D900562B65 /* MainViewController.swift */; };
+		55FF725C1E2AF9DA00562B65 /* SignObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF725B1E2AF9DA00562B65 /* SignObject.swift */; };
+		55FF72611E2C31A100562B65 /* UIImage+Effects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72601E2C31A100562B65 /* UIImage+Effects.swift */; };
+		55FF72731E2C6F2F00562B65 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55FF72721E2C6F2F00562B65 /* CoreLocation.framework */; };
+		55FF72791E2C81E500562B65 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55FF72781E2C81E500562B65 /* UserNotifications.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,9 +43,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		550728421E33052E0060D88B /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		550728441E34627F0060D88B /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		550728461E354B020060D88B /* SignDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignDataSource.swift; sourceTree = "<group>"; };
 		5559F7261E248475007354BE /* The Sign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Sign.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5559F7291E248475007354BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5559F72B1E248475007354BE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		5559F72E1E248475007354BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5559F7311E248475007354BE /* The_Sign.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = The_Sign.xcdatamodel; sourceTree = "<group>"; };
 		5559F7331E248475007354BE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -49,6 +59,13 @@
 		5559F7481E248475007354BE /* The SignUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "The SignUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5559F74C1E248475007354BE /* The_SignUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = The_SignUITests.swift; sourceTree = "<group>"; };
 		5559F74E1E248475007354BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		55FF72571E2AD15D00562B65 /* SignCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignCard.swift; sourceTree = "<group>"; };
+		55FF72591E2AD1D900562B65 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		55FF725B1E2AF9DA00562B65 /* SignObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignObject.swift; sourceTree = "<group>"; };
+		55FF72601E2C31A100562B65 /* UIImage+Effects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Effects.swift"; sourceTree = "<group>"; };
+		55FF72721E2C6F2F00562B65 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		55FF72741E2C6F3900562B65 /* The Sign.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "The Sign.entitlements"; sourceTree = "<group>"; };
+		55FF72781E2C81E500562B65 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +73,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55FF72791E2C81E500562B65 /* UserNotifications.framework in Frameworks */,
+				55FF72731E2C6F2F00562B65 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				5559F7281E248475007354BE /* The Sign */,
+				55FF726D1E2C66C100562B65 /* Frameworks */,
 				5559F7401E248475007354BE /* The SignTests */,
 				5559F74B1E248475007354BE /* The SignUITests */,
 				5559F7271E248475007354BE /* Products */,
@@ -99,13 +119,20 @@
 		5559F7281E248475007354BE /* The Sign */ = {
 			isa = PBXGroup;
 			children = (
+				55FF72741E2C6F3900562B65 /* The Sign.entitlements */,
+				55FF72771E2C714100562B65 /* Location Tracker */,
 				5559F7291E248475007354BE /* AppDelegate.swift */,
-				5559F72B1E248475007354BE /* ViewController.swift */,
+				55FF72571E2AD15D00562B65 /* SignCard.swift */,
+				55FF725B1E2AF9DA00562B65 /* SignObject.swift */,
+				55FF72591E2AD1D900562B65 /* MainViewController.swift */,
+				550728461E354B020060D88B /* SignDataSource.swift */,
+				550728421E33052E0060D88B /* MapViewController.swift */,
 				5559F72D1E248475007354BE /* Main.storyboard */,
 				5559F7331E248475007354BE /* Assets.xcassets */,
 				5559F7351E248475007354BE /* LaunchScreen.storyboard */,
 				5559F7381E248475007354BE /* Info.plist */,
 				5559F7301E248475007354BE /* The_Sign.xcdatamodeld */,
+				55FF72621E2C31AC00562B65 /* 3rd party */,
 			);
 			path = "The Sign";
 			sourceTree = "<group>";
@@ -117,7 +144,7 @@
 				5559F7431E248475007354BE /* Info.plist */,
 			);
 			path = "The SignTests";
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		5559F74B1E248475007354BE /* The SignUITests */ = {
 			isa = PBXGroup;
@@ -126,6 +153,31 @@
 				5559F74E1E248475007354BE /* Info.plist */,
 			);
 			path = "The SignUITests";
+			sourceTree = "<group>";
+		};
+		55FF72621E2C31AC00562B65 /* 3rd party */ = {
+			isa = PBXGroup;
+			children = (
+				550728441E34627F0060D88B /* UIView+Extension.swift */,
+				55FF72601E2C31A100562B65 /* UIImage+Effects.swift */,
+			);
+			name = "3rd party";
+			sourceTree = "<group>";
+		};
+		55FF726D1E2C66C100562B65 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				55FF72781E2C81E500562B65 /* UserNotifications.framework */,
+				55FF72721E2C6F2F00562B65 /* CoreLocation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		55FF72771E2C714100562B65 /* Location Tracker */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Location Tracker";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,6 +250,14 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = ZCEYGPU8ZJ;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 0;
+							};
+						};
 					};
 					5559F73C1E248475007354BE = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -265,9 +325,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5559F72C1E248475007354BE /* ViewController.swift in Sources */,
+				55FF725C1E2AF9DA00562B65 /* SignObject.swift in Sources */,
+				55FF72581E2AD15D00562B65 /* SignCard.swift in Sources */,
+				550728451E34627F0060D88B /* UIView+Extension.swift in Sources */,
+				55FF72611E2C31A100562B65 /* UIImage+Effects.swift in Sources */,
 				5559F7321E248475007354BE /* The_Sign.xcdatamodeld in Sources */,
 				5559F72A1E248475007354BE /* AppDelegate.swift in Sources */,
+				550728471E354B020060D88B /* SignDataSource.swift in Sources */,
+				55FF725A1E2AD1D900562B65 /* MainViewController.swift in Sources */,
+				550728431E33052E0060D88B /* MapViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +484,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = ZCEYGPU8ZJ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/The\\ Sign",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
+				);
 				INFOPLIST_FILE = "The Sign/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.simplematters.The-Sign";
@@ -431,6 +502,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = ZCEYGPU8ZJ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/The\\ Sign",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
+				);
 				INFOPLIST_FILE = "The Sign/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.simplematters.The-Sign";
@@ -516,6 +592,7 @@
 				5559F7531E248475007354BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5559F7541E248475007354BE /* Build configuration list for PBXNativeTarget "The SignTests" */ = {
 			isa = XCConfigurationList;
@@ -524,6 +601,7 @@
 				5559F7561E248475007354BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5559F7571E248475007354BE /* Build configuration list for PBXNativeTarget "The SignUITests" */ = {
 			isa = XCConfigurationList;
@@ -532,6 +610,7 @@
 				5559F7591E248475007354BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
