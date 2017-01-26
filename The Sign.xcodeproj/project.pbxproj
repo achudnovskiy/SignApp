@@ -10,19 +10,36 @@
 		550728431E33052E0060D88B /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728421E33052E0060D88B /* MapViewController.swift */; };
 		550728451E34627F0060D88B /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728441E34627F0060D88B /* UIView+Extension.swift */; };
 		550728471E354B020060D88B /* SignDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728461E354B020060D88B /* SignDataSource.swift */; };
+		550F89721EABEF2A008993F6 /* SignCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */; };
+		5512317D1E5AABC900443840 /* TestRoute1.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 5512317C1E5AABC900443840 /* TestRoute1.gpx */; };
+		55305CEA1EDA8400004DC615 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55305CE91EDA8400004DC615 /* Shared.swift */; };
+		55305CEC1EDA8EC8004DC615 /* Branch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CEB1EDA8EC8004DC615 /* Branch.framework */; };
+		55305CEE1EDA8F07004DC615 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CED1EDA8F07004DC615 /* AdSupport.framework */; };
+		55305CF01EDA8F26004DC615 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CEF1EDA8F26004DC615 /* CoreTelephony.framework */; };
+		55305CF21EDA8F2E004DC615 /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CF11EDA8F2E004DC615 /* CoreSpotlight.framework */; };
+		55305CF41EDA8F35004DC615 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CF31EDA8F35004DC615 /* MobileCoreServices.framework */; };
+		55305CF61EDA8F3C004DC615 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CF51EDA8F3C004DC615 /* iAd.framework */; };
+		553CFED61E6698A8004618A6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */; };
+		553CFED71E6698A8004618A6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */; };
+		553CFED81E6698A8004618A6 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */; };
+		553CFEDA1E67C349004618A6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553CFED91E67C349004618A6 /* LoginViewController.swift */; };
+		553CFEDC1E67C7BB004618A6 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFEDB1E67C7BB004618A6 /* Bolts.framework */; };
 		5559F72A1E248475007354BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7291E248475007354BE /* AppDelegate.swift */; };
 		5559F72F1E248475007354BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5559F72D1E248475007354BE /* Main.storyboard */; };
 		5559F7321E248475007354BE /* The_Sign.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7301E248475007354BE /* The_Sign.xcdatamodeld */; };
 		5559F7341E248475007354BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5559F7331E248475007354BE /* Assets.xcassets */; };
-		5559F7371E248475007354BE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5559F7351E248475007354BE /* LaunchScreen.storyboard */; };
 		5559F7421E248475007354BE /* The_SignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7411E248475007354BE /* The_SignTests.swift */; };
 		5559F74D1E248475007354BE /* The_SignUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F74C1E248475007354BE /* The_SignUITests.swift */; };
+		5572A72B1E6257D1007B5259 /* Content in Resources */ = {isa = PBXBuildFile; fileRef = 5572A72A1E6257D1007B5259 /* Content */; };
+		559F2ECB1E399F1A00A1C955 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */; };
+		55C2220A1ED9F184007E2E7C /* FbHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C222091ED9F184007E2E7C /* FbHandler.swift */; };
 		55FF72581E2AD15D00562B65 /* SignCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72571E2AD15D00562B65 /* SignCard.swift */; };
 		55FF725A1E2AD1D900562B65 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72591E2AD1D900562B65 /* MainViewController.swift */; };
 		55FF725C1E2AF9DA00562B65 /* SignObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF725B1E2AF9DA00562B65 /* SignObject.swift */; };
 		55FF72611E2C31A100562B65 /* UIImage+Effects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72601E2C31A100562B65 /* UIImage+Effects.swift */; };
 		55FF72731E2C6F2F00562B65 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55FF72721E2C6F2F00562B65 /* CoreLocation.framework */; };
 		55FF72791E2C81E500562B65 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55FF72781E2C81E500562B65 /* UserNotifications.framework */; };
+		A84EF5931ECA91D200CDE19B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84EF5921ECA91D200CDE19B /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,12 +63,25 @@
 		550728421E33052E0060D88B /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		550728441E34627F0060D88B /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		550728461E354B020060D88B /* SignDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignDataSource.swift; sourceTree = "<group>"; };
+		550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignCollectionLayout.swift; sourceTree = "<group>"; };
+		5512317C1E5AABC900443840 /* TestRoute1.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TestRoute1.gpx; sourceTree = "<group>"; };
+		55305CE91EDA8400004DC615 /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
+		55305CEB1EDA8EC8004DC615 /* Branch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Branch.framework; path = "The Sign/frameworks/Branch.framework"; sourceTree = "<group>"; };
+		55305CED1EDA8F07004DC615 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		55305CEF1EDA8F26004DC615 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		55305CF11EDA8F2E004DC615 /* CoreSpotlight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreSpotlight.framework; path = System/Library/Frameworks/CoreSpotlight.framework; sourceTree = SDKROOT; };
+		55305CF31EDA8F35004DC615 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		55305CF51EDA8F3C004DC615 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "The Sign/frameworks/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
+		553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "The Sign/frameworks/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
+		553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "The Sign/frameworks/FBSDKShareKit.framework"; sourceTree = "<group>"; };
+		553CFED91E67C349004618A6 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		553CFEDB1E67C7BB004618A6 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "The Sign/frameworks/Bolts.framework"; sourceTree = "<group>"; };
 		5559F7261E248475007354BE /* The Sign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Sign.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5559F7291E248475007354BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5559F72E1E248475007354BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5559F7311E248475007354BE /* The_Sign.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = The_Sign.xcdatamodel; sourceTree = "<group>"; };
 		5559F7331E248475007354BE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		5559F7361E248475007354BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5559F7381E248475007354BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5559F73D1E248475007354BE /* The SignTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "The SignTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5559F7411E248475007354BE /* The_SignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = The_SignTests.swift; sourceTree = "<group>"; };
@@ -59,6 +89,9 @@
 		5559F7481E248475007354BE /* The SignUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "The SignUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5559F74C1E248475007354BE /* The_SignUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = The_SignUITests.swift; sourceTree = "<group>"; };
 		5559F74E1E248475007354BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5572A72A1E6257D1007B5259 /* Content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Content; sourceTree = "<group>"; };
+		559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
+		55C222091ED9F184007E2E7C /* FbHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FbHandler.swift; sourceTree = "<group>"; };
 		55FF72571E2AD15D00562B65 /* SignCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignCard.swift; sourceTree = "<group>"; };
 		55FF72591E2AD1D900562B65 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		55FF725B1E2AF9DA00562B65 /* SignObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignObject.swift; sourceTree = "<group>"; };
@@ -66,6 +99,7 @@
 		55FF72721E2C6F2F00562B65 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		55FF72741E2C6F3900562B65 /* The Sign.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "The Sign.entitlements"; sourceTree = "<group>"; };
 		55FF72781E2C81E500562B65 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		A84EF5921ECA91D200CDE19B /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,7 +107,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55305CF61EDA8F3C004DC615 /* iAd.framework in Frameworks */,
+				55305CF41EDA8F35004DC615 /* MobileCoreServices.framework in Frameworks */,
+				55305CF21EDA8F2E004DC615 /* CoreSpotlight.framework in Frameworks */,
+				55305CF01EDA8F26004DC615 /* CoreTelephony.framework in Frameworks */,
+				55305CEE1EDA8F07004DC615 /* AdSupport.framework in Frameworks */,
 				55FF72791E2C81E500562B65 /* UserNotifications.framework in Frameworks */,
+				553CFED61E6698A8004618A6 /* FBSDKCoreKit.framework in Frameworks */,
+				553CFED71E6698A8004618A6 /* FBSDKLoginKit.framework in Frameworks */,
+				553CFED81E6698A8004618A6 /* FBSDKShareKit.framework in Frameworks */,
+				553CFEDC1E67C7BB004618A6 /* Bolts.framework in Frameworks */,
+				55305CEC1EDA8EC8004DC615 /* Branch.framework in Frameworks */,
 				55FF72731E2C6F2F00562B65 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,16 +166,22 @@
 				55FF72741E2C6F3900562B65 /* The Sign.entitlements */,
 				55FF72771E2C714100562B65 /* Location Tracker */,
 				5559F7291E248475007354BE /* AppDelegate.swift */,
+				553CFED91E67C349004618A6 /* LoginViewController.swift */,
 				55FF72571E2AD15D00562B65 /* SignCard.swift */,
 				55FF725B1E2AF9DA00562B65 /* SignObject.swift */,
+				550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */,
 				55FF72591E2AD1D900562B65 /* MainViewController.swift */,
+				55305CE91EDA8400004DC615 /* Shared.swift */,
+				A84EF5921ECA91D200CDE19B /* User.swift */,
+				55C222091ED9F184007E2E7C /* FbHandler.swift */,
 				550728461E354B020060D88B /* SignDataSource.swift */,
+				559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */,
 				550728421E33052E0060D88B /* MapViewController.swift */,
 				5559F72D1E248475007354BE /* Main.storyboard */,
 				5559F7331E248475007354BE /* Assets.xcassets */,
-				5559F7351E248475007354BE /* LaunchScreen.storyboard */,
 				5559F7381E248475007354BE /* Info.plist */,
 				5559F7301E248475007354BE /* The_Sign.xcdatamodeld */,
+				5572A72A1E6257D1007B5259 /* Content */,
 				55FF72621E2C31AC00562B65 /* 3rd party */,
 			);
 			path = "The Sign";
@@ -140,6 +190,7 @@
 		5559F7401E248475007354BE /* The SignTests */ = {
 			isa = PBXGroup;
 			children = (
+				5512317C1E5AABC900443840 /* TestRoute1.gpx */,
 				5559F7411E248475007354BE /* The_SignTests.swift */,
 				5559F7431E248475007354BE /* Info.plist */,
 			);
@@ -167,6 +218,16 @@
 		55FF726D1E2C66C100562B65 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				55305CF51EDA8F3C004DC615 /* iAd.framework */,
+				55305CF31EDA8F35004DC615 /* MobileCoreServices.framework */,
+				55305CF11EDA8F2E004DC615 /* CoreSpotlight.framework */,
+				55305CEF1EDA8F26004DC615 /* CoreTelephony.framework */,
+				55305CED1EDA8F07004DC615 /* AdSupport.framework */,
+				55305CEB1EDA8EC8004DC615 /* Branch.framework */,
+				553CFEDB1E67C7BB004618A6 /* Bolts.framework */,
+				553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */,
+				553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */,
+				553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */,
 				55FF72781E2C81E500562B65 /* UserNotifications.framework */,
 				55FF72721E2C6F2F00562B65 /* CoreLocation.framework */,
 			);
@@ -257,6 +318,9 @@
 							com.apple.Push = {
 								enabled = 0;
 							};
+							com.apple.SafariKeychain = {
+								enabled = 1;
+							};
 						};
 					};
 					5559F73C1E248475007354BE = {
@@ -298,7 +362,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5559F7371E248475007354BE /* LaunchScreen.storyboard in Resources */,
+				5572A72B1E6257D1007B5259 /* Content in Resources */,
 				5559F7341E248475007354BE /* Assets.xcassets in Resources */,
 				5559F72F1E248475007354BE /* Main.storyboard in Resources */,
 			);
@@ -308,6 +372,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5512317D1E5AABC900443840 /* TestRoute1.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,15 +390,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55305CEA1EDA8400004DC615 /* Shared.swift in Sources */,
+				A84EF5931ECA91D200CDE19B /* User.swift in Sources */,
 				55FF725C1E2AF9DA00562B65 /* SignObject.swift in Sources */,
+				55C2220A1ED9F184007E2E7C /* FbHandler.swift in Sources */,
 				55FF72581E2AD15D00562B65 /* SignCard.swift in Sources */,
 				550728451E34627F0060D88B /* UIView+Extension.swift in Sources */,
 				55FF72611E2C31A100562B65 /* UIImage+Effects.swift in Sources */,
 				5559F7321E248475007354BE /* The_Sign.xcdatamodeld in Sources */,
 				5559F72A1E248475007354BE /* AppDelegate.swift in Sources */,
+				559F2ECB1E399F1A00A1C955 /* LocationTracker.swift in Sources */,
 				550728471E354B020060D88B /* SignDataSource.swift in Sources */,
+				550F89721EABEF2A008993F6 /* SignCollectionLayout.swift in Sources */,
 				55FF725A1E2AD1D900562B65 /* MainViewController.swift in Sources */,
 				550728431E33052E0060D88B /* MapViewController.swift in Sources */,
+				553CFEDA1E67C349004618A6 /* LoginViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,14 +446,6 @@
 				5559F72E1E248475007354BE /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		5559F7351E248475007354BE /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5559F7361E248475007354BE /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -483,15 +546,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "The Sign/The Sign.entitlements";
 				DEVELOPMENT_TEAM = ZCEYGPU8ZJ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/The\\ Sign",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
 					"$(PROJECT_DIR)/The\\ Sign/frameworks",
 				);
 				INFOPLIST_FILE = "The Sign/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.simplematters.The-Sign";
+				PRODUCT_BUNDLE_IDENTIFIER = ca.simplematters.TheSignApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -501,15 +568,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "The Sign/The Sign.entitlements";
 				DEVELOPMENT_TEAM = ZCEYGPU8ZJ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/The\\ Sign",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
 					"$(PROJECT_DIR)/The\\ Sign/frameworks",
 				);
 				INFOPLIST_FILE = "The Sign/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.simplematters.The-Sign";
+				PRODUCT_BUNDLE_IDENTIFIER = ca.simplematters.TheSignApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

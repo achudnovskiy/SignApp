@@ -50,7 +50,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         for sign in locations
         {
-            if sign.isDiscovered
+            if sign.isCollected
             {
                 signAnnotations.append(generateAnnotationFor(sign:sign))
             }
@@ -109,14 +109,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func generateAnnotationFor(sign:SignObject) -> MKPointAnnotation
     {
         let signAnnotation = MKPointAnnotation()
-        signAnnotation.title = sign.location.businessName
-        signAnnotation.subtitle = sign.location.businessName
-        signAnnotation.coordinate = CLLocationCoordinate2D(latitude: sign.location.latitude, longitude: sign.location.longitude)
+        signAnnotation.title = sign.locationName
+//        signAnnotation.subtitle = sign.LocationDescription
+        signAnnotation.coordinate = CLLocationCoordinate2D(latitude: sign.latitude, longitude: sign.longitude)
         return signAnnotation
     }
     func generateAnnotiationForMystery(sign:SignObject) -> MKCircle
     {
-        let coordinate = CLLocationCoordinate2D(latitude:sign.location.latitude, longitude:sign.location.longitude)
+        let coordinate = CLLocationCoordinate2D(latitude:sign.latitude, longitude:sign.longitude)
         let circle = MKCircle(center: coordinate, radius: mysteryRadius)
         circle.title = "Mystery"
         return circle

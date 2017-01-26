@@ -7,12 +7,8 @@
 //
 
 import UIKit
-
-let cardCollectionViewItemIdentifier = "Card"
-let kCollectionItemSize = CGSize(width: 180, height: 320)
-let kCollectionItemSpacing:CGFloat = 40
-let kCollectionItemThumbnailInset:CGFloat = 40
-
+import QuartzCore
+import FBSDKShareKit
 
 enum SignAppState {
     case ThumbnailView
@@ -20,49 +16,107 @@ enum SignAppState {
     case MapView
 }
 
-class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollViewDelegate, UICollectionViewDataSource {
+protocol SignShareProtocol {
+    func updateShareProgress(progress:CGFloat, didPassThreshold:Bool)
+    func resetShareProgress()
+    func didShareSignCard(signCard:SignCard)
+}
+
+extension UICollectionView {
+    var indexPathForLastRow:IndexPath {
+        get {
+            let lastSection = numberOfSections - 1
+            let lastRow = numberOfItems(inSection: lastSection)
+            return IndexPath(row: lastRow, section: lastSection)
+        }
+    }
+}
 
 
+class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollViewDelegate, UICollectionViewDataSource, UICollectionViewDataSourcePrefetching, UIGestureRecognizerDelegate, SignShareProtocol {
+
+    //MARK: Outlets
     
-    @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var collectionLayout: UICollectionViewFlowLayout!
-    @IBOutlet weak var backgroundImage: UIImageView!
+    @IBOutlet weak var signCollectionView: UICollectionView!
+    @IBOutlet weak var signCollectionLayout: SignCollectionLayout!
     @IBOutlet weak var mapContainerView: UIView!
-    
     
     @IBOutlet weak var mapButtonView: UIView!
     @IBOutlet weak var stateButtonView: UIView!
     @IBOutlet weak var stateButtonLabel: UILabel!
+    @IBOutlet weak var shareProgressLabel: UILabel!
     
+    @IBOutlet weak var cnstrStateButtonWidth: NSLayoutConstraint!
+    @IBOutlet weak var cnstrMapButtonWidth: NSLayoutConstraint!
+    
+    @IBOutlet weak var backgroundImage: UIImageView!
+    
+    //MARK: Properties
     
     var mapViewController:MapViewController!
-    
     var delayedTransition = false
-    
     var currentState:SignAppState = .ThumbnailView
+    var collectionSigns:[SignObject] = []
+    var collectionNewItems:[SignObject] = []
+    var discoverySign:SignObject?
+    var cachedImages = NSCache<NSString,UIImage>()
+    
+    //TODO: REVIEW
+    func prepareDataSource() {
+        collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
+        collectionNewItems = SignDataSource.sharedInstance.newSigns
+        
+        //load cache for first three signs
+        let cacheCount = collectionSigns.count < 3 ? collectionSigns.count : 3
+        for i in 0...cacheCount {
+            let sign = collectionSigns[i]
+            cachedImages.setObject(sign.proccessImage(), forKey: sign.uniqueId)
+        }
+        
+        LocationTracker.sharedInstance.getClosestSign(with: { (sign) in
+            if sign != nil {
+                self.discoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: sign!.objectId)
+                if self.discoverySign != nil {
+                    DispatchQueue.main.async {
+                        self.signCollectionView.performBatchUpdates({
+                            self.collectionSigns = self.collectionSigns + [self.discoverySign!]
+                            self.signCollectionView.performBatchUpdates({
+                                self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
+                            }, completion: nil)
+                        }, completion: nil)
+                    }
+                }
+            }
+        })
+    }
+    
 
-    let dataSource = SignDataSource()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        prepareDataSource()
         
         stateButtonView.applyPlainShadow()
         mapButtonView.applyPlainShadow()
         
         currentState = .ThumbnailView
+        signCollectionView.backgroundColor = UIColor.clear
         updateStateButton()
-        mapContainerView.isHidden = true
         
-        backgroundImage.image = dataSource.dataArray[0].image.applyDefaultEffect()
+        if collectionSigns.count != 0 {
+            backgroundImage.image = collectionSigns.first?.image.applyDefaultEffect()?.optimizedImage()
+        }
+        else {
+            let path = Bundle.main.path(forResource: "DefaultBackgroundImage", ofType: "png", inDirectory: "Content")!
+            backgroundImage.image = UIImage(contentsOfFile: path)!.applyDefaultEffect()?.optimizedImage()
+        }
         
-//        backgroundImage.image = UIImage(named: "DefaultBackgroundImage")!.applyDefaultEffect()
-
+        setCollectionLayoutProperties(collectionLayout: signCollectionLayout, isFullscreen: false)
         
-        collectionView.backgroundColor = UIColor.clear
-        
-        setCollectionViewProperties(isFullscreen: false)
-        
-        mapContainerView.isHidden = true
+        NotificationCenter.default.addObserver(forName: kNotificationReloadData, object: nil, queue: OperationQueue.main) { (notification) in
+            self.prepareDataSource()
+            self.signCollectionView.reloadData()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -73,145 +127,228 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     // MARK: - UI Animations
     func transitionCollectionView(newState:SignAppState) {
-        currentState = newState
+        if newState != .FullscreenView && newState != .ThumbnailView {
+            return
+        }
+        self.view.isUserInteractionEnabled = false
+        let toFullscreen = newState == .FullscreenView
+        let newSize = toFullscreen ? signCollectionView.bounds.size : kCollectionItemSize;
         
-        if newState == .FullscreenView || newState == .ThumbnailView {
-            let isFullscreen = newState == .FullscreenView
-            let newSize = collectionItemSize(isFullscreen: isFullscreen)
-            let focusItemIndexPath = indexForItemInFocus;
-            let cellView = signInFocus!
-            
-            cellView.layer.zPosition = 1
-            if isFullscreen {
-                cellView.setConstraintsForFullscreen()
-                cellView.contentImage.alpha = 0
-                cellView.contentImage.isHidden =  false
-            }
-            else {
-                cellView.setConstraintsForThumbnail()
-                cellView.keywordLabel.alpha = 0
-                cellView.keywordLabel.isHidden = false
-            }
-            
-            UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
-                var frame = cellView.bounds;
-                let center = cellView.center
-                frame.size = newSize
-                cellView.bounds = frame;
-                cellView.center = center
-                
-                if isFullscreen {
-                    cellView.keywordLabel.alpha = 0
-                    cellView.contentImage.alpha = 1
-                }
-                else {
-                    cellView.keywordLabel.alpha = 1
-                    cellView.contentImage.alpha = 0
-                }
+        let cellId = indexForItemInFocus!
+        let signInTransition = collectionSigns[cellId.row]
+        signInTransition.isDiscovered = true
+        let cellView = signInFocus!
 
-                
-                cellView.layoutIfNeeded()
-            }) { (Bool) in
-                
-                cellView.layer.zPosition = 0
-                cellView.contentImage.isHidden =  !isFullscreen
-                cellView.keywordLabel.isHidden =  isFullscreen
-                
-                self.setCollectionViewProperties(isFullscreen: isFullscreen)
-                self.collectionView.contentOffset = self.contentOffsetForItemAt(index: focusItemIndexPath!.row)
-                self.view.layoutIfNeeded()
-                
-                self.updateStateButton()
-            }
+        
+        resetZPosition()
+        if toFullscreen {
+            signCollectionLayout.fullScreenItemIndex = indexForItemInFocus
+            signCollectionLayout.referencePoint = view.convert(view.center, to: signCollectionView)
+        }
+        else {
+            stopMagnification()
+        }
+
+        
+        cellView.viewMode = .Discovered
+        cellView.prepareViewForAnimation(toFullscreen: toFullscreen)
+
+        UIView.animate(withDuration: 0.33, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
+            cellView.setViewSizeForAnimation(newSize: newSize, toFullscreen: toFullscreen)
+            cellView.layoutIfNeeded()
+        }) { (Bool) in
+            cellView.prepareViewAfterAnimation(toFullscreen: toFullscreen)
+            
+            cellView.keywordLabel.text = signInTransition.thumbnailText
+            self.currentState = newState
+            self.view.isUserInteractionEnabled = true
+            self.updateStateButton()
+        }
+    }
+    func stopMagnification() {
+        if self.signCollectionLayout.fullScreenItemIndex != nil {
+            
+            let signCell = self.signCollectionView.cellForItem(at: self.signCollectionLayout.fullScreenItemIndex!) as? SignCard
+            signCell?.prepareViewAfterAnimation(toFullscreen: false)
+            self.currentState = .ThumbnailView
+            self.updateStateButton()
+
+            
+            self.signCollectionLayout.fullScreenItemIndex = nil
+            self.signCollectionLayout.referencePoint = nil
+            
+        }
+    }
+    func resetZPosition() {
+        self.signCollectionView.visibleCells.forEach { (cell) in
+            cell.layer.zPosition = 0
         }
     }
     
-   
     
     // MARK: - UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataSource.orderedDataArray.count
+        return collectionSigns.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cardCollectionViewItemIdentifier, for: indexPath) as! SignCard
-        
-        let signToShow = dataSource.orderedDataArray[indexPath.row]
-        
-        cell.backgroundImage.image = signToShow.image
-        cell.keywordLabel.text = signToShow.title
+        let signToShow = collectionSigns[indexPath.row]
+        cell.isOpaque = true
+        cell.keywordLabel.text = signToShow.thumbnailText.uppercased()
         cell.contentImage.image = signToShow.infographic
-        if currentState == .FullscreenView {
-            cell.setConstraintsForFullscreen()
-            cell.contentImage.isHidden = false
-            cell.keywordLabel.isHidden = true
-        }
-        else {
-            cell.setConstraintsForThumbnail()
-            cell.contentImage.isHidden = true
-            cell.keywordLabel.isHidden = false
+        
+        var cachedImage = cachedImages.object(forKey: signToShow.uniqueId)
+        if cachedImage == nil {
+            let imageToCache = signToShow.proccessImage()
+            cachedImages.setObject(imageToCache, forKey: signToShow.uniqueId)
+            cachedImage = imageToCache
         }
         
-        if !signToShow.isDiscovered {
-            cell.backgroundImage.image = cell.backgroundImage.image?.applyDefaultEffect()
-            cell.setConstraintsForThumbnailMystery()
-        }
+        cell.wrapperView.image = cachedImages.object(forKey: signToShow.uniqueId)
+        cell.prepareViewForMode(viewMode: signToShow.viewMode, isFullscreenView: false)
+
+        cell.prepareGestureRecognition()
+        signCollectionView.panGestureRecognizer.require(toFail: cell.panGesture!)
+        cell.shareDelegate = self
         
-        cell.layoutIfNeeded()
         return cell
     }
     
+    //MARK:- SignShareProtocol
+    func updateShareProgress(progress: CGFloat, didPassThreshold:Bool) {
+        if didPassThreshold {
+            self.updateProgressShareLabel(alphaValue: 1)
+        }
+        else {
+            self.updateProgressShareLabel(alphaValue: progress / 2)
+        }
+    }
+    
+    func resetShareProgress() {
+        self.updateProgressShareLabel(alphaValue: 0)
+    }
+    
+    func didShareSignCard(signCard: SignCard) {
+        if User.current.isLoggedIn {
+            let indexPath = self.signCollectionView.indexPath(for: signCard)
+            if indexPath == nil {
+                return
+            }
+            let sign = collectionSigns[indexPath!.row]
+            FbHandler.shared.createFbStory(sign: sign)
+        }
+    }
+    
+    func updateProgressShareLabel(alphaValue:CGFloat) {
+        if alphaValue == 0 {
+            self.shareProgressLabel.textColor = UIColor.white
+            self.shareProgressLabel.alpha = 0
+            return
+        }
+        
+        self.shareProgressLabel.alpha = alphaValue
+        if alphaValue == 1 {
+            self.shareProgressLabel.textColor = UIColor(red: 226.0/255, green: 106.0/255, blue: 42.0/255, alpha: 1)
+        }
+    }
+
+    
+    //MARK:- UICollectionViewDataSourcePrefetching
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            let sign = collectionSigns[indexPath.row]
+            cachedImages.setObject(sign.proccessImage(), forKey: sign.uniqueId)
+        }
+    }
+    
+
+    // MARK: - UICollectionViewDelegate
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if currentState == .ThumbnailView  && dataSource.orderedDataArray[indexPath.row].isDiscovered {
+        if currentState == .ThumbnailView  && collectionSigns[indexPath.row].isCollected {
             if indexPath != indexForItemInFocus {
                 delayedTransition = true
                 collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
             }
             else {
-                transitionCollectionView(newState: .FullscreenView)
+                if let index = indexForItemInFocus {
+                    openThumbnailSignAt(indexPath: index)
+                }
             }
         }
     }
     
-
-
- 
+    func openThumbnailSignAt(indexPath:IndexPath) {
+        if !collectionSigns[indexPath.row].isDiscovered {
+            collectionSigns[indexPath.row].isDiscovered = true
+        }
+        transitionCollectionView(newState: .FullscreenView)
+    }
+    
+    
     // MARK: - ScrollViewDelegate
+    
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        if currentState == .ThumbnailView &&  delayedTransition {
+        if delayedTransition {
             delayedTransition = false
-            transitionCollectionView(newState: .FullscreenView)
+            if currentState == .ThumbnailView {
+                if let index = indexForItemInFocus {
+                    openThumbnailSignAt(indexPath: index)
+                }
+            }
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if let index = indexForItemInFocus {
-            scheduleUpdateBackgroundForItemAtImdex(index: index)
+            scheduleUpdateBackgroundForItemAtImdex(index: index.row)
+            
+            if self.signCollectionLayout.fullScreenItemIndex != nil && self.signCollectionLayout.fullScreenItemIndex != index {
+                stopMagnification()
+                
+                if self.currentState == .FullscreenView {
+                    self.currentState = .ThumbnailView
+                }
+            }
         }
+    }
+    var startScrollOffset:CGPoint?
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        startScrollOffset = scrollView.contentOffset
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let itemWidth = collectionLayout.itemSize.width
-        let itemSpacing = collectionLayout.minimumLineSpacing
+        let itemWidth = signCollectionLayout.itemSize.width
+        let itemSpacing = signCollectionLayout.minimumLineSpacing
         
-        let index = Int(round((targetContentOffset.pointee.x) / (itemWidth + itemSpacing)))
+        let index = Int(ceil((targetContentOffset.pointee.x) / (itemWidth + itemSpacing)))
+        let newTarget = CGPoint( x: CGFloat(index)  * (itemWidth + itemSpacing) ,y: 0)
+    
+        if newTarget == startScrollOffset && velocity.x != 0 {
+            //Avoid choppy return to original spot when user abruptly lifted the finger
+            DispatchQueue.main.async {
+                scrollView.setContentOffset(newTarget, animated: true)
+            }
+        }
+        else
+        {
+            targetContentOffset.pointee = newTarget
+        }
         
-        targetContentOffset.pointee = contentOffsetForItemAt(index: index)
+        if currentState == .FullscreenView && collectionSigns[index].isDiscovered == false {
+            delayedTransition = true
+        }
     }
     
     
     // MARK: - Helper methods
-    func contentOffsetForItemAt(index:Int) -> CGPoint {
-        let itemWidth = collectionLayout.itemSize.width
-        let itemSpacing = collectionLayout.minimumLineSpacing
-        return CGPoint( x: CGFloat(index)  * (itemWidth + itemSpacing) ,y: 0)
-    }
     
     var signInFocus:SignCard? {
         get {
             if let index = indexForItemInFocus {
-                return collectionView.cellForItem(at: index) as? SignCard
+                return signCollectionView.cellForItem(at: index) as? SignCard
             }
             else {
                 return nil
@@ -221,40 +358,28 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     var indexForItemInFocus:IndexPath? {
         get {
-            let viewCenter = view.convert(view.center, to: collectionView)
-            return collectionView.indexPathForItem(at: viewCenter)
+            let viewCenter = view.convert(view.center, to: signCollectionView)
+            return signCollectionView.indexPathForItem(at: viewCenter)
         }
     }
-    
-    func collectionItemSize(isFullscreen:Bool) -> CGSize{
-        let newSize:CGSize
-        if isFullscreen {
-            newSize = collectionView.bounds.size
-        }
-        else {
-            newSize = kCollectionItemSize
-        }
-        return newSize
-    }
-    
     var isCollectionViewFullscreen:Bool {
         get {
-            return collectionLayout.itemSize == view.bounds.size
+            return signCollectionLayout.fullScreenItemIndex != nil
         }
     }
     
-    func setCollectionViewProperties(isFullscreen:Bool) {
-        collectionView.decelerationRate = UIScrollViewDecelerationRateFast
+    func setCollectionLayoutProperties(collectionLayout:UICollectionViewFlowLayout, isFullscreen:Bool) {
+        signCollectionView.decelerationRate = UIScrollViewDecelerationRateFast
         if isFullscreen {
-            collectionLayout.itemSize = collectionView.bounds.size
+            collectionLayout.itemSize = signCollectionView.bounds.size
             collectionLayout.minimumLineSpacing = 0
             collectionLayout.sectionInset = UIEdgeInsets();
         }
         else {
             collectionLayout.itemSize = kCollectionItemSize
             collectionLayout.minimumLineSpacing = kCollectionItemSpacing
-            let sideInset = collectionView.bounds.size.width / 2 - collectionLayout.itemSize.width / 2
-            collectionLayout.sectionInset = UIEdgeInsets(top: kCollectionItemThumbnailInset, left: sideInset, bottom: kCollectionItemThumbnailInset, right: sideInset)
+            let sideInset = signCollectionView.bounds.size.width / 2 - collectionLayout.itemSize.width / 2
+            collectionLayout.sectionInset = UIEdgeInsets(top: kCollectionItemThumbnailInset + kCollectionItemCenterOffset, left: sideInset, bottom: kCollectionItemThumbnailInset, right: sideInset)
         }
         collectionLayout.invalidateLayout()
     }
@@ -268,7 +393,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             return "See Collection"
         case .ThumbnailView:
             // TODO: get number of new signs
-            let newSigns = dataSource.newSigns.count
+            let newSigns = collectionNewItems.count
             if newSigns == 0 {
                 return "Collected signs"
             } else {
@@ -279,39 +404,81 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
+    func updateMapButton(hide:Bool) {
+        self.mapButtonView.isUserInteractionEnabled = false
+        
+        if hide {
+            self.cnstrMapButtonWidth.constant = 0
+        }
+        else {
+            self.mapButtonView.isHidden = false
+            self.cnstrMapButtonWidth.constant = 35
+        }
+        
+        UIView.animate(withDuration: 0.25, delay: 0.05, usingSpringWithDamping: 0.85, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: {
+            self.mapButtonView.subviews.first?.alpha = hide ? 0 : 1
+            self.view.layoutIfNeeded()
+        }, completion: {(Bool) in
+            self.mapButtonView.isHidden = hide
+            self.mapButtonView.isUserInteractionEnabled = !hide
+        })
+    }
+    
     func updateStateButton() {
-        stateButtonLabel.text = stateButtonTextForState(state: currentState)
+        let newButtonText = stateButtonTextForState(state: currentState)
+        if newButtonText == stateButtonLabel.text {
+            return
+        }
+        
+        let attrString = NSAttributedString(string: newButtonText, attributes: [NSFontAttributeName:self.stateButtonLabel.font])
+        self.cnstrStateButtonWidth.constant = ceil(attrString.size().width + 14)
+        self.stateButtonView.isHidden = false
+        
+        self.stateButtonView.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 0.1, animations: {
+            self.stateButtonLabel.alpha = 0
+        }, completion: {(Bool) in
+            self.stateButtonLabel.text = newButtonText
+        })
+        UIView.animate(withDuration: 0.25, delay: 0.05, usingSpringWithDamping: 0.85, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: {
+            self.stateButtonLabel.alpha = 1
+            self.view.layoutIfNeeded()
+        }, completion: {(Bool) in
+            self.stateButtonView.isUserInteractionEnabled = true
+        })
     }
     
     @IBAction func stateButtonAction(_ sender: Any) {
         switch currentState {
         case .FullscreenView:
-            
             transitionCollectionView(newState: .ThumbnailView)
         case .ThumbnailView:
-            if dataSource.newSigns.count != 0 {
-                collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: true)
+            if collectionNewItems.count != 0 {
+                signCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: true)
             }
         case .MapView:
             mapViewController.animateDissappearance {
                 self.mapViewController.clearMapView()
                 self.mapContainerView.isHidden = true
                 self.currentState = self.isCollectionViewFullscreen ? .FullscreenView : .ThumbnailView
+                self.updateMapButton(hide: false)
             }
         }        
     }
     
     @IBAction func mapButtonAction(_ sender: Any) {
         if currentState == .FullscreenView {
-            let signToLocate = dataSource.dataArray[indexForItemInFocus!.row]
+            let signToLocate = collectionSigns[indexForItemInFocus!.row]
             mapViewController.prepareMapViewToShow(locations: [signToLocate])
         }
         else if currentState == .ThumbnailView {
-            mapViewController.prepareMapViewToShow(locations: dataSource.dataArray)
+            mapViewController.prepareMapViewToShow(locations: collectionSigns)
         }
         mapContainerView.isHidden = false
         mapViewController.animateAppearance {
             self.currentState = .MapView
+            self.updateStateButton()
+            self.updateMapButton(hide: true)
         }
     }
     
@@ -327,41 +494,39 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
 
     //MARK: - Background blurred image update
-    func scheduleUpdateBackgroundForItemAtImdex(index:IndexPath) {
-        let nextSign = dataSource.orderedDataArray[index.row]
-        if nextSign.isDiscovered == true
-        {
-            let nextSignID = nextSign.objectId
-            let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(2.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-            DispatchQueue.global(qos: .background).asyncAfter(deadline: dispatchTime, execute: {
-                let newIndex = self.indexForItemInFocus
-                if newIndex == nil {
-                    return
-                }
-                
-                let actualNextSign = self.dataSource.orderedDataArray[newIndex!.row]
-                if nextSignID == actualNextSign.objectId
-                {
-                    self.updateBackgroundBlurWithImage(image: actualNextSign.image, imageTag: actualNextSign.objectId)
-                }
-            })
- 
-        }
+    
+    func scheduleUpdateBackgroundForItemAtImdex(index:Int) {
+        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(2.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: dispatchTime, execute: {
+            if self.signCollectionView.isDecelerating || self.signCollectionView.isDragging {
+                self.scheduleUpdateBackgroundForItemAtImdex(index: index)
+                return
+            }
+            
+            let newIndex = self.indexForItemInFocus
+            if newIndex == nil {
+                return
+            }
+            
+            if index == newIndex?.row
+            {
+                let actualNextSign = self.collectionSigns[newIndex!.row]
+                self.updateBackgroundBlurWithImage(image: actualNextSign.image, imageTag: actualNextSign.objectId)
+            }
+        })
     }
-
     
     func updateBackgroundBlurWithImage(image:UIImage, imageTag:String) {
         let newHash = imageTag.hash
         if backgroundImage.tag != newHash {
-            let newImageBlurred = image.applyDefaultEffect()
+            let newImageBlurred = image.applyDefaultEffect()?.optimizedImage()
             backgroundImage.tag = newHash
             DispatchQueue.main.async {
-                UIView.transition(with: self.backgroundImage, duration: 0.8, options: .transitionCrossDissolve, animations: {
+                UIView.transition(with: self.backgroundImage, duration: 5.8, options: [.transitionCrossDissolve], animations: {
                     self.backgroundImage.image = newImageBlurred
                 }, completion:nil)
+                
             }
         }
     }
-    
-    
 }

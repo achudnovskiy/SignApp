@@ -8,22 +8,60 @@
 
 import UIKit
 import CoreData
+import CoreLocation
 import UserNotifications
+import FBSDKCoreKit
+import Branch
 
 let regionRadius:Double = 30
-
+let kNotificationSignId = "Notificaiton_SignId"
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
-//    var tracker:LocationTracker = LocationTracker(radius: regionRadius)
-
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        UNUserNotificationCenter.current().delegate = self
+//        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+//            <#code#>
+//        }
+        User.current.locationPermissionCheck = {() in return CLLocationManager.authorizationStatus() == .authorizedAlways}
+//        User.current.notificationPermissionCheck = {() in return }
+        
+        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        restoreUserData()
+        setupLocalNotifications()
+        setupLocationMonitoring()
+        
+        if launchOptions?[UIApplicationLaunchOptionsKey.location] != nil {
+            
+        }
+        
+        
+        let branch: Branch = Branch.getInstance()
+        branch.initSession(launchOptions: launchOptions, automaticallyDisplayDeepLinkController: true, deepLinkHandler: { params, error in
+            if error == nil {
+                // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
+                // params will be empty if no data found
+                // ... insert custom logic here ...
+                print("params: %@", params!.description)
+            }
+        })
+        
+        
         return true
     }
 
+    //MARK: - UNUserNotificationCenterDelegate
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+            
+        }
+        else if (response.actionIdentifier == UNNotificationDismissActionIdentifier) {
+        
+        }
+    }
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -46,7 +84,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        self.saveContext()
+        saveContext()
+        saveUserData()
     }
 
     // MARK: - Core Data stack
@@ -77,6 +116,97 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return container
     }()
+    
+    //MARK: - Location Monitoring
+    
+    func setupLocationMonitoring() {
+
+        LocationTracker.sharedInstance.startMonitoringForLocations(SignDataSource.sharedInstance.locations) { (location) in
+            
+            let sign = SignDataSource.sharedInstance.findSignObjById(objectId: location.objectId)
+            if sign == nil {
+                print("Couldn't locate sign with id \(location.objectId)")
+                return
+            }
+            
+            sign!.processLocationVisit()
+            
+            SignDataSource.sharedInstance.reloadCollections()
+            
+            let notificationContent = UNMutableNotificationContent()
+            notificationContent.title = sign!.locationName
+            notificationContent.subtitle = "You got the new sign!"
+//             notificationContent.attachments
+            // notificationContent.body - add for more descriptive notifcation
+            // notificationContent.categoryIdentifier - Add for actions i.e. add or skip the sign
+            notificationContent.userInfo = [kNotificationSignId: sign!.objectId]
+
+            
+            let notificationRequest = UNNotificationRequest(identifier: "SignDiscover", content: notificationContent, trigger: nil)
+            UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                if (error != nil) {
+                    NSLog("Error with delivering the notification, details: \(String(describing: error))")
+                }
+            })
+        }
+    }
+    
+    func saveUserData() {
+        let data = SignDataSource.sharedInstance.exportUserData()
+        UserDefaults.standard.set(data, forKey: "SavedUserData")
+    }
+    func restoreUserData() {
+        let data = UserDefaults.standard.object(forKey: "SavedUserData")
+        if data != nil {
+            SignDataSource.sharedInstance.restoreUserData(userData: data as! [String : AnyObject])
+        }
+    }
+    
+    func requestLocationPermissions() {
+//        UIApplication.shared.currentUserNotificationSettings
+    }
+    
+    
+    //  let settingsURL = URL(string: UIApplicationOpenSettingsURLString)!
+    //  UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+
+    func notifyAboutPermissionProblem() {
+        
+    }
+    
+    //MARK: - Local Notificaitons
+    
+    func setupLocalNotifications()
+    {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge]) { (granted, error) in
+            if granted {
+                
+            }
+            else {
+                // TODO: Prompt user about not having permissions
+            }
+        }
+    }
+    
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        Branch.getInstance().handleDeepLink(url);
+
+        return FBSDKApplicationDelegate.sharedInstance().application(app, open: url, options: options)
+    }
+    
+    // Respond to Universal Links
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+        // pass the url to the handle deep link call
+        Branch.getInstance().continue(userActivity)
+        
+        return true
+    }
+    
+    // TODO: update the content of the already notification
+    
+    
+
 
     // MARK: - Core Data Saving support
 
