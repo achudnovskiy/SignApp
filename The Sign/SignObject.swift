@@ -42,6 +42,10 @@ public class SignObject: NSObject {
         self.LocationDescription = locationDescription
     }
     
+    func regionForLocation(with radius:CLLocationDistance) -> CLCircularRegion {
+        return CLCircularRegion(center: self.location.coordinate, radius: radius, identifier: self.objectId)
+    }
+    
     override public var hash: Int {
         return self.objectId.hash
     }

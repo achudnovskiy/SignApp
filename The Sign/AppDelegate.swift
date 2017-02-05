@@ -8,19 +8,27 @@
 
 import UIKit
 import CoreData
+import CoreLocation
 import UserNotifications
 
 let regionRadius:Double = 30
-
+let kNotificationSignId = "Notificaiton_SignId"
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-//    var tracker:LocationTracker = LocationTracker(radius: regionRadius)
+    var tracker:LocationTracker!
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        setupLocalNotifications()
+        setupLocationMonitoring()
+        
+        if launchOptions?[UIApplicationLaunchOptionsKey.location] != nil {
+            
+        }
         return true
     }
 
@@ -77,6 +85,63 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return container
     }()
+    
+    //MARK: - Location Monitoring
+    
+    func setupLocationMonitoring() {
+
+        tracker = LocationTracker()
+        let locations = SignDataSource().dataArray
+        tracker.startMonitoringForLocations(locations) { (signToAlert) in
+            let notificationContent = UNMutableNotificationContent()
+            notificationContent.title = signToAlert.locationName
+            notificationContent.subtitle = "You got the new sign!"
+            // notificationContent.attachments add the logo of the place
+            // notificationContent.body - add for more descriptive notifcation
+            // notificationContent.categoryIdentifier - Add for actions i.e. add or skip the sign
+            notificationContent.userInfo = [kNotificationSignId: signToAlert.objectId]
+            
+
+            
+            let notificationRequest = UNNotificationRequest(identifier: "SignDiscover", content: notificationContent, trigger: nil)
+            UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                if (error != nil) {
+                    NSLog("Error with delivering the notification, details: \(error)")
+                }
+            })
+        }
+    }
+    
+    func requestLocationPermissions() {
+        
+    }
+    
+    
+    //  let settingsURL = URL(string: UIApplicationOpenSettingsURLString)!
+    //  UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+
+    func notifyAboutPermissionProblem() {
+        
+    }
+    
+    //MARK: - Local Notificaitons
+    
+    func setupLocalNotifications()
+    {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge]) { (granted, error) in
+            if granted {
+                
+            }
+            else {
+                // TODO: Prompt user about not having permissions
+            }
+        }
+    }
+    
+    // TODO: update the content of the already notification
+    
+    
+
 
     // MARK: - Core Data Saving support
 

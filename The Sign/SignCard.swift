@@ -20,11 +20,12 @@ class SignCard: UICollectionViewCell {
     @IBOutlet weak var cnstrContentWrapperHeight: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperCenterY: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperBottom: NSLayoutConstraint!
-    
-    
+
     override func prepareForReuse() {
         contentImage.alpha = 1
         keywordLabel.alpha = 1
+        keywordLabel.isHidden = true
+        contentImage.isHidden = true
         contentImage.image = nil
         backgroundImage.image = nil
         keywordLabel.text = nil

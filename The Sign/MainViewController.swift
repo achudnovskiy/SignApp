@@ -20,21 +20,48 @@ enum SignAppState {
     case MapView
 }
 
+extension UICollectionViewFlowLayout {
+    open override func copy() -> Any {
+        let copy = UICollectionViewFlowLayout()
+        copy.estimatedItemSize = self.estimatedItemSize
+        copy.footerReferenceSize = self.footerReferenceSize
+        copy.headerReferenceSize = self.headerReferenceSize
+        copy.itemSize = self.itemSize
+        copy.minimumInteritemSpacing = self.minimumInteritemSpacing
+        copy.minimumLineSpacing = self.minimumLineSpacing
+        copy.scrollDirection = self.scrollDirection
+        copy.sectionFootersPinToVisibleBounds = self.sectionFootersPinToVisibleBounds
+        copy.sectionHeadersPinToVisibleBounds = self.sectionHeadersPinToVisibleBounds
+        copy.sectionInset = self.sectionInset
+        
+        return copy
+    }
+}
+
+
 class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollViewDelegate, UICollectionViewDataSource {
 
-
+    //MARK: Outlets
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var collectionLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var backgroundImage: UIImageView!
     @IBOutlet weak var mapContainerView: UIView!
     
-    
     @IBOutlet weak var mapButtonView: UIView!
     @IBOutlet weak var stateButtonView: UIView!
     @IBOutlet weak var stateButtonLabel: UILabel!
     
+    @IBOutlet weak var cnstrStateButtonWidth: NSLayoutConstraint!
+    @IBOutlet weak var cnstrMapButtonWidth: NSLayoutConstraint!
     
+    
+    //MARK: Properties
+    var isFullscreen:Bool {
+        get {
+            return currentState == .FullscreenView
+        }
+    }
     var mapViewController:MapViewController!
     
     var delayedTransition = false
@@ -50,7 +77,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         mapButtonView.applyPlainShadow()
         
         currentState = .ThumbnailView
-        updateStateButton()
+        updateStateButton(animated: false)
         mapContainerView.isHidden = true
         
         backgroundImage.image = dataSource.dataArray[0].image.applyDefaultEffect()
@@ -73,16 +100,20 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     // MARK: - UI Animations
     func transitionCollectionView(newState:SignAppState) {
-        currentState = newState
-        
         if newState == .FullscreenView || newState == .ThumbnailView {
-            let isFullscreen = newState == .FullscreenView
-            let newSize = collectionItemSize(isFullscreen: isFullscreen)
+            let toFullscreen = newState == .FullscreenView
+            let newSize = collectionItemSize(isFullscreen: toFullscreen)
             let focusItemIndexPath = indexForItemInFocus;
             let cellView = signInFocus!
             
+            
+            let newLayout = getCollectionViewLayout(isFullscreen: toFullscreen)
+
+            
+            
+            
             cellView.layer.zPosition = 1
-            if isFullscreen {
+            if toFullscreen {
                 cellView.setConstraintsForFullscreen()
                 cellView.contentImage.alpha = 0
                 cellView.contentImage.isHidden =  false
@@ -100,7 +131,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                 cellView.bounds = frame;
                 cellView.center = center
                 
-                if isFullscreen {
+                if toFullscreen {
                     cellView.keywordLabel.alpha = 0
                     cellView.contentImage.alpha = 1
                 }
@@ -114,19 +145,33 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             }) { (Bool) in
                 
                 cellView.layer.zPosition = 0
-                cellView.contentImage.isHidden =  !isFullscreen
-                cellView.keywordLabel.isHidden =  isFullscreen
+                cellView.contentImage.isHidden =  !toFullscreen
+                cellView.keywordLabel.isHidden =  toFullscreen
                 
-                self.setCollectionViewProperties(isFullscreen: isFullscreen)
-                self.collectionView.contentOffset = self.contentOffsetForItemAt(index: focusItemIndexPath!.row)
-                self.view.layoutIfNeeded()
+                self.currentState = newState
+                self.collectionView.setCollectionViewLayout(newLayout, animated: false, completion: { (finished) in
+                    if finished {
+                        self.collectionLayout = newLayout
+                        
+                        //indexes of elements on the right and on the left
+                        var itemsToReload:[IndexPath] = []
+                        if focusItemIndexPath!.row > 0 {
+                            itemsToReload.append(IndexPath(item: focusItemIndexPath!.row - 1, section: 0))
+                        }
+                        
+                        let contentLenght = self.collectionView.numberOfItems(inSection: 0)
+                        if focusItemIndexPath!.row < contentLenght - 1  {
+                            itemsToReload.append(IndexPath(item: focusItemIndexPath!.row + 1, section: 0))
+                        }
+                        
+                        self.collectionView.reloadItems(at: itemsToReload)
+                    }
+                })
                 
-                self.updateStateButton()
+                self.updateStateButton(animated: true)
             }
         }
     }
-    
-   
     
     // MARK: - UICollectionViewDataSource
     
@@ -140,7 +185,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         let signToShow = dataSource.orderedDataArray[indexPath.row]
         
         cell.backgroundImage.image = signToShow.image
-        cell.keywordLabel.text = signToShow.title
+        cell.keywordLabel.text = signToShow.title.uppercased()
         cell.contentImage.image = signToShow.infographic
         if currentState == .FullscreenView {
             cell.setConstraintsForFullscreen()
@@ -174,9 +219,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
-
-
- 
     // MARK: - ScrollViewDelegate
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         if currentState == .ThumbnailView &&  delayedTransition {
@@ -227,20 +269,35 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     }
     
     func collectionItemSize(isFullscreen:Bool) -> CGSize{
-        let newSize:CGSize
         if isFullscreen {
-            newSize = collectionView.bounds.size
+            return collectionView.bounds.size
         }
         else {
-            newSize = kCollectionItemSize
+            return kCollectionItemSize
         }
-        return newSize
     }
     
     var isCollectionViewFullscreen:Bool {
         get {
             return collectionLayout.itemSize == view.bounds.size
         }
+    }
+    
+    func getCollectionViewLayout(isFullscreen:Bool) -> UICollectionViewFlowLayout {
+
+        let newLayout = collectionLayout.copy() as! UICollectionViewFlowLayout
+        if isFullscreen {
+            newLayout.itemSize = collectionView.bounds.size
+            newLayout.minimumLineSpacing = 0
+            newLayout.sectionInset = UIEdgeInsets();
+        }
+        else {
+            newLayout.itemSize = kCollectionItemSize
+            newLayout.minimumLineSpacing = kCollectionItemSpacing
+            let sideInset = collectionView.bounds.size.width / 2 - newLayout.itemSize.width / 2
+            newLayout.sectionInset = UIEdgeInsets(top: kCollectionItemThumbnailInset, left: sideInset, bottom: kCollectionItemThumbnailInset, right: sideInset)
+        }
+        return newLayout
     }
     
     func setCollectionViewProperties(isFullscreen:Bool) {
@@ -279,14 +336,78 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
-    func updateStateButton() {
-        stateButtonLabel.text = stateButtonTextForState(state: currentState)
+    func updateMapButton(hide:Bool, animated:Bool) {
+        if animated
+        {
+            self.mapButtonView.isUserInteractionEnabled = false
+            
+            if hide {
+                self.cnstrMapButtonWidth.constant = 0
+            }
+            else {
+                self.mapButtonView.isHidden = false
+                self.cnstrMapButtonWidth.constant = 35
+            }
+
+            UIView.animate(withDuration: 0.25, delay: 0.05, usingSpringWithDamping: 0.85, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: {
+                self.mapButtonView.subviews.first?.alpha = hide ? 0 : 1
+                self.view.layoutIfNeeded()
+            }, completion: {(Bool) in
+                self.mapButtonView.isHidden = hide
+                self.mapButtonView.isUserInteractionEnabled = !hide
+            })
+        }
+        else
+        {
+            self.mapButtonView.isHidden = hide
+        }
+    }
+    
+    func updateStateButton(animated:Bool) {
+        let buttonText = stateButtonTextForState(state: currentState)
+        if buttonText == stateButtonLabel.text {
+            return
+        }
+        
+        let hideButton = buttonText.characters.count == 0
+        if !hideButton
+        {
+            let attrString = NSAttributedString(string: buttonText, attributes: [NSFontAttributeName:self.stateButtonLabel.font])
+            self.cnstrStateButtonWidth.constant = ceil(attrString.size().width + 14)
+            self.stateButtonView.isHidden = false
+        }
+        else
+        {
+            self.cnstrStateButtonWidth.constant = 0
+        }
+        
+        if animated
+        {
+            self.stateButtonView.isUserInteractionEnabled = false
+            UIView.animate(withDuration: 0.1, animations: {
+                self.stateButtonLabel.alpha = 0
+            }, completion: {(Bool) in
+                self.stateButtonLabel.text = buttonText
+            })
+            UIView.animate(withDuration: 0.25, delay: 0.05, usingSpringWithDamping: 0.85, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: {
+                self.stateButtonLabel.alpha = 1
+                self.view.layoutIfNeeded()
+            }, completion: {(Bool) in
+                self.stateButtonView.isUserInteractionEnabled = true
+                self.stateButtonView.isHidden = hideButton
+            })
+        }
+        else
+        {
+            self.stateButtonLabel.text = buttonText
+            self.stateButtonView.isHidden = hideButton
+            self.view.layoutIfNeeded()
+        }
     }
     
     @IBAction func stateButtonAction(_ sender: Any) {
         switch currentState {
         case .FullscreenView:
-            
             transitionCollectionView(newState: .ThumbnailView)
         case .ThumbnailView:
             if dataSource.newSigns.count != 0 {
@@ -297,6 +418,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                 self.mapViewController.clearMapView()
                 self.mapContainerView.isHidden = true
                 self.currentState = self.isCollectionViewFullscreen ? .FullscreenView : .ThumbnailView
+                self.updateMapButton(hide: false, animated: true)
             }
         }        
     }
@@ -312,6 +434,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         mapContainerView.isHidden = false
         mapViewController.animateAppearance {
             self.currentState = .MapView
+            self.updateStateButton(animated: true)
+            self.updateMapButton(hide: true, animated: true)
         }
     }
     

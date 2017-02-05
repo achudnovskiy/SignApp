@@ -14,41 +14,49 @@ class SignDataSource: NSObject {
     
     override init() {
         
-        SignLocation(locationId: "345678", latitude: 49.283170, longitude: -123.109484, name: "Revolver", description: "Something clever")
-        
-        let testRamenLocation = SignLocation(locationId: "12345", latitude: 49.290084, longitude: -123.133972, name: "Hokkaido Santouka", description: "Something clever")
-        let testFrenchLocation = SignLocation(locationId: "23456", latitude: 49.278409, longitude: -123.118361, name: "Homer St. Cafe", description: "Something clever")
-        let testCoffeeLocation = SignLocation(locationId: "345678", latitude: 49.283170, longitude: -123.109484, name: "Revolver", description: "Something clever")
-        
-        let testEspressoLocation = SignLocation(latitude: 49.284614, locationTag: nil, longitude: -123.117142, businessName: "Mario's Cafe")
-        let testChocolateLocation = SignLocation(latitude: 49.284789, locationTag: nil, longitude: -123.122712, businessName: "Therry Chocolatier")
-        let testGalleryLocation = SignLocation(latitude: 49.27841, locationTag: nil, longitude: -123.118711, businessName: "Buzz Cafe")
-        
-        
         let ramenSign = SignObject(title: "Ramen",
                                    image: UIImage(named: "TestRamenImage")!,
                                    infographic: UIImage(named: "TestRamenContent")!,
-                                   location:testRamenLocation)
-        let homerSign = SignObject(title: "French Cuisine",
+                                   latitude: 49.290084,
+                                   longitude: -123.133972,
+                                   locationName: "Hokkaido Santouka",
+                                   locationDescription: "Something clever")
+        let homerSign = SignObject(title: "French",
                                    image: UIImage(named: "TestHomerImage")!,
                                    infographic: UIImage(named: "TestHomerContent")!,
-                                   location:testFrenchLocation)
+                                   latitude: 49.278409,
+                                   longitude: -123.118361,
+                                   locationName: "Homer St. Cafe",
+                                   locationDescription: "Something clever")
         let revolverSign = SignObject(title: "Coffee",
-                                      image: UIImage(named: "TestCoffeeImage")!,
-                                      infographic: UIImage(named: "TestCoffeeContent")!,
-                                      location:testCoffeeLocation)
+                                   image: UIImage(named: "TestCoffeeImage")!,
+                                   infographic: UIImage(named: "TestCoffeeContent")!,
+                                   latitude: 49.283170,
+                                   longitude: -123.109484,
+                                   locationName: "Revolver",
+                                   locationDescription: "Something clever")
         let marioSign = SignObject(title: "Espresso",
-                                   image: UIImage(named: "TestEspressoImage")!,
-                                   infographic: UIImage(named: "TestEspressoContent")!,
-                                   location: testEspressoLocation)
+                                      image: UIImage(named: "TestEspressoImage")!,
+                                      infographic: UIImage(named: "TestEspressoContent")!,
+                                      latitude: 49.284614,
+                                      longitude: -123.117142,
+                                      locationName: "Mario's Cafe",
+                                      locationDescription: "Something clever")
         let thierySign = SignObject(title: "Desert",
-                                    image: UIImage(named: "TestThieryImage")!,
-                                    infographic: UIImage(named: "TestThieryContent")!,
-                                    location: testChocolateLocation)
+                                   image: UIImage(named: "TestThieryImage")!,
+                                   infographic: UIImage(named: "TestThieryContent")!,
+                                   latitude: 49.284789,
+                                   longitude: -123.122712,
+                                   locationName: "Therry Chocolatier",
+                                   locationDescription: "Something clever")
         let buzzSign = SignObject(title: "Gallery",
-                                  image: UIImage(named: "TestBuzzImage")!,
-                                  infographic: UIImage(named: "TestBuzzContent")!,
-                                  location: testGalleryLocation)
+                                    image: UIImage(named: "TestBuzzImage")!,
+                                    infographic: UIImage(named: "TestBuzzContent")!,
+                                    latitude: 49.27841,
+                                    longitude: -123.118711,
+                                    locationName: "Buzz Cafe",
+                                    locationDescription: "Something clever")
+        
         buzzSign.isDiscovered = false
         
         dataArray = [ramenSign, homerSign, revolverSign, marioSign, thierySign, buzzSign];
