@@ -43,7 +43,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
 
     //MARK: Outlets
     
-    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var signCollectionView: UICollectionView!
     @IBOutlet weak var collectionLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var backgroundImage: UIImageView!
     @IBOutlet weak var mapContainerView: UIView!
@@ -85,7 +85,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
 //        backgroundImage.image = UIImage(named: "DefaultBackgroundImage")!.applyDefaultEffect()
 
         
-        collectionView.backgroundColor = UIColor.clear
+        signCollectionView.backgroundColor = UIColor.clear
         
         setCollectionViewProperties(isFullscreen: false)
         
@@ -106,10 +106,22 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             let focusItemIndexPath = indexForItemInFocus;
             let cellView = signInFocus!
             
-            
             let newLayout = getCollectionViewLayout(isFullscreen: toFullscreen)
-
+            newLayout.minimumLineSpacing = newLayout.minimumLineSpacing * 5
             
+            //indexes of elements on the right and on the left
+            var itemsToReload:[IndexPath] = []
+            
+            if focusItemIndexPath!.row > 0 {
+                let leftIndex = IndexPath(row: focusItemIndexPath!.row - 1, section: 0)
+                itemsToReload.append(leftIndex)
+            }
+            
+            let contentLenght = self.signCollectionView.numberOfItems(inSection: 0)
+            if focusItemIndexPath!.row < contentLenght - 1  {
+                let rightIndex = IndexPath(row: focusItemIndexPath!.row + 1, section: 0)
+                itemsToReload.append(rightIndex)
+            }
             
             
             cellView.layer.zPosition = 1
@@ -139,8 +151,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                     cellView.keywordLabel.alpha = 1
                     cellView.contentImage.alpha = 0
                 }
-
-                
                 cellView.layoutIfNeeded()
             }) { (Bool) in
                 
@@ -149,22 +159,19 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                 cellView.keywordLabel.isHidden =  toFullscreen
                 
                 self.currentState = newState
-                self.collectionView.setCollectionViewLayout(newLayout, animated: false, completion: { (finished) in
+                self.signCollectionView.setCollectionViewLayout(newLayout, animated: false, completion: { (finished) in
                     if finished {
-                        self.collectionLayout = newLayout
-                        
-                        //indexes of elements on the right and on the left
-                        var itemsToReload:[IndexPath] = []
-                        if focusItemIndexPath!.row > 0 {
-                            itemsToReload.append(IndexPath(item: focusItemIndexPath!.row - 1, section: 0))
+                        if toFullscreen == false {
+                            let finalNewLayout = self.getCollectionViewLayout(isFullscreen: toFullscreen)
+                            self.signCollectionView.setCollectionViewLayout(finalNewLayout, animated: true, completion:{(finished) in
+                                if finished {
+                                    self.collectionLayout = finalNewLayout
+                                }
+                            })
                         }
-                        
-                        let contentLenght = self.collectionView.numberOfItems(inSection: 0)
-                        if focusItemIndexPath!.row < contentLenght - 1  {
-                            itemsToReload.append(IndexPath(item: focusItemIndexPath!.row + 1, section: 0))
+                        else {
+                            self.collectionLayout = newLayout
                         }
-                        
-                        self.collectionView.reloadItems(at: itemsToReload)
                     }
                 })
                 
@@ -253,7 +260,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     var signInFocus:SignCard? {
         get {
             if let index = indexForItemInFocus {
-                return collectionView.cellForItem(at: index) as? SignCard
+                return signCollectionView.cellForItem(at: index) as? SignCard
             }
             else {
                 return nil
@@ -263,14 +270,14 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     var indexForItemInFocus:IndexPath? {
         get {
-            let viewCenter = view.convert(view.center, to: collectionView)
-            return collectionView.indexPathForItem(at: viewCenter)
+            let viewCenter = view.convert(view.center, to: signCollectionView)
+            return signCollectionView.indexPathForItem(at: viewCenter)
         }
     }
     
     func collectionItemSize(isFullscreen:Bool) -> CGSize{
         if isFullscreen {
-            return collectionView.bounds.size
+            return signCollectionView.bounds.size
         }
         else {
             return kCollectionItemSize
@@ -287,30 +294,30 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
 
         let newLayout = collectionLayout.copy() as! UICollectionViewFlowLayout
         if isFullscreen {
-            newLayout.itemSize = collectionView.bounds.size
+            newLayout.itemSize = signCollectionView.bounds.size
             newLayout.minimumLineSpacing = 0
             newLayout.sectionInset = UIEdgeInsets();
         }
         else {
             newLayout.itemSize = kCollectionItemSize
             newLayout.minimumLineSpacing = kCollectionItemSpacing
-            let sideInset = collectionView.bounds.size.width / 2 - newLayout.itemSize.width / 2
+            let sideInset = signCollectionView.bounds.size.width / 2 - newLayout.itemSize.width / 2
             newLayout.sectionInset = UIEdgeInsets(top: kCollectionItemThumbnailInset, left: sideInset, bottom: kCollectionItemThumbnailInset, right: sideInset)
         }
         return newLayout
     }
     
     func setCollectionViewProperties(isFullscreen:Bool) {
-        collectionView.decelerationRate = UIScrollViewDecelerationRateFast
+        signCollectionView.decelerationRate = UIScrollViewDecelerationRateFast
         if isFullscreen {
-            collectionLayout.itemSize = collectionView.bounds.size
+            collectionLayout.itemSize = signCollectionView.bounds.size
             collectionLayout.minimumLineSpacing = 0
             collectionLayout.sectionInset = UIEdgeInsets();
         }
         else {
             collectionLayout.itemSize = kCollectionItemSize
             collectionLayout.minimumLineSpacing = kCollectionItemSpacing
-            let sideInset = collectionView.bounds.size.width / 2 - collectionLayout.itemSize.width / 2
+            let sideInset = signCollectionView.bounds.size.width / 2 - collectionLayout.itemSize.width / 2
             collectionLayout.sectionInset = UIEdgeInsets(top: kCollectionItemThumbnailInset, left: sideInset, bottom: kCollectionItemThumbnailInset, right: sideInset)
         }
         collectionLayout.invalidateLayout()
@@ -411,7 +418,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             transitionCollectionView(newState: .ThumbnailView)
         case .ThumbnailView:
             if dataSource.newSigns.count != 0 {
-                collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: true)
+                signCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: true)
             }
         case .MapView:
             mapViewController.animateDissappearance {

@@ -9,45 +9,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="3FT-4O-Wet">
-            <objects>
-                <viewController id="H4J-O3-Tff" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="ka2-gZ-YbR"/>
-                        <viewControllerLayoutGuide type="bottom" id="RI0-rH-ihU"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="ag7-MQ-LpB">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="G6D-Re-kAi" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="567" y="-1367"/>
-        </scene>
-        <!--Loading Scene-->
-        <scene sceneID="vU2-Sa-KpF">
-            <objects>
-                <viewController title="Loading Scene" id="fIV-Du-d3p" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="G5E-mE-hAs"/>
-                        <viewControllerLayoutGuide type="bottom" id="QHx-Ri-RMa"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="RRK-BM-T6n">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <segue destination="H4J-O3-Tff" kind="show" identifier="ShowTutorial" id="93z-C9-CTw"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="CE3-OZ-PyR" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-423" y="-584"/>
-        </scene>
         <!--Main View Controller-->
         <scene sceneID="oMt-f7-l9t">
             <objects>
@@ -79,7 +40,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="180" height="320"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8jb-DP-DoQ">
+                                                <view contentMode="scaleToFill" restorationIdentifier="SignCardContentView" translatesAutoresizingMaskIntoConstraints="NO" id="8jb-DP-DoQ">
                                                     <rect key="frame" x="0.0" y="0.0" width="180" height="320"/>
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xkE-yL-RK9">
@@ -228,9 +189,9 @@
                         <outlet property="cnstrMapButtonWidth" destination="7o0-sB-pLG" id="Lxo-mC-Rjm"/>
                         <outlet property="cnstrStateButtonWidth" destination="xlU-Bq-lvH" id="xSB-P3-dsR"/>
                         <outlet property="collectionLayout" destination="a2w-6S-dlG" id="RhL-Vs-SPa"/>
-                        <outlet property="collectionView" destination="YE2-GX-RUP" id="0mP-Ea-hI5"/>
                         <outlet property="mapButtonView" destination="3gq-Tc-lhh" id="pQB-30-6oC"/>
                         <outlet property="mapContainerView" destination="Imj-SB-jqe" id="ieS-gl-wez"/>
+                        <outlet property="signCollectionView" destination="YE2-GX-RUP" id="8gf-fg-dIc"/>
                         <outlet property="stateButtonLabel" destination="NFu-Aa-es4" id="3Ta-yh-hVb"/>
                         <outlet property="stateButtonView" destination="b8F-zC-7yI" id="nhG-fd-rwG"/>
                     </connections>

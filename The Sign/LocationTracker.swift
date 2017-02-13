@@ -32,7 +32,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     internal var closeLocations:[CLLocation]
     
-    internal var completionHandler:((_ location:SignObject) -> Void)?
+    internal var completionHandler:((_ location:SignObject) -> Void)!
     
     internal var closestSignRequestHandler:((_ closestSign:SignObject?) -> Void)?
 //    internal var homeRegionRequestHandler:(() -> Void)?
@@ -79,7 +79,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
             locationManager.requestLocation()
         }
         else {
-            updateHomeRegion()
             updateMonitoredRegions()
         }
 
@@ -143,15 +142,26 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     open func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion)
     {
-        // if we deal with the currentRegion - update
-        // if we deal with sign region - notify
+        if region.identifier == "CurrentRegion" {
+            shouldUpdateMonitoredRegions = true
+            locationManager.requestLocation()
+        }
+        else {
+            let hit = allLocations.first(where: { (sign) -> Bool in
+                sign.objectId == region.identifier
+            })
+            if hit != nil {
+                completionHandler(hit!)
+            }
+        }
     }
 
     open func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion)
     {
-        // if we deal with the currentRegion - update
-        // if we deal with sign region - notify
+        shouldUpdateMonitoredRegions = true
+        locationManager.requestLocation()
     }
+    
     func getClosestSign() -> SignObject? {
         let allUndiscovered = allLocations.filter { (location:SignObject) -> Bool in
             return !location.isDiscovered
@@ -161,6 +171,11 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     }
     
     func updateMonitoredRegions() {
+        updateHomeRegion()
+        updateSignRegions()
+    }
+    
+    func updateSignRegions() {
         
         let signsToMonitor = self.findCloseSignsFrom(locationSet: self.allLocations, to: self.currentLocation!, within: kCurrentLocationRadius)
         
@@ -193,7 +208,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         
         if shouldUpdateMonitoredRegions {
             updateMonitoredRegions()
-            updateHomeRegion()
             shouldUpdateMonitoredRegions = false
         }
     }
