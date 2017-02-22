@@ -91,7 +91,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         case .notDetermined:
             return .NeedConfiguration
         case .authorizedAlways:
-            startTracking()
             return .ReadyToTrack
         case .authorizedWhenInUse, .denied, .restricted:
             return .NotReadyToTrack
@@ -101,25 +100,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     open func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         prepareForTracking()
     }
-    
 
-
-//    internal func getCurrentRegion() -> CLCircularRegion? {
-//        currentLocation = locationManager.location
-//        
-//        if currentRegion != nil {
-//            locationManager.monitoredRegions.first!
-//            locationManager.stopMonitoring(for: currentRegion!)
-//        }
-//        
-//        
-//        currentRegion = CLCircularRegion(center: currentLocation!.coordinate, radius: kCurrentLocationRadius, identifier: "Current Region")
-//        locationManager.startMonitoring(for: currentRegion!)
-//
-//        return currentRegion
-//    }
-    
-    
     func shouldUpdateCurrentLocation() -> Bool {
         let minuteAgo = Date().addingTimeInterval(TimeInterval(-60))
         if currentLocation == nil || currentLocation!.timestamp < minuteAgo {

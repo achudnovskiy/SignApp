@@ -16,8 +16,8 @@ public class SignObject: NSObject {
     let title:String
     let image:UIImage
     let infographic:UIImage
-    var isDiscovered: Bool = true
-    
+    var isDiscovered: Bool = false;
+    var isCollected: Bool = false;
     
     let location:CLLocation
     let locationName:String

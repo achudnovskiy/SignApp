@@ -10,7 +10,14 @@ import UIKit
 
 class SignDataSource: NSObject {
 
+    static let sharedInstance = SignDataSource()
+    
     let dataArray:[SignObject]
+    
+    var collectedSignsOrdered:[SignObject]!
+    var notCollectedSigns:[SignObject]!
+    var discoveredSigns:[SignObject]!
+    var newSigns:[SignObject]!
     
     override init() {
         
@@ -36,12 +43,12 @@ class SignDataSource: NSObject {
                                    locationName: "Revolver",
                                    locationDescription: "Something clever")
         let marioSign = SignObject(title: "Espresso",
-                                      image: UIImage(named: "TestEspressoImage")!,
-                                      infographic: UIImage(named: "TestEspressoContent")!,
-                                      latitude: 49.284614,
-                                      longitude: -123.117142,
-                                      locationName: "Mario's Cafe",
-                                      locationDescription: "Something clever")
+                                   image: UIImage(named: "TestEspressoImage")!,
+                                   infographic: UIImage(named: "TestEspressoContent")!,
+                                   latitude: 49.284614,
+                                   longitude: -123.117142,
+                                   locationName: "Mario's Cafe",
+                                   locationDescription: "Something clever")
         let thierySign = SignObject(title: "Desert",
                                    image: UIImage(named: "TestThieryImage")!,
                                    infographic: UIImage(named: "TestThieryContent")!,
@@ -57,32 +64,38 @@ class SignDataSource: NSObject {
                                     locationName: "Buzz Cafe",
                                     locationDescription: "Something clever")
         
-        buzzSign.isDiscovered = false
+        thierySign.isCollected = true
+        thierySign.isDiscovered = true
+        
+        ramenSign.isDiscovered = true
+        ramenSign.isCollected = true
+        
+        marioSign.isCollected = true
+        
+        buzzSign.isCollected = true
+        buzzSign.isDiscovered = true
         
         dataArray = [ramenSign, homerSign, revolverSign, marioSign, thierySign, buzzSign];
+
+        super.init()
         
+        reloadCollections()
     }
     
-    var orderedDataArray:[SignObject] {
-        get {
-            return newSigns + discoveredSigns
+    func reloadCollections() {
+        
+        self.discoveredSigns = dataArray.filter { (sign) -> Bool in
+            return sign.isCollected && sign.isDiscovered
         }
-    }
-    
-    var discoveredSigns:[SignObject] {
-        get {
-            return dataArray.filter { (sign) -> Bool in
-                return sign.isDiscovered
-            }
+        self.newSigns = dataArray.filter { (sign) -> Bool in
+            return sign.isCollected && !sign.isDiscovered
         }
+        self.notCollectedSigns = dataArray.filter({ (sign) -> Bool in
+            return !sign.isCollected
+        })
+        
+        self.collectedSignsOrdered = newSigns + discoveredSigns
+        
+        NotificationCenter.default.post(name: <#T##NSNotification.Name#>, object: <#T##Any?#>)
     }
-
-    var newSigns:[SignObject] {
-        get {
-            return dataArray.filter { (sign) -> Bool in
-                return !sign.isDiscovered
-            }
-        }
-    }
-
 }

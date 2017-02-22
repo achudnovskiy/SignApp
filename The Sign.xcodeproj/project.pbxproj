@@ -10,6 +10,7 @@
 		550728431E33052E0060D88B /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728421E33052E0060D88B /* MapViewController.swift */; };
 		550728451E34627F0060D88B /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728441E34627F0060D88B /* UIView+Extension.swift */; };
 		550728471E354B020060D88B /* SignDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728461E354B020060D88B /* SignDataSource.swift */; };
+		5512317D1E5AABC900443840 /* TestRoute1.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 5512317C1E5AABC900443840 /* TestRoute1.gpx */; };
 		5559F72A1E248475007354BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7291E248475007354BE /* AppDelegate.swift */; };
 		5559F72F1E248475007354BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5559F72D1E248475007354BE /* Main.storyboard */; };
 		5559F7321E248475007354BE /* The_Sign.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7301E248475007354BE /* The_Sign.xcdatamodeld */; };
@@ -46,6 +47,7 @@
 		550728421E33052E0060D88B /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		550728441E34627F0060D88B /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		550728461E354B020060D88B /* SignDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignDataSource.swift; sourceTree = "<group>"; };
+		5512317C1E5AABC900443840 /* TestRoute1.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TestRoute1.gpx; sourceTree = "<group>"; };
 		5559F7261E248475007354BE /* The Sign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Sign.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5559F7291E248475007354BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5559F72E1E248475007354BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 		5559F7401E248475007354BE /* The SignTests */ = {
 			isa = PBXGroup;
 			children = (
+				5512317C1E5AABC900443840 /* TestRoute1.gpx */,
 				5559F7411E248475007354BE /* The_SignTests.swift */,
 				5559F7431E248475007354BE /* Info.plist */,
 			);
@@ -307,6 +310,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5512317D1E5AABC900443840 /* TestRoute1.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,7 +487,7 @@
 				);
 				INFOPLIST_FILE = "The Sign/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = ca.simplematters.TheSign;
+				PRODUCT_BUNDLE_IDENTIFIER = ZCEYGPU8ZJ.ca.simplematters.TheSignApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -501,7 +505,7 @@
 				);
 				INFOPLIST_FILE = "The Sign/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = ca.simplematters.TheSign;
+				PRODUCT_BUNDLE_IDENTIFIER = ZCEYGPU8ZJ.ca.simplematters.TheSignApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

@@ -91,8 +91,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupLocationMonitoring() {
 
         tracker = LocationTracker()
-        let locations = SignDataSource().dataArray
+        let locations = SignDataSource.sharedInstance.dataArray
         tracker.startMonitoringForLocations(locations) { (signToAlert) in
+            
+            signToAlert.isCollected = true
+            SignDataSource.sharedInstance.reloadCollections()
+            
             let notificationContent = UNMutableNotificationContent()
             notificationContent.title = signToAlert.locationName
             notificationContent.subtitle = "You got the new sign!"

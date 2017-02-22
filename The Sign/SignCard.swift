@@ -31,6 +31,11 @@ class SignCard: UICollectionViewCell {
         keywordLabel.text = nil
     }
 
+    func setConstraintsForFullscreenMystery() {
+        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperBottom.isActive = false
+        cnstrContentWrapperCenterY.isActive = true
+    }
     func setConstraintsForThumbnail() {
         cnstrContentWrapperHeight.constant = 70
         cnstrContentWrapperBottom.isActive = false
@@ -38,6 +43,8 @@ class SignCard: UICollectionViewCell {
     }
     func setConstraintsForThumbnailMystery() {
         cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperBottom.isActive = false
+        cnstrContentWrapperCenterY.isActive = true
     }
     
     func setConstraintsForFullscreen() {
