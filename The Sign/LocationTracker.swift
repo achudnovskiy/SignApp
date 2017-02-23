@@ -9,7 +9,8 @@
 import UIKit
 import CoreLocation
 
-let kCurrentLocationRadius:CLLocationDistance = 150
+let kCurrentLocationRadius:CLLocationDistance = 50
+let kCloseSignRadius:CLLocationDistance = 500
 let kRegionRadius:CLLocationDistance = 50
 let kNotificationNotEnoughPermissions = "LocationTracker_NotEnoughPermissions"
 
@@ -35,7 +36,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     internal var completionHandler:((_ location:SignObject) -> Void)!
     
     internal var closestSignRequestHandler:((_ closestSign:SignObject?) -> Void)?
-//    internal var homeRegionRequestHandler:(() -> Void)?
     internal var shouldUpdateMonitoredRegions:Bool = false
     
     //MARK:- Public API
@@ -57,6 +57,13 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
 
         completionHandler = completion
         allLocations = locationsToMonitor
+        
+        print("**************************************")
+        allLocations.forEach { (sign) in
+            print("\(sign.locationName): \(sign.objectId)")
+        }
+        print("**************************************")
+
         prepareForTracking()
     }
     
@@ -81,10 +88,8 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         else {
             updateMonitoredRegions()
         }
-
     }
 
-    
     func checkIfPermissionsAreSufficient(_ currentPermission:CLAuthorizationStatus) -> TrackerState
     {
         switch(currentPermission) {
@@ -124,14 +129,17 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     open func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion)
     {
         if region.identifier == "CurrentRegion" {
+            print("Detected Enter. Requesting data to update all regions")
             shouldUpdateMonitoredRegions = true
             locationManager.requestLocation()
         }
         else {
+            print("Checking for location hit with \(region.identifier)")
             let hit = allLocations.first(where: { (sign) -> Bool in
-                sign.objectId == region.identifier
+                return sign.objectId == region.identifier
             })
             if hit != nil {
+                print("Got location hit \(hit!.locationName)")
                 completionHandler(hit!)
             }
         }
@@ -139,6 +147,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
 
     open func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion)
     {
+        print("Detected Exit. Requesting data to update alll regions")
         shouldUpdateMonitoredRegions = true
         locationManager.requestLocation()
     }
@@ -157,23 +166,27 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     }
     
     func updateSignRegions() {
-        
-        let signsToMonitor = self.findCloseSignsFrom(locationSet: self.allLocations, to: self.currentLocation!, within: kCurrentLocationRadius)
-        
+        print("Updating sign regions")
+        let signsToMonitor = self.findCloseSignsFrom(locationSet: self.allLocations, to: self.currentLocation!, within: kCloseSignRadius)
+        print("Setting sign regions for \(signsToMonitor)")
+
         signsToMonitor.forEach({ (sign) in
             let region = sign.regionForLocation(with: kRegionRadius)
             //TODO: maintain a low number of monitored regions, cleanup old ones
+            print("Monitoring \(region.identifier) for sign \(sign.locationName)")
             self.locationManager.startMonitoring(for: region)
         })
         
 
     }
     func updateHomeRegion() {
+        print("Updating home region")
         if currentRegion != nil {
             locationManager.stopMonitoring(for: currentRegion!)
         }
         
         if currentLocation != nil {
+            print("Setting home region to \(currentLocation!.coordinate)")
             currentRegion = CLCircularRegion(center: currentLocation!.coordinate, radius: kCurrentLocationRadius, identifier: "CurrentRegion")
             locationManager.startMonitoring(for: currentRegion!)
         }
@@ -181,13 +194,16 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
 
     open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         currentLocation = manager.location
+        print("Updating current location to \(manager.location?.coordinate)")
         if closestSignRequestHandler != nil {
             let closest = getClosestSign()
             closestSignRequestHandler!(closest)
             closestSignRequestHandler = nil
+            print("Finding closest sign: \(closest)")
         }
         
         if shouldUpdateMonitoredRegions {
+            print("Starting Updating regions")
             updateMonitoredRegions()
             shouldUpdateMonitoredRegions = false
         }
@@ -196,6 +212,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     open func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
     {
+        print("Something failed")
         //TODO: notify UI about a problem
     }
     

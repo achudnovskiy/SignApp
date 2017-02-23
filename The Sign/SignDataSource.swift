@@ -95,7 +95,7 @@ class SignDataSource: NSObject {
         })
         
         self.collectedSignsOrdered = newSigns + discoveredSigns
-        
-        NotificationCenter.default.post(name: <#T##NSNotification.Name#>, object: <#T##Any?#>)
+    
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ReloadData"), object: nil)
     }
 }

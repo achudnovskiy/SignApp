@@ -41,7 +41,9 @@ public class SignObject: NSObject {
         self.locationName = locationName
         self.LocationDescription = locationDescription
     }
-    
+    public override var description: String {
+        return "ID:\(objectId) LocationName:\(locationName) Coordinates:\(location.coordinate) Title:\(title) IsDiscovered:\(isDiscovered) isCollected:\(isCollected) LastVisitDate:\(lastVisitedDate)"
+    }
     func regionForLocation(with radius:CLLocationDistance) -> CLCircularRegion {
         return CLCircularRegion(center: self.location.coordinate, radius: radius, identifier: self.objectId)
     }
