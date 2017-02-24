@@ -208,40 +208,13 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         cell.backgroundImage.image = signToShow.image
         cell.keywordLabel.text = signToShow.title.uppercased()
         cell.contentImage.image = signToShow.infographic
-        
-        if currentState == .FullscreenView {
-            if signToShow.isDiscovered {
-                cell.setConstraintsForFullscreen()
-                cell.contentImage.isHidden = false
-                cell.keywordLabel.isHidden = true
-            }
-            else {
-                cell.setConstraintsForFullscreenMystery()
-                cell.contentImage.isHidden = true
-                cell.keywordLabel.isHidden = false
-                cell.backgroundImage.image = cell.backgroundImage.image?.applyDefaultEffect()
-            }
-        }
-        else {
-            if signToShow.isDiscovered {
-                cell.setConstraintsForThumbnail()
-                cell.contentImage.isHidden = true
-                cell.keywordLabel.isHidden = false
-            }
-            else {
-                cell.setConstraintsForThumbnailMystery()
-                cell.contentImage.isHidden = true
-                cell.keywordLabel.isHidden = false
-                cell.backgroundImage.image = cell.backgroundImage.image?.applyDefaultEffect()
-            }
-        }
-        
-        if !signToShow.isDiscovered {
-        }
-        
+        cell.prepareViewForMode(viewMode: signToShow.viewMode, isFullscreenView: isFullscreen)
         cell.layoutIfNeeded()
+        
         return cell
     }
+    
+    // MARK: - UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if currentState == .ThumbnailView  && collectionSigns[indexPath.row].isDiscovered {

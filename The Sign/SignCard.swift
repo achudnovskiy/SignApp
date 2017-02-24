@@ -8,8 +8,14 @@
 
 import UIKit
 
-class SignCard: UICollectionViewCell {
+enum SignCardViewMode {
+    case Discovered
+    case NotDiscovered
+    case NotCollected
+}
 
+class SignCard: UICollectionViewCell {
+    
     @IBOutlet weak var backgroundImage: UIImageView!
     @IBOutlet weak var wrapperView: UIView!
     @IBOutlet weak var keywordLabel: UILabel!
@@ -30,26 +36,72 @@ class SignCard: UICollectionViewCell {
         backgroundImage.image = nil
         keywordLabel.text = nil
     }
-
-    func setConstraintsForFullscreenMystery() {
-        cnstrContentWrapperHeight.constant = self.bounds.height
-        cnstrContentWrapperBottom.isActive = false
-        cnstrContentWrapperCenterY.isActive = true
-    }
-    func setConstraintsForThumbnail() {
-        cnstrContentWrapperHeight.constant = 70
-        cnstrContentWrapperBottom.isActive = false
-        cnstrContentWrapperCenterY.isActive = true
-    }
-    func setConstraintsForThumbnailMystery() {
-        cnstrContentWrapperHeight.constant = self.bounds.height
-        cnstrContentWrapperBottom.isActive = false
-        cnstrContentWrapperCenterY.isActive = true
+    
+    func prepareViewForMode(viewMode:SignCardViewMode, isFullscreenView isFullscreen :Bool) {
+        switch viewMode {
+        case .Discovered:
+            isFullscreen ? setConstraintsForFullscreen() : setConstraintsForThumbnail()
+        case .NotDiscovered:
+            isFullscreen ? setConstraintsForFullscreenNotDiscovered() : setConstraintsForThumbnailNotDiscovered()
+        case .NotCollected:
+            isFullscreen ? setConstraintsForFullscreenNotCollected() : setConstraintsForThumbnailNotCollected()
+        }
     }
     
     func setConstraintsForFullscreen() {
         cnstrContentWrapperHeight.constant = 140
         cnstrContentWrapperCenterY.isActive = false
         cnstrContentWrapperBottom.isActive = true
+        
+        contentImage.isHidden = false
+        keywordLabel.isHidden = true
+    }
+
+    func setConstraintsForThumbnail() {
+        cnstrContentWrapperHeight.constant = 70
+        cnstrContentWrapperBottom.isActive = false
+        cnstrContentWrapperCenterY.isActive = true
+        
+        contentImage.isHidden = true
+        keywordLabel.isHidden = false
+
+    }
+
+    func setConstraintsForFullscreenNotDiscovered() {
+        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperBottom.isActive = false
+        cnstrContentWrapperCenterY.isActive = true
+        
+        contentImage.isHidden = true
+        keywordLabel.isHidden = false
+    }
+    
+    func setConstraintsForThumbnailNotDiscovered() {
+        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperBottom.isActive = false
+        cnstrContentWrapperCenterY.isActive = true
+        
+        contentImage.isHidden = true
+        keywordLabel.isHidden = false
+    }
+    
+    func setConstraintsForFullscreenNotCollected() {
+        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperBottom.isActive = false
+        cnstrContentWrapperCenterY.isActive = true
+        
+        contentImage.isHidden = true
+        keywordLabel.isHidden = false
+        backgroundImage.image = backgroundImage.image?.applyDefaultEffect()
+    }
+    
+    func setConstraintsForThumbnailNotCollected() {
+        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperBottom.isActive = false
+        cnstrContentWrapperCenterY.isActive = true
+        
+        contentImage.isHidden = true
+        keywordLabel.isHidden = false
+        backgroundImage.image = backgroundImage.image?.applyDefaultEffect()
     }
 }
