@@ -96,6 +96,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             print("Located the sign \(signToAlert.locationName)")
             signToAlert.isCollected = true
+            signToAlert.lastVisitedDate = Date()
+            
             SignDataSource.sharedInstance.reloadCollections()
             
             let notificationContent = UNMutableNotificationContent()

@@ -57,13 +57,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
 
         completionHandler = completion
         allLocations = locationsToMonitor
-        
-        print("**************************************")
-        allLocations.forEach { (sign) in
-            print("\(sign.locationName): \(sign.objectId)")
-        }
-        print("**************************************")
-
         prepareForTracking()
     }
     
@@ -113,13 +106,14 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         }
         return false
     }
+    
     func getClosestSign(with completioHandler:@escaping (_ location:SignObject?) -> Void) {
         if shouldUpdateCurrentLocation(current: self.currentLocation) {
             closestSignRequestHandler = completioHandler
             locationManager.requestLocation()
         }
         else {
-            let closest = getClosestSign(location: self.currentLocation!)
+            let closest = getClosestSign(location: self.currentLocation!, from: self.allLocations)
             completioHandler(closest)
         }
     }
@@ -152,8 +146,8 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         locationManager.requestLocation()
     }
     
-    func getClosestSign(location:CLLocation?) -> SignObject? {
-        let allUndiscovered = allLocations.filter { (location:SignObject) -> Bool in
+    func getClosestSign(location:CLLocation?, from locationSet:[SignObject]) -> SignObject? {
+        let allUndiscovered = locationSet.filter { (location:SignObject) -> Bool in
             return !location.isDiscovered
         }
         
@@ -196,7 +190,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         currentLocation = manager.location
         print("Updating current location to \(manager.location?.coordinate)")
         if closestSignRequestHandler != nil {
-            let closest = getClosestSign(location: currentLocation)
+            let closest = getClosestSign(location: currentLocation, from: self.allLocations)
             closestSignRequestHandler!(closest)
             closestSignRequestHandler = nil
             print("Finding closest sign: \(closest)")
@@ -220,9 +214,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         print("Something failed")
         //TODO: notify UI about a problem
     }
-    
-    
-    
 
     func findCloseSignsFrom(locationSet:[SignObject],to location:CLLocation, within radius:CLLocationDistance) -> [SignObject] {
         var result:[SignObject] = []
