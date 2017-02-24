@@ -108,6 +108,11 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         setCollectionViewProperties(isFullscreen: false)
         
         mapContainerView.isHidden = true
+        
+    
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue:"ReloadData"), object: nil, queue: OperationQueue.main) { (notification) in
+            self.signCollectionView.reloadData()
+        }
     }
 
     override func didReceiveMemoryWarning() {

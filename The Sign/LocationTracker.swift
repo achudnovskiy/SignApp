@@ -9,8 +9,9 @@
 import UIKit
 import CoreLocation
 
-let kCurrentLocationRadius:CLLocationDistance = 150
-let kRegionRadius:CLLocationDistance = 50
+let kCurrentLocationRadius:CLLocationDistance = 50
+let kCloseSignRadius:CLLocationDistance = 500
+let kRegionRadius:CLLocationDistance = 25
 let kNotificationNotEnoughPermissions = "LocationTracker_NotEnoughPermissions"
 
 open class LocationTracker: NSObject, CLLocationManagerDelegate {
@@ -35,7 +36,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     internal var completionHandler:((_ location:SignObject) -> Void)!
     
     internal var closestSignRequestHandler:((_ closestSign:SignObject?) -> Void)?
-//    internal var homeRegionRequestHandler:(() -> Void)?
     internal var shouldUpdateMonitoredRegions:Bool = false
     
     //MARK:- Public API
@@ -74,17 +74,15 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     fileprivate func startTracking()
     {
         // find N close locations, start monigoring their regions
-        if shouldUpdateCurrentLocation() {
+        if shouldUpdateCurrentLocation(current: self.currentLocation) {
             shouldUpdateMonitoredRegions = true
             locationManager.requestLocation()
         }
         else {
-            updateMonitoredRegions()
+            updateMonitoredRegions(location: self.currentLocation!)
         }
-
     }
 
-    
     func checkIfPermissionsAreSufficient(_ currentPermission:CLAuthorizationStatus) -> TrackerState
     {
         switch(currentPermission) {
@@ -101,20 +99,21 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         prepareForTracking()
     }
 
-    func shouldUpdateCurrentLocation() -> Bool {
+    func shouldUpdateCurrentLocation(current:CLLocation?) -> Bool {
         let minuteAgo = Date().addingTimeInterval(TimeInterval(-60))
-        if currentLocation == nil || currentLocation!.timestamp < minuteAgo {
+        if current == nil || current!.timestamp < minuteAgo {
             return true
         }
         return false
     }
+    
     func getClosestSign(with completioHandler:@escaping (_ location:SignObject?) -> Void) {
-        if shouldUpdateCurrentLocation() {
+        if shouldUpdateCurrentLocation(current: self.currentLocation) {
             closestSignRequestHandler = completioHandler
             locationManager.requestLocation()
         }
         else {
-            let closest = getClosestSign()
+            let closest = getClosestSign(location: self.currentLocation!, from: self.allLocations)
             completioHandler(closest)
         }
     }
@@ -124,14 +123,17 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     open func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion)
     {
         if region.identifier == "CurrentRegion" {
+            print("Detected Enter. Requesting data to update all regions")
             shouldUpdateMonitoredRegions = true
             locationManager.requestLocation()
         }
         else {
+            print("Checking for location hit with \(region.identifier)")
             let hit = allLocations.first(where: { (sign) -> Bool in
-                sign.objectId == region.identifier
+                return sign.objectId == region.identifier
             })
             if hit != nil {
+                print("Got location hit \(hit!.locationName)")
                 completionHandler(hit!)
             }
         }
@@ -139,41 +141,46 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
 
     open func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion)
     {
+        print("Detected Exit. Requesting data to update alll regions")
         shouldUpdateMonitoredRegions = true
         locationManager.requestLocation()
     }
     
-    func getClosestSign() -> SignObject? {
-        let allUndiscovered = allLocations.filter { (location:SignObject) -> Bool in
+    func getClosestSign(location:CLLocation?, from locationSet:[SignObject]) -> SignObject? {
+        let allUndiscovered = locationSet.filter { (location:SignObject) -> Bool in
             return !location.isDiscovered
         }
         
-        return getClosestSignFrom(locationSet: allUndiscovered, to: currentLocation!)
+        return getClosestSignFrom(locationSet: allUndiscovered, to: location)
     }
     
-    func updateMonitoredRegions() {
-        updateHomeRegion()
-        updateSignRegions()
+    func updateMonitoredRegions(location:CLLocation) {
+        updateHomeRegion(location: location)
+        updateSignRegions(location: location)
     }
     
-    func updateSignRegions() {
-        
-        let signsToMonitor = self.findCloseSignsFrom(locationSet: self.allLocations, to: self.currentLocation!, within: kCurrentLocationRadius)
-        
+    func updateSignRegions(location:CLLocation) {
+        print("Updating sign regions")
+        let signsToMonitor = self.findCloseSignsFrom(locationSet: self.allLocations, to: location, within: kCloseSignRadius)
+        print("Setting sign regions for \(signsToMonitor)")
+
         signsToMonitor.forEach({ (sign) in
             let region = sign.regionForLocation(with: kRegionRadius)
             //TODO: maintain a low number of monitored regions, cleanup old ones
+            print("Monitoring \(region.identifier) for sign \(sign.locationName)")
             self.locationManager.startMonitoring(for: region)
         })
         
 
     }
-    func updateHomeRegion() {
+    func updateHomeRegion(location:CLLocation) {
+        print("Updating home region")
         if currentRegion != nil {
             locationManager.stopMonitoring(for: currentRegion!)
         }
         
         if currentLocation != nil {
+            print("Setting home region to \(location.coordinate)")
             currentRegion = CLCircularRegion(center: currentLocation!.coordinate, radius: kCurrentLocationRadius, identifier: "CurrentRegion")
             locationManager.startMonitoring(for: currentRegion!)
         }
@@ -181,14 +188,22 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
 
     open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         currentLocation = manager.location
+        print("Updating current location to \(manager.location?.coordinate)")
         if closestSignRequestHandler != nil {
-            let closest = getClosestSign()
+            let closest = getClosestSign(location: currentLocation, from: self.allLocations)
             closestSignRequestHandler!(closest)
             closestSignRequestHandler = nil
+            print("Finding closest sign: \(closest)")
         }
         
         if shouldUpdateMonitoredRegions {
-            updateMonitoredRegions()
+            print("Starting Updating regions")
+            if currentLocation != nil {
+                updateMonitoredRegions(location: currentLocation!)
+            }
+            else {
+                locationManager.requestLocation()
+            }
             shouldUpdateMonitoredRegions = false
         }
     }
@@ -196,11 +211,9 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     open func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
     {
+        print("Something failed")
         //TODO: notify UI about a problem
     }
-    
-    
-    
 
     func findCloseSignsFrom(locationSet:[SignObject],to location:CLLocation, within radius:CLLocationDistance) -> [SignObject] {
         var result:[SignObject] = []
@@ -214,14 +227,14 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         return result
     }
     
-    func getClosestSignFrom(locationSet:[SignObject], to location:CLLocation) -> SignObject? {
-        if locationSet.isEmpty{
+    func getClosestSignFrom(locationSet:[SignObject], to location:CLLocation?) -> SignObject? {
+        if location == nil || locationSet.isEmpty{
             return nil
         }
         
         var closestSign:SignObject = locationSet.first as SignObject!
         for sign in locationSet {
-            if closestSign.location.distance(from: location) > sign.location.distance(from: location) {
+            if closestSign.location.distance(from: location!) > sign.location.distance(from: location!) {
                 closestSign = sign
             }
         }

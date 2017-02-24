@@ -94,7 +94,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let locations = SignDataSource.sharedInstance.dataArray
         tracker.startMonitoringForLocations(locations) { (signToAlert) in
             
+            print("Located the sign \(signToAlert.locationName)")
             signToAlert.isCollected = true
+            signToAlert.lastVisitedDate = Date()
+            
             SignDataSource.sharedInstance.reloadCollections()
             
             let notificationContent = UNMutableNotificationContent()
