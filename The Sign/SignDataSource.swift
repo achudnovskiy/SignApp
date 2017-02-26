@@ -14,10 +14,32 @@ class SignDataSource: NSObject {
     
     let dataArray:[SignObject]
     
-    var collectedSignsOrdered:[SignObject]!
-    var notCollectedSigns:[SignObject]!
-    var discoveredSigns:[SignObject]!
-    var newSigns:[SignObject]!
+    var discoveredSigns:[SignObject] {
+        get {
+            return dataArray.filter { (sign) -> Bool in
+                return sign.isCollected && sign.isDiscovered
+            }
+        }
+    }
+    var newSigns:[SignObject] {
+        get {
+            return dataArray.filter { (sign) -> Bool in
+                return sign.isCollected && !sign.isDiscovered
+            }
+        }
+    }
+    var notCollectedSigns:[SignObject] {
+        get {
+            return dataArray.filter { (sign) -> Bool in
+                return !sign.isCollected
+            }
+        }
+    }
+    var collectedSignsOrdered:[SignObject] {
+        get {
+            return newSigns + discoveredSigns
+        }
+    }
     var locations:[SignLocation] {
         get {
             var result:[SignLocation] = []
@@ -135,19 +157,6 @@ class SignDataSource: NSObject {
     }
     
     func reloadCollections() {
-        
-        self.discoveredSigns = dataArray.filter { (sign) -> Bool in
-            return sign.isCollected && sign.isDiscovered
-        }
-        self.newSigns = dataArray.filter { (sign) -> Bool in
-            return sign.isCollected && !sign.isDiscovered
-        }
-        self.notCollectedSigns = dataArray.filter({ (sign) -> Bool in
-            return !sign.isCollected
-        })
-        
-        self.collectedSignsOrdered = newSigns + discoveredSigns
-    
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ReloadData"), object: nil)
     }
 }

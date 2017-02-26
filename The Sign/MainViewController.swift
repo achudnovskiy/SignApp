@@ -68,23 +68,16 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     var currentState:SignAppState = .ThumbnailView
 
-    var dataSource:SignDataSource {
-        get{
-            return SignDataSource.sharedInstance
-        }
-    }
     var collectionSigns:[SignObject] {
         get {
-            return dataSource.collectedSignsOrdered
+            return SignDataSource.sharedInstance.collectedSignsOrdered
         }
     }
     var collectionNewItems:[SignObject] {
         get {
-            return dataSource.newSigns
+            return SignDataSource.sharedInstance.newSigns
         }
     }
-    
-    
     
     func prepareDataSource() {
         
@@ -136,41 +129,14 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             
             let newLayout = getCollectionViewLayout(isFullscreen: toFullscreen)
             newLayout.minimumLineSpacing = newLayout.minimumLineSpacing * 5
-            
-            //indexes of elements on the right and on the left
-            
-            cellView.layer.zPosition = 1
-            if toFullscreen {
-                cellView.setConstraintsForFullscreen()
-                cellView.contentImage.alpha = 0
-                cellView.contentImage.isHidden =  false
-            }
-            else {
-                cellView.setConstraintsForThumbnail()
-                cellView.keywordLabel.alpha = 0
-                cellView.keywordLabel.isHidden = false
-            }
+            cellView.prepareViewForAnimation(toFullscreen: toFullscreen)
             
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
-                var frame = cellView.bounds;
-                let center = cellView.center
-                frame.size = newSize
-                cellView.bounds = frame;
-                cellView.center = center
-                
-                if toFullscreen {
-                    cellView.keywordLabel.alpha = 0
-                    cellView.contentImage.alpha = 1
-                }
-                else {
-                    cellView.keywordLabel.alpha = 1
-                    cellView.contentImage.alpha = 0
-                }
+                cellView.setViewSizeForAnimation(newSize: newSize)
+                cellView.setComponentsForAnimation(toFullscreen: toFullscreen)
                 cellView.layoutIfNeeded()
             }) { (Bool) in
-                
-                cellView.contentImage.isHidden =  !toFullscreen
-                cellView.keywordLabel.isHidden =  toFullscreen
+                cellView.prepareViewAfterAnimation(toFullscreen: toFullscreen)
                 
                 self.currentState = newState
                 self.signCollectionView.setCollectionViewLayout(newLayout, animated: false, completion: { (finished) in
@@ -188,7 +154,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                         }
                         else {
                             self.collectionLayout = newLayout
-                            cellView.layer.zPosition = 0
                             self.view.isUserInteractionEnabled = true
                         }
                     }
@@ -207,7 +172,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cardCollectionViewItemIdentifier, for: indexPath) as! SignCard
-        
         let signToShow = collectionSigns[indexPath.row]
         
         cell.backgroundImage.image = signToShow.image

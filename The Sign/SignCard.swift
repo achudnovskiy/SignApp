@@ -48,6 +48,46 @@ class SignCard: UICollectionViewCell {
         }
     }
     
+    //MARK: - View Animation
+
+    func prepareViewForAnimation(toFullscreen:Bool) {
+        layer.zPosition = 1
+        if toFullscreen {
+            setConstraintsForFullscreen()
+            contentImage.alpha = 0
+            contentImage.isHidden =  false
+        }
+        else {
+            setConstraintsForThumbnail()
+            keywordLabel.alpha = 0
+            keywordLabel.isHidden = false
+        }
+    }
+    
+    func setViewSizeForAnimation(newSize:CGSize) {
+        var frame = self.bounds;
+        let center = self.center
+        frame.size = newSize
+        self.bounds = frame;
+        self.center = center
+    }
+    
+    func setComponentsForAnimation(toFullscreen:Bool) {
+        if toFullscreen {
+            keywordLabel.alpha = 0
+            contentImage.alpha = 1
+        }
+        else {
+            keywordLabel.alpha = 1
+            contentImage.alpha = 0
+        }
+    }
+    
+    func prepareViewAfterAnimation(toFullscreen:Bool) {
+        contentImage.isHidden =  !toFullscreen
+        keywordLabel.isHidden =  toFullscreen
+    }
+
     func setConstraintsForFullscreen() {
         cnstrContentWrapperHeight.constant = 140
         cnstrContentWrapperCenterY.isActive = false
