@@ -65,6 +65,7 @@ class SignDataSource: NSObject {
 
         let ramenSign = SignObject(objectId:"2C518C01-233B-4BE1-9ACC-58DF80B1CC33",
                                    title: "Ramen",
+                                   mysteryText:"You like Ramen? Don't lie, we know you do",
                                    image: UIImage(contentsOfFile: pathRamen)!,
                                    infographic:UIImage(contentsOfFile: pathRamenContent)!,
                                    latitude: 49.290084,
@@ -73,6 +74,7 @@ class SignDataSource: NSObject {
                                    locationDescription: "Something clever")
         let homerSign = SignObject(objectId:"3D10AA5F-D9C4-4D56-8E39-960AC323AB4E",
                                    title: "French",
+                                   mysteryText: "Chicken like you've never tasted it",
                                    image: UIImage(contentsOfFile: pathHomer)!,
                                    infographic: UIImage(contentsOfFile: pathHomerContent)!,
                                    latitude: 49.278409,
@@ -81,6 +83,7 @@ class SignDataSource: NSObject {
                                    locationDescription: "Something clever")
         let revolverSign = SignObject(objectId:"59C370A4-5480-41AA-A431-507D67346A7F",
                                       title: "Coffee",
+                                      mysteryText: "There is coffee and there is this coffee",
                                       image: UIImage(contentsOfFile: pathRevolver)!,
                                       infographic: UIImage(contentsOfFile: pathRevolverContent)!,
                                       latitude: 49.283170,
@@ -89,6 +92,7 @@ class SignDataSource: NSObject {
                                       locationDescription: "Something clever")
         let marioSign = SignObject(objectId:"59A7C34B-3963-43B6-A4CC-422E4422D496",
                                    title: "Espresso",
+                                   mysteryText: "Simply the best espresso Downtown Vancouver",
                                    image: UIImage(contentsOfFile: pathMario)!,
                                    infographic: UIImage(contentsOfFile: pathMarioContent)!,
                                    latitude: 49.284614,
@@ -97,6 +101,7 @@ class SignDataSource: NSObject {
                                    locationDescription: "Something clever")
         let thierySign = SignObject(objectId:"B72D8A76-98D6-4618-B089-EF6FA9E078D8",
                                     title: "Desert",
+                                    mysteryText: "Sweet stuff for sweet life",
                                     image: UIImage(contentsOfFile: pathThiery)!,
                                     infographic: UIImage(contentsOfFile: pathThieryContent)!,
                                     latitude: 49.284789,
@@ -105,6 +110,7 @@ class SignDataSource: NSObject {
                                     locationDescription: "Something clever")
         let buzzSign = SignObject(objectId:"ABC34261-6E61-4FF6-AFC0-7C2C785EA968",
                                   title: "Gallery",
+                                  mysteryText: "Good coffee is like art. Art is like a good coffee",
                                   image: UIImage(contentsOfFile: pathBuzz)!,
                                   infographic: UIImage(contentsOfFile: pathBuzzContent)!,
                                   latitude: 49.27841,

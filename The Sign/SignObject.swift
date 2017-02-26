@@ -23,6 +23,7 @@ public class SignObject: NSObject {
     let objectId:String
     
     let title:String
+    let mysteryText:String
     let image:UIImage
     let infographic:UIImage
     var isDiscovered: Bool = false;
@@ -43,6 +44,7 @@ public class SignObject: NSObject {
 
     init(objectId:String,
          title:String,
+         mysteryText:String,
          image:UIImage,
          infographic:UIImage,
          latitude: CLLocationDegrees,
@@ -51,6 +53,7 @@ public class SignObject: NSObject {
          locationDescription:String) {
         self.objectId = objectId
         self.title = title
+        self.mysteryText = mysteryText
         self.image = image
         self.infographic = infographic
         self.latitude = latitude
@@ -70,6 +73,22 @@ public class SignObject: NSObject {
             }
             else {
                 return .NotCollected
+            }
+        }
+    }
+    
+    var thumbnailText:String {
+        get {
+            if isCollected {
+                if isDiscovered {
+                    return title
+                }
+                else {
+                    return "Tap to see a new Sign"
+                }
+            }
+            else {
+                return mysteryText
             }
         }
     }

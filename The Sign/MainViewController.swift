@@ -81,7 +81,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                 if self.discoverySign != nil {
                     self.signCollectionView.performBatchUpdates({
                         self.collectionSigns = [self.discoverySign!] + self.collectionSigns
-                        self.signCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
+                        self.signCollectionView.performBatchUpdates({
+                            self.signCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
+                        }, completion: nil)
+
                     }, completion: nil)
                 }
             }
@@ -184,7 +187,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         let signToShow = collectionSigns[indexPath.row]
         
         cell.backgroundImage.image = signToShow.image
-        cell.keywordLabel.text = signToShow.title.uppercased()
+        cell.keywordLabel.text = signToShow.thumbnailText.uppercased()
         cell.contentImage.image = signToShow.infographic
         cell.prepareViewForMode(viewMode: signToShow.viewMode, isFullscreenView: isFullscreen)
         cell.layoutIfNeeded()
@@ -195,15 +198,24 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     // MARK: - UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if currentState == .ThumbnailView  && collectionSigns[indexPath.row].isDiscovered {
+        if currentState == .ThumbnailView  && collectionSigns[indexPath.row].isCollected {
             if indexPath != indexForItemInFocus {
                 delayedTransition = true
                 collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
             }
             else {
-                transitionCollectionView(newState: .FullscreenView)
+                if let index = indexForItemInFocus {
+                    openThumbnailSignAt(indexPath: index)
+                }
             }
         }
+    }
+    
+    func openThumbnailSignAt(indexPath:IndexPath) {
+        if !collectionSigns[indexPath.row].isDiscovered {
+            collectionSigns[indexPath.row].isDiscovered = true
+        }
+        transitionCollectionView(newState: .FullscreenView)
     }
     
     
@@ -212,7 +224,9 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         if delayedTransition {
             delayedTransition = false
             if currentState == .ThumbnailView {
-                transitionCollectionView(newState: .FullscreenView)
+                if let index = indexForItemInFocus {
+                    openThumbnailSignAt(indexPath: index)
+                }
             }
         }
     }

@@ -50,7 +50,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         for sign in locations
         {
-            if sign.isDiscovered
+            if sign.isCollected
             {
                 signAnnotations.append(generateAnnotationFor(sign:sign))
             }
