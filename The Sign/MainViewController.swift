@@ -68,23 +68,31 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     var currentState:SignAppState = .ThumbnailView
 
-    var collectionSigns:[SignObject] {
-        get {
-            return SignDataSource.sharedInstance.collectedSignsOrdered
-        }
-    }
-    var collectionNewItems:[SignObject] {
-        get {
-            return SignDataSource.sharedInstance.newSigns
-        }
-    }
+    var collectionSigns:[SignObject] = []
+    var collectionNewItems:[SignObject] = []
+    var discoverySign:SignObject?
     
     func prepareDataSource() {
-        
+        collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
+        collectionNewItems = SignDataSource.sharedInstance.newSigns
+        LocationTracker.sharedInstance.getClosestSign(with: { (sign) in
+            if sign != nil {
+                self.discoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: sign!.objectId)
+                if self.discoverySign != nil {
+                    self.signCollectionView.performBatchUpdates({
+                        self.collectionSigns = [self.discoverySign!] + self.collectionSigns
+                        self.signCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
+                    }, completion: nil)
+                }
+            }
+        })
     }
+    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        prepareDataSource()
         
         stateButtonView.applyPlainShadow()
         mapButtonView.applyPlainShadow()
@@ -109,6 +117,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         
     
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue:"ReloadData"), object: nil, queue: OperationQueue.main) { (notification) in
+            self.prepareDataSource()
             self.signCollectionView.reloadData()
         }
     }

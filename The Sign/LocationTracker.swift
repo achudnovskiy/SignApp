@@ -108,7 +108,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         return false
     }
     
-    func getClosestSign(with completioHandler:@escaping (_ location:SignLocation?) -> Void) {
+    public func getClosestSign(with completioHandler:@escaping (_ location:SignLocation?) -> Void) {
         if shouldUpdateCurrentLocation(current: self.currentLocation) {
             closestSignRequestHandler = completioHandler
             locationManager.requestLocation()
