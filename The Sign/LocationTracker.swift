@@ -15,7 +15,8 @@ let kRegionRadius:CLLocationDistance = 25
 let kNotificationNotEnoughPermissions = "LocationTracker_NotEnoughPermissions"
 
 open class LocationTracker: NSObject, CLLocationManagerDelegate {
-    
+
+    static var sharedInstance:LocationTracker = LocationTracker()
     enum TrackerState {
         case ReadyToTrack
         case NeedConfiguration

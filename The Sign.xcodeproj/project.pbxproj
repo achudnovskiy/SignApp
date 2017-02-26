@@ -17,6 +17,7 @@
 		5559F7341E248475007354BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5559F7331E248475007354BE /* Assets.xcassets */; };
 		5559F7421E248475007354BE /* The_SignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7411E248475007354BE /* The_SignTests.swift */; };
 		5559F74D1E248475007354BE /* The_SignUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F74C1E248475007354BE /* The_SignUITests.swift */; };
+		5572A72B1E6257D1007B5259 /* Content in Resources */ = {isa = PBXBuildFile; fileRef = 5572A72A1E6257D1007B5259 /* Content */; };
 		559F2ECB1E399F1A00A1C955 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */; };
 		55FF72581E2AD15D00562B65 /* SignCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72571E2AD15D00562B65 /* SignCard.swift */; };
 		55FF725A1E2AD1D900562B65 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72591E2AD1D900562B65 /* MainViewController.swift */; };
@@ -60,6 +61,7 @@
 		5559F7481E248475007354BE /* The SignUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "The SignUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5559F74C1E248475007354BE /* The_SignUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = The_SignUITests.swift; sourceTree = "<group>"; };
 		5559F74E1E248475007354BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5572A72A1E6257D1007B5259 /* Content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Content; sourceTree = "<group>"; };
 		559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
 		55FF72571E2AD15D00562B65 /* SignCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignCard.swift; sourceTree = "<group>"; };
 		55FF72591E2AD1D900562B65 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 				5559F7331E248475007354BE /* Assets.xcassets */,
 				5559F7381E248475007354BE /* Info.plist */,
 				5559F7301E248475007354BE /* The_Sign.xcdatamodeld */,
+				5572A72A1E6257D1007B5259 /* Content */,
 				55FF72621E2C31AC00562B65 /* 3rd party */,
 			);
 			path = "The Sign";
@@ -301,6 +304,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5572A72B1E6257D1007B5259 /* Content in Resources */,
 				5559F7341E248475007354BE /* Assets.xcassets in Resources */,
 				5559F72F1E248475007354BE /* Main.storyboard in Resources */,
 			);

@@ -84,6 +84,12 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
+    
+    
+    func prepareDataSource() {
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -95,12 +101,11 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         mapContainerView.isHidden = true
         
         if collectionSigns.count != 0 {
-            backgroundImage.image = dataSource.dataArray.first?.image.applyDefaultEffect()
-            
+            backgroundImage.image = collectionSigns.first?.image.applyDefaultEffect()
         }
         else {
-            backgroundImage.image = UIImage(named: "DefaultBackgroundImage")!.applyDefaultEffect()
-            
+            let path = Bundle.main.path(forResource: "DefaultBackgroundImage", ofType: "png", inDirectory: "Content")!
+            backgroundImage.image = UIImage(contentsOfFile: path)!.applyDefaultEffect()
         }
         
         signCollectionView.backgroundColor = UIColor.clear

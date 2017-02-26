@@ -91,7 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func setupLocationMonitoring() {
 
-        tracker = LocationTracker()
+        tracker = LocationTracker.sharedInstance
         let locations = SignDataSource.sharedInstance.dataArray
         tracker.startMonitoringForLocations(locations) { (signToAlert) in
             
@@ -125,8 +125,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.set(data, forKey: "SavedUserData")
     }
     func restoreUserData() {
-        let data = UserDefaults.standard.object(forKey: "SavedUserData") as! [String:AnyObject]
-        SignDataSource.sharedInstance.restoreUserData(userData: data)
+        let data = UserDefaults.standard.object(forKey: "SavedUserData")
+        if data != nil {
+            SignDataSource.sharedInstance.restoreUserData(userData: data as! [String : AnyObject])
+        }
     }
     
     func requestLocationPermissions() {
