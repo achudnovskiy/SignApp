@@ -111,12 +111,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let signAnnotation = MKPointAnnotation()
         signAnnotation.title = sign.locationName
 //        signAnnotation.subtitle = sign.LocationDescription
-        signAnnotation.coordinate = CLLocationCoordinate2D(latitude: sign.location.coordinate.latitude, longitude: sign.location.coordinate.longitude)
+        signAnnotation.coordinate = CLLocationCoordinate2D(latitude: sign.latitude, longitude: sign.longitude)
         return signAnnotation
     }
     func generateAnnotiationForMystery(sign:SignObject) -> MKCircle
     {
-        let coordinate = CLLocationCoordinate2D(latitude:sign.location.coordinate.latitude, longitude:sign.location.coordinate.longitude)
+        let coordinate = CLLocationCoordinate2D(latitude:sign.latitude, longitude:sign.longitude)
         let circle = MKCircle(center: coordinate, radius: mysteryRadius)
         circle.title = "Mystery"
         return circle

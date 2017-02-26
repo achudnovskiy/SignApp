@@ -9,6 +9,15 @@
 import UIKit
 import CoreLocation
 
+public struct SignLocation {
+    let objectId:String
+    let location:CLLocation
+    let isCollected:Bool
+    func regionWithRadius(radius:CLLocationDistance) -> CLCircularRegion {
+        return CLCircularRegion(center: location.coordinate, radius: radius, identifier: objectId)
+    }
+}
+
 public class SignObject: NSObject {
     
     let objectId:String
@@ -19,7 +28,13 @@ public class SignObject: NSObject {
     var isDiscovered: Bool = false;
     var isCollected: Bool = false;
     
-    let location:CLLocation
+    var location:SignLocation {
+        get {
+            return SignLocation(objectId: objectId, location: CLLocation(latitude: latitude, longitude: longitude), isCollected: isCollected)
+        }
+    }
+    let latitude:Double
+    let longitude:Double
     let locationName:String
     let LocationDescription:String
     
@@ -38,13 +53,14 @@ public class SignObject: NSObject {
         self.title = title
         self.image = image
         self.infographic = infographic
-        self.location = CLLocation(latitude: latitude, longitude: longitude)
+        self.latitude = latitude
+        self.longitude = longitude
         self.locationName = locationName
         self.LocationDescription = locationDescription
     }
     
     public override var description: String {
-        return "ID:\(objectId) LocationName:\(locationName) Coordinates:\(location.coordinate) Title:\(title) IsDiscovered:\(isDiscovered) isCollected:\(isCollected)"
+        return "ID:\(objectId) LocationName:\(locationName) Coordinates:\(location.location) Title:\(title) IsDiscovered:\(isDiscovered) isCollected:\(isCollected)"
     }
     
     var viewMode:SignCardViewMode {
@@ -56,6 +72,14 @@ public class SignObject: NSObject {
                 return .NotCollected
             }
         }
+    }
+    
+    func processLocationVisit() {
+        if isCollected == false {
+            isCollected = true
+        }
+        
+        lastVisitedDate = Date()
     }
     
     func unarchive(archivedData:[String:AnyObject]) {
@@ -78,11 +102,7 @@ public class SignObject: NSObject {
         
         return result
     }
-    
-    func regionForLocation(with radius:CLLocationDistance) -> CLCircularRegion {
-        return CLCircularRegion(center: self.location.coordinate, radius: radius, identifier: self.objectId)
-    }
-    
+
     override public var hash: Int {
         return self.objectId.hash
     }

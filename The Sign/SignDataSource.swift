@@ -18,7 +18,15 @@ class SignDataSource: NSObject {
     var notCollectedSigns:[SignObject]!
     var discoveredSigns:[SignObject]!
     var newSigns:[SignObject]!
-    
+    var locations:[SignLocation] {
+        get {
+            var result:[SignLocation] = []
+            dataArray.forEach { (sign) in
+                result.append(sign.location)
+            }
+            return result
+        }
+    }
     override init() {
         let pathRamen = Bundle.main.path(forResource: "RamenImage", ofType: "png", inDirectory: "Content")!
         let pathRamenContent = Bundle.main.path(forResource: "RamenContent", ofType: "png", inDirectory: "Content")!
@@ -98,6 +106,16 @@ class SignDataSource: NSObject {
         super.init()
         
         reloadCollections()
+    }
+    
+    func findSignObjById(objectId: String) -> SignObject? {
+        var result:SignObject?
+        dataArray.forEach { (sign) in
+            if sign.objectId == objectId {
+                result = sign
+            }
+        }
+        return result
     }
     
     func exportUserData()->AnyObject {

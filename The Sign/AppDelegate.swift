@@ -17,8 +17,6 @@ let kNotificationSignId = "Notificaiton_SignId"
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var tracker:LocationTracker!
-
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -91,24 +89,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func setupLocationMonitoring() {
 
-        tracker = LocationTracker.sharedInstance
-        let locations = SignDataSource.sharedInstance.dataArray
-        tracker.startMonitoringForLocations(locations) { (signToAlert) in
+        LocationTracker.sharedInstance.startMonitoringForLocations(SignDataSource.sharedInstance.locations) { (location) in
             
-            print("Located the sign \(signToAlert.locationName)")
-            signToAlert.isCollected = true
-            signToAlert.lastVisitedDate = Date()
+            let sign = SignDataSource.sharedInstance.findSignObjById(objectId: location.objectId)
+            if sign == nil {
+                print("Couldn't locate sign with id \(location.objectId)")
+                return
+            }
+            
+            sign!.processLocationVisit()
             
             SignDataSource.sharedInstance.reloadCollections()
             
             let notificationContent = UNMutableNotificationContent()
-            notificationContent.title = signToAlert.locationName
+            notificationContent.title = sign!.locationName
             notificationContent.subtitle = "You got the new sign!"
             // notificationContent.attachments add the logo of the place
             // notificationContent.body - add for more descriptive notifcation
             // notificationContent.categoryIdentifier - Add for actions i.e. add or skip the sign
-            notificationContent.userInfo = [kNotificationSignId: signToAlert.objectId]
-            
+            notificationContent.userInfo = [kNotificationSignId: sign!.objectId]
 
             
             let notificationRequest = UNNotificationRequest(identifier: "SignDiscover", content: notificationContent, trigger: nil)
