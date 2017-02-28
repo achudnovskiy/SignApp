@@ -12,12 +12,23 @@ let cardCollectionViewItemIdentifier = "Card"
 let kCollectionItemSize = CGSize(width: 180, height: 320)
 let kCollectionItemSpacing:CGFloat = 40
 let kCollectionItemThumbnailInset:CGFloat = 40
+let kCollectionItemCenterOffset:CGFloat = 80
 
 
 enum SignAppState {
     case ThumbnailView
     case FullscreenView
     case MapView
+}
+
+extension UICollectionView {
+    var indexPathForLastRow:IndexPath {
+        get {
+            let lastSection = numberOfSections - 1
+            let lastRow = numberOfItems(inSection: lastSection) - 1
+            return IndexPath(row: lastRow, section: lastSection)
+        }
+    }
 }
 
 extension UICollectionViewFlowLayout {
@@ -39,12 +50,12 @@ extension UICollectionViewFlowLayout {
 }
 
 
-class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollViewDelegate, UICollectionViewDataSource {
+class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
 
     //MARK: Outlets
     
     @IBOutlet weak var signCollectionView: UICollectionView!
-    @IBOutlet weak var collectionLayout: UICollectionViewFlowLayout!
+    @IBOutlet weak var signCollectionLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var backgroundImage: UIImageView!
     @IBOutlet weak var mapContainerView: UIView!
     
@@ -79,13 +90,14 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             if sign != nil {
                 self.discoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: sign!.objectId)
                 if self.discoverySign != nil {
-                    self.signCollectionView.performBatchUpdates({
-                        self.collectionSigns = [self.discoverySign!] + self.collectionSigns
+                    DispatchQueue.main.async {
                         self.signCollectionView.performBatchUpdates({
-                            self.signCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
+                            self.collectionSigns = self.collectionSigns + [self.discoverySign!]
+                            self.signCollectionView.performBatchUpdates({
+                                self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
+                            }, completion: nil)
                         }, completion: nil)
-
-                    }, completion: nil)
+                    }
                 }
             }
         })
@@ -114,7 +126,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         
         signCollectionView.backgroundColor = UIColor.clear
         
-        setCollectionViewProperties(isFullscreen: false)
+        setCollectionLayoutProperties(collectionLayout: signCollectionLayout, isFullscreen: false)
         
         mapContainerView.isHidden = true
         
@@ -139,12 +151,13 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             let newSize = collectionItemSize(isFullscreen: toFullscreen)
             let cellView = signInFocus!
             
-            let newLayout = getCollectionViewLayout(isFullscreen: toFullscreen)
+            let newLayout = signCollectionLayout.copy() as! UICollectionViewFlowLayout
+            setCollectionLayoutProperties(collectionLayout: newLayout, isFullscreen: toFullscreen)
             newLayout.minimumLineSpacing = newLayout.minimumLineSpacing * 5
             cellView.prepareViewForAnimation(toFullscreen: toFullscreen)
             
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
-                cellView.setViewSizeForAnimation(newSize: newSize)
+                cellView.setViewSizeForAnimation(newSize: newSize, toFullscreen: toFullscreen)
                 cellView.setComponentsForAnimation(toFullscreen: toFullscreen)
                 cellView.layoutIfNeeded()
             }) { (Bool) in
@@ -153,19 +166,20 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                 self.currentState = newState
                 self.signCollectionView.setCollectionViewLayout(newLayout, animated: false, completion: { (finished) in
                     if finished {
-                        
                         if toFullscreen == false {
-                            let finalNewLayout = self.getCollectionViewLayout(isFullscreen: toFullscreen)
+                            let finalNewLayout = self.signCollectionLayout.copy() as! UICollectionViewFlowLayout
+                            self.setCollectionLayoutProperties(collectionLayout: finalNewLayout, isFullscreen: toFullscreen)
+
                             self.signCollectionView.setCollectionViewLayout(finalNewLayout, animated: true, completion:{(finished) in
                                 if finished {
-                                    self.collectionLayout = finalNewLayout
+                                    self.signCollectionLayout = finalNewLayout
                                     cellView.layer.zPosition = 0
                                     self.view.isUserInteractionEnabled = true
                                 }
                             })
                         }
                         else {
-                            self.collectionLayout = newLayout
+                            self.signCollectionLayout = newLayout
                             self.view.isUserInteractionEnabled = true
                         }
                     }
@@ -190,11 +204,15 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         cell.keywordLabel.text = signToShow.thumbnailText.uppercased()
         cell.contentImage.image = signToShow.infographic
         cell.prepareViewForMode(viewMode: signToShow.viewMode, isFullscreenView: isFullscreen)
+        cell.prepareGestureRecognition()
+        
+        signCollectionView.panGestureRecognizer.require(toFail: cell.panGesture!)
         cell.layoutIfNeeded()
         
         return cell
     }
     
+
     // MARK: - UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -244,8 +262,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let itemWidth = collectionLayout.itemSize.width
-        let itemSpacing = collectionLayout.minimumLineSpacing
+        let itemWidth = signCollectionLayout.itemSize.width
+        let itemSpacing = signCollectionLayout.minimumLineSpacing
         
         let index = Int(ceil((targetContentOffset.pointee.x) / (itemWidth + itemSpacing)))
         
@@ -288,28 +306,11 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     var isCollectionViewFullscreen:Bool {
         get {
-            return collectionLayout.itemSize == view.bounds.size
+            return signCollectionLayout.itemSize == view.bounds.size
         }
     }
     
-    func getCollectionViewLayout(isFullscreen:Bool) -> UICollectionViewFlowLayout {
-
-        let newLayout = collectionLayout.copy() as! UICollectionViewFlowLayout
-        if isFullscreen {
-            newLayout.itemSize = signCollectionView.bounds.size
-            newLayout.minimumLineSpacing = 0
-            newLayout.sectionInset = UIEdgeInsets();
-        }
-        else {
-            newLayout.itemSize = kCollectionItemSize
-            newLayout.minimumLineSpacing = kCollectionItemSpacing
-            let sideInset = signCollectionView.bounds.size.width / 2 - newLayout.itemSize.width / 2
-            newLayout.sectionInset = UIEdgeInsets(top: kCollectionItemThumbnailInset, left: sideInset, bottom: kCollectionItemThumbnailInset, right: sideInset)
-        }
-        return newLayout
-    }
-    
-    func setCollectionViewProperties(isFullscreen:Bool) {
+    func setCollectionLayoutProperties(collectionLayout:UICollectionViewFlowLayout, isFullscreen:Bool) {
         signCollectionView.decelerationRate = UIScrollViewDecelerationRateFast
         if isFullscreen {
             collectionLayout.itemSize = signCollectionView.bounds.size
@@ -320,7 +321,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             collectionLayout.itemSize = kCollectionItemSize
             collectionLayout.minimumLineSpacing = kCollectionItemSpacing
             let sideInset = signCollectionView.bounds.size.width / 2 - collectionLayout.itemSize.width / 2
-            collectionLayout.sectionInset = UIEdgeInsets(top: kCollectionItemThumbnailInset, left: sideInset, bottom: kCollectionItemThumbnailInset, right: sideInset)
+            collectionLayout.sectionInset = UIEdgeInsets(top: kCollectionItemThumbnailInset + kCollectionItemCenterOffset, left: sideInset, bottom: kCollectionItemThumbnailInset, right: sideInset)
         }
         collectionLayout.invalidateLayout()
     }

@@ -14,12 +14,13 @@ import UserNotifications
 let regionRadius:Double = 30
 let kNotificationSignId = "Notificaiton_SignId"
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        UNUserNotificationCenter.current().delegate = self
         restoreUserData()
         setupLocalNotifications()
         setupLocationMonitoring()
@@ -30,6 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    //MARK: - UNUserNotificationCenterDelegate
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+            
+        }
+        else if (response.actionIdentifier == UNNotificationDismissActionIdentifier) {
+        
+        }
+    }
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -104,7 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let notificationContent = UNMutableNotificationContent()
             notificationContent.title = sign!.locationName
             notificationContent.subtitle = "You got the new sign!"
-            // notificationContent.attachments add the logo of the place
+//             notificationContent.attachments
             // notificationContent.body - add for more descriptive notifcation
             // notificationContent.categoryIdentifier - Add for actions i.e. add or skip the sign
             notificationContent.userInfo = [kNotificationSignId: sign!.objectId]

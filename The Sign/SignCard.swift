@@ -14,7 +14,7 @@ enum SignCardViewMode {
     case NotCollected
 }
 
-class SignCard: UICollectionViewCell {
+class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var backgroundImage: UIImageView!
     @IBOutlet weak var wrapperView: UIView!
@@ -27,7 +27,12 @@ class SignCard: UICollectionViewCell {
     @IBOutlet weak var cnstrContentWrapperCenterY: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperBottom: NSLayoutConstraint!
 
+    var panGesture: UIPanGestureRecognizer!
+    var originalCenter:CGPoint?
+    var panOffset:CGFloat?
+
     override func prepareForReuse() {
+        removeGestureRecognizer(panGesture)
         contentImage.alpha = 1
         keywordLabel.alpha = 1
         keywordLabel.isHidden = true
@@ -48,6 +53,69 @@ class SignCard: UICollectionViewCell {
         }
     }
     
+    func prepareGestureRecognition() {
+        panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.actionPan(_:)))
+        panGesture.delegate = self
+        panGesture.delaysTouchesBegan = true
+        addGestureRecognizer(panGesture)
+    }
+    
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        let velocity = panGesture!.velocity(in: self)
+        return fabs(velocity.y) > fabs(velocity.x)
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func actionPan(_ sender: UIGestureRecognizer)
+    {
+        let location:CGPoint = sender.location(in: superview)
+
+        switch sender.state {
+        case .began:
+            originalCenter = center
+            panOffset = center.y -  location.y
+            break
+        case .changed:
+            //moving down
+            let newLoc = location.y + panOffset!
+            let diff = originalCenter!.y - newLoc
+            center.y = newLoc + 0.5*diff
+
+//            displayInteractionProgress()
+            break
+        case .cancelled:
+            break
+        case .ended:
+//            if self.center.y < originalCenter!.y - self.frame.size.height / 2 {}
+            snapBack()
+            self.panOffset = nil
+            
+            break
+        default:
+            break
+        }
+        
+    }
+    
+    func snapOut(_ completionHandler:@escaping (Bool)->()) {
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: {
+            self.center.y = 4 * self.originalCenter!.y
+        }, completion: completionHandler)
+    }
+    
+    func snapBack() {
+        if originalCenter == nil {
+            return
+        }
+        
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: {
+            self.center.y = self.originalCenter!.y
+        }, completion: nil)
+    }
+
     //MARK: - View Animation
 
     func prepareViewForAnimation(toFullscreen:Bool) {
@@ -64,12 +132,17 @@ class SignCard: UICollectionViewCell {
         }
     }
     
-    func setViewSizeForAnimation(newSize:CGSize) {
+    func setViewSizeForAnimation(newSize:CGSize, toFullscreen:Bool) {
         var frame = self.bounds;
         let center = self.center
         frame.size = newSize
         self.bounds = frame;
-        self.center = center
+        if toFullscreen {
+            self.center = CGPoint(x: center.x, y: center.y - kCollectionItemCenterOffset / 2)
+        }
+        else {
+            self.center = CGPoint(x: center.x, y: center.y + kCollectionItemCenterOffset / 2)
+        }
     }
     
     func setComponentsForAnimation(toFullscreen:Bool) {

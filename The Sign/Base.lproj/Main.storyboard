@@ -26,15 +26,16 @@
                             </imageView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="YE2-GX-RUP">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <gestureRecognizers/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="40" minimumInteritemSpacing="0.0" id="a2w-6S-dlG">
                                     <size key="itemSize" width="180" height="320"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="40" minY="40" maxX="40" maxY="40"/>
+                                    <inset key="sectionInset" minX="40" minY="160" maxX="40" maxY="40"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Card" id="WFN-1c-orv" customClass="SignCard" customModule="The_Sign" customModuleProvider="target">
-                                        <rect key="frame" x="40" y="174" width="180" height="320"/>
+                                        <rect key="frame" x="40" y="234" width="180" height="320"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="180" height="320"/>
@@ -188,9 +189,9 @@
                         <outlet property="backgroundImage" destination="2g3-5t-fmo" id="cQI-jN-veq"/>
                         <outlet property="cnstrMapButtonWidth" destination="7o0-sB-pLG" id="Lxo-mC-Rjm"/>
                         <outlet property="cnstrStateButtonWidth" destination="xlU-Bq-lvH" id="xSB-P3-dsR"/>
-                        <outlet property="collectionLayout" destination="a2w-6S-dlG" id="RhL-Vs-SPa"/>
                         <outlet property="mapButtonView" destination="3gq-Tc-lhh" id="pQB-30-6oC"/>
                         <outlet property="mapContainerView" destination="Imj-SB-jqe" id="ieS-gl-wez"/>
+                        <outlet property="signCollectionLayout" destination="a2w-6S-dlG" id="uhC-VL-PQ5"/>
                         <outlet property="signCollectionView" destination="YE2-GX-RUP" id="8gf-fg-dIc"/>
                         <outlet property="stateButtonLabel" destination="NFu-Aa-es4" id="3Ta-yh-hVb"/>
                         <outlet property="stateButtonView" destination="b8F-zC-7yI" id="nhG-fd-rwG"/>
