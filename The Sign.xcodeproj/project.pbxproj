@@ -10,7 +10,13 @@
 		550728431E33052E0060D88B /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728421E33052E0060D88B /* MapViewController.swift */; };
 		550728451E34627F0060D88B /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728441E34627F0060D88B /* UIView+Extension.swift */; };
 		550728471E354B020060D88B /* SignDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550728461E354B020060D88B /* SignDataSource.swift */; };
+		550F89721EABEF2A008993F6 /* SignCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */; };
 		5512317D1E5AABC900443840 /* TestRoute1.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 5512317C1E5AABC900443840 /* TestRoute1.gpx */; };
+		553CFED61E6698A8004618A6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */; };
+		553CFED71E6698A8004618A6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */; };
+		553CFED81E6698A8004618A6 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */; };
+		553CFEDA1E67C349004618A6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553CFED91E67C349004618A6 /* LoginViewController.swift */; };
+		553CFEDC1E67C7BB004618A6 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFEDB1E67C7BB004618A6 /* Bolts.framework */; };
 		5559F72A1E248475007354BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7291E248475007354BE /* AppDelegate.swift */; };
 		5559F72F1E248475007354BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5559F72D1E248475007354BE /* Main.storyboard */; };
 		5559F7321E248475007354BE /* The_Sign.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5559F7301E248475007354BE /* The_Sign.xcdatamodeld */; };
@@ -48,7 +54,13 @@
 		550728421E33052E0060D88B /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		550728441E34627F0060D88B /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		550728461E354B020060D88B /* SignDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignDataSource.swift; sourceTree = "<group>"; };
+		550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignCollectionLayout.swift; sourceTree = "<group>"; };
 		5512317C1E5AABC900443840 /* TestRoute1.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TestRoute1.gpx; sourceTree = "<group>"; };
+		553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "The Sign/frameworks/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
+		553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "The Sign/frameworks/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
+		553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "The Sign/frameworks/FBSDKShareKit.framework"; sourceTree = "<group>"; };
+		553CFED91E67C349004618A6 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		553CFEDB1E67C7BB004618A6 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "The Sign/frameworks/Bolts.framework"; sourceTree = "<group>"; };
 		5559F7261E248475007354BE /* The Sign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Sign.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5559F7291E248475007354BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5559F72E1E248475007354BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -78,6 +90,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				55FF72791E2C81E500562B65 /* UserNotifications.framework in Frameworks */,
+				553CFED61E6698A8004618A6 /* FBSDKCoreKit.framework in Frameworks */,
+				553CFED81E6698A8004618A6 /* FBSDKShareKit.framework in Frameworks */,
+				553CFEDC1E67C7BB004618A6 /* Bolts.framework in Frameworks */,
+				553CFED71E6698A8004618A6 /* FBSDKLoginKit.framework in Frameworks */,
 				55FF72731E2C6F2F00562B65 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -126,8 +142,10 @@
 				55FF72741E2C6F3900562B65 /* The Sign.entitlements */,
 				55FF72771E2C714100562B65 /* Location Tracker */,
 				5559F7291E248475007354BE /* AppDelegate.swift */,
+				553CFED91E67C349004618A6 /* LoginViewController.swift */,
 				55FF72571E2AD15D00562B65 /* SignCard.swift */,
 				55FF725B1E2AF9DA00562B65 /* SignObject.swift */,
+				550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */,
 				55FF72591E2AD1D900562B65 /* MainViewController.swift */,
 				550728461E354B020060D88B /* SignDataSource.swift */,
 				559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */,
@@ -173,6 +191,10 @@
 		55FF726D1E2C66C100562B65 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				553CFEDB1E67C7BB004618A6 /* Bolts.framework */,
+				553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */,
+				553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */,
+				553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */,
 				55FF72781E2C81E500562B65 /* UserNotifications.framework */,
 				55FF72721E2C6F2F00562B65 /* CoreLocation.framework */,
 			);
@@ -340,8 +362,10 @@
 				5559F72A1E248475007354BE /* AppDelegate.swift in Sources */,
 				559F2ECB1E399F1A00A1C955 /* LocationTracker.swift in Sources */,
 				550728471E354B020060D88B /* SignDataSource.swift in Sources */,
+				550F89721EABEF2A008993F6 /* SignCollectionLayout.swift in Sources */,
 				55FF725A1E2AD1D900562B65 /* MainViewController.swift in Sources */,
 				550728431E33052E0060D88B /* MapViewController.swift in Sources */,
+				553CFEDA1E67C349004618A6 /* LoginViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,7 +510,7 @@
 				DEVELOPMENT_TEAM = ZCEYGPU8ZJ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/The\\ Sign",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
 					"$(PROJECT_DIR)/The\\ Sign/frameworks",
 				);
 				INFOPLIST_FILE = "The Sign/Info.plist";
@@ -504,7 +528,7 @@
 				DEVELOPMENT_TEAM = ZCEYGPU8ZJ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/The\\ Sign",
+					"$(PROJECT_DIR)/The\\ Sign/frameworks",
 					"$(PROJECT_DIR)/The\\ Sign/frameworks",
 				);
 				INFOPLIST_FILE = "The Sign/Info.plist";

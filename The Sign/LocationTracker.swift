@@ -189,12 +189,12 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
 
     open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         currentLocation = manager.location
-        print("Updating current location to \(manager.location?.coordinate)")
+        print("Updating current location to \(String(describing: manager.location?.coordinate))")
         if closestSignRequestHandler != nil {
             let closest = getClosestSign(location: currentLocation, from: self.allLocations)
             closestSignRequestHandler!(closest)
             closestSignRequestHandler = nil
-            print("Finding closest sign: \(closest)")
+            print("Finding closest sign: \(String(describing: closest))")
         }
         
         if shouldUpdateMonitoredRegions {

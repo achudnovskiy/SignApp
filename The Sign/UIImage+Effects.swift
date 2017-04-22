@@ -106,6 +106,15 @@ import Accelerate
 
 public extension UIImage {
 
+    public func optimizedImage()->UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, true, scale)
+        draw(in: CGRect(origin: CGPoint(x: 0, y: 0), size: size))
+        let optimizedImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return optimizedImage!;
+    }
+
+    
     public func applyDefaultEffect() -> UIImage? {
         return applyBlurWithRadius(8, tintColor: UIColor(white: 0.1, alpha: 0.5), saturationDeltaFactor: 1.5)
     }
@@ -157,11 +166,11 @@ public extension UIImage {
             return nil
         }
         if maskImage != nil && maskImage!.cgImage == nil {
-            print("*** error: maskImage must be backed by a CGImage: \(maskImage)")
+            print("*** error: maskImage must be backed by a CGImage: \(maskImage!)")
             return nil
         }
 
-        let __FLT_EPSILON__ = CGFloat(FLT_EPSILON)
+        let __FLT_EPSILON__ = CGFloat(Float.ulpOfOne)
         let screenScale = UIScreen.main.scale
         let imageRect = CGRect(origin: CGPoint.zero, size: size)
         var effectImage = self
@@ -210,7 +219,7 @@ public extension UIImage {
                 //
 
                 let inputRadius = blurRadius * screenScale
-                let d = floor(inputRadius * 3.0 * CGFloat(sqrt(2 * M_PI) / 4 + 0.5))
+                let d = floor(inputRadius * 3.0 * CGFloat(sqrt(2 * Double.pi) / 4 + 0.5))
                 var radius = UInt32(d)
                 if radius % 2 != 1 {
                     radius += 1 // force radius to be odd so that the three box-blur methodology works.

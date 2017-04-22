@@ -10,6 +10,8 @@ import UIKit
 import CoreData
 import CoreLocation
 import UserNotifications
+import FBSDKCoreKit
+import CoreTelephony
 
 let regionRadius:Double = 30
 let kNotificationSignId = "Notificaiton_SignId"
@@ -21,6 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         UNUserNotificationCenter.current().delegate = self
+        
+        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         restoreUserData()
         setupLocalNotifications()
         setupLocationMonitoring()
@@ -123,7 +127,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             let notificationRequest = UNNotificationRequest(identifier: "SignDiscover", content: notificationContent, trigger: nil)
             UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
                 if (error != nil) {
-                    NSLog("Error with delivering the notification, details: \(error)")
+                    NSLog("Error with delivering the notification, details: \(String(describing: error))")
                 }
             })
         }
@@ -164,6 +168,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 // TODO: Prompt user about not having permissions
             }
         }
+    }
+    
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        return FBSDKApplicationDelegate.sharedInstance().application(app, open: url, options: options)
     }
     
     // TODO: update the content of the already notification

@@ -163,6 +163,6 @@ class SignDataSource: NSObject {
     }
     
     func reloadCollections() {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ReloadData"), object: nil)
+        NotificationCenter.default.post(name: kNotificationReloadData, object: nil)
     }
 }

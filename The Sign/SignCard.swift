@@ -15,9 +15,8 @@ enum SignCardViewMode {
 }
 
 class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
-    
-    @IBOutlet weak var backgroundImage: UIImageView!
-    @IBOutlet weak var wrapperView: UIView!
+
+    @IBOutlet weak var wrapperView: UIImageView!
     @IBOutlet weak var keywordLabel: UILabel!
   
     @IBOutlet weak var contentWrapperView: UIView!
@@ -26,6 +25,11 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     @IBOutlet weak var cnstrContentWrapperHeight: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperCenterY: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperBottom: NSLayoutConstraint!
+    
+    var viewMode:SignCardViewMode = .Discovered
+
+
+    var shareProgressHandler:((_ progress:CGFloat, _ finished:Bool) -> Void)!
 
     var panGesture: UIPanGestureRecognizer!
     var originalCenter:CGPoint?
@@ -38,11 +42,14 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         keywordLabel.isHidden = true
         contentImage.isHidden = true
         contentImage.image = nil
-        backgroundImage.image = nil
+        wrapperView.image = nil
         keywordLabel.text = nil
+        wrapperView.isOpaque = true
+        super.prepareForReuse()
     }
     
     func prepareViewForMode(viewMode:SignCardViewMode, isFullscreenView isFullscreen :Bool) {
+        self.viewMode = viewMode
         switch viewMode {
         case .Discovered:
             isFullscreen ? setConstraintsForFullscreen() : setConstraintsForThumbnail()
@@ -83,13 +90,13 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             let newLoc = location.y + panOffset!
             let diff = originalCenter!.y - newLoc
             center.y = newLoc + 0.5*diff
-
-//            displayInteractionProgress()
+            
+            shareProgressHandler(shareProgressValue(originalPoint: originalCenter!, newPoint: center, itemFrame: bounds), false)
             break
         case .cancelled:
             break
         case .ended:
-//            if self.center.y < originalCenter!.y - self.frame.size.height / 2 {}
+            shareProgressHandler(shareProgressValue(originalPoint: originalCenter!, newPoint: center, itemFrame: bounds), true)
             snapBack()
             self.panOffset = nil
             
@@ -98,6 +105,10 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             break
         }
         
+    }
+    
+    func shareProgressValue(originalPoint:CGPoint, newPoint:CGPoint, itemFrame:CGRect) -> CGFloat {
+        return (originalPoint.y - newPoint.y) / (itemFrame.height / 2)
     }
     
     func snapOut(_ completionHandler:@escaping (Bool)->()) {
@@ -120,13 +131,12 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
 
     func prepareViewForAnimation(toFullscreen:Bool) {
         layer.zPosition = 1
+        prepareViewForMode(viewMode: viewMode, isFullscreenView: toFullscreen)
         if toFullscreen {
-            setConstraintsForFullscreen()
             contentImage.alpha = 0
             contentImage.isHidden =  false
         }
         else {
-            setConstraintsForThumbnail()
             keywordLabel.alpha = 0
             keywordLabel.isHidden = false
         }
@@ -139,22 +149,18 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         self.bounds = frame;
         if toFullscreen {
             self.center = CGPoint(x: center.x, y: center.y - kCollectionItemCenterOffset / 2)
+            keywordLabel.alpha = 0
+            contentImage.alpha = 1
+
         }
         else {
             self.center = CGPoint(x: center.x, y: center.y + kCollectionItemCenterOffset / 2)
-        }
-    }
-    
-    func setComponentsForAnimation(toFullscreen:Bool) {
-        if toFullscreen {
-            keywordLabel.alpha = 0
-            contentImage.alpha = 1
-        }
-        else {
             keywordLabel.alpha = 1
             contentImage.alpha = 0
+
         }
     }
+
     
     func prepareViewAfterAnimation(toFullscreen:Bool) {
         contentImage.isHidden =  !toFullscreen
@@ -181,7 +187,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     }
 
     func setConstraintsForFullscreenNotDiscovered() {
-        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperHeight.constant = wrapperView.bounds.height
         cnstrContentWrapperBottom.isActive = false
         cnstrContentWrapperCenterY.isActive = true
         
@@ -190,7 +196,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     }
     
     func setConstraintsForThumbnailNotDiscovered() {
-        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperHeight.constant = wrapperView.bounds.height
         cnstrContentWrapperBottom.isActive = false
         cnstrContentWrapperCenterY.isActive = true
         
@@ -199,22 +205,20 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     }
     
     func setConstraintsForFullscreenNotCollected() {
-        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperHeight.constant = wrapperView.bounds.height
         cnstrContentWrapperBottom.isActive = false
         cnstrContentWrapperCenterY.isActive = true
         
         contentImage.isHidden = true
         keywordLabel.isHidden = false
-        backgroundImage.image = backgroundImage.image?.applyDefaultEffect()
     }
     
     func setConstraintsForThumbnailNotCollected() {
-        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperHeight.constant = wrapperView.bounds.height
         cnstrContentWrapperBottom.isActive = false
         cnstrContentWrapperCenterY.isActive = true
         
         contentImage.isHidden = true
         keywordLabel.isHidden = false
-        backgroundImage.image = backgroundImage.image?.applyDefaultEffect()
     }
 }
