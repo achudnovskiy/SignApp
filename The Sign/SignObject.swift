@@ -93,6 +93,19 @@ public class SignObject: NSObject {
         }
     }
     
+    func proccessImage() -> UIImage {
+        if isCollected {
+            return image.optimizedImage()
+        }
+        else {
+            return image.applyDefaultEffect()!.optimizedImage()
+        }
+    }
+    
+    func processSignDiscovery() {
+        isDiscovered = true
+    }
+
     func processLocationVisit() {
         if isCollected == false {
             isCollected = true
@@ -122,6 +135,11 @@ public class SignObject: NSObject {
         return result
     }
 
+    var uniqueId:NSString {
+        get {
+            return NSString(string: objectId)
+        }
+    }
     override public var hash: Int {
         return self.objectId.hash
     }
