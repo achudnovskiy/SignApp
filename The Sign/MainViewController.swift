@@ -74,19 +74,24 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
         
         LocationTracker.sharedInstance.getClosestSign(with: { (sign) in
-            if sign != nil {
-                self.discoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: sign!.objectId)
-                if self.discoverySign != nil {
-                    DispatchQueue.main.async {
-                        self.signCollectionView.performBatchUpdates({
-                            self.collectionSigns = self.collectionSigns + [self.discoverySign!]
-                            self.signCollectionView.performBatchUpdates({
-                                self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
-                            }, completion: nil)
-                        }, completion: nil)
-                    }
-                }
+            guard sign != nil else {
+                return
             }
+            
+            self.discoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: sign!.objectId)
+            guard self.discoverySign != nil else {
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.signCollectionView.performBatchUpdates({
+                    self.collectionSigns = self.collectionSigns + [self.discoverySign!]
+                    self.signCollectionView.performBatchUpdates({
+                        self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
+                    }, completion: nil)
+                }, completion: nil)
+            }
+            
         })
     }
     
@@ -238,6 +243,9 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             }
             let sign = collectionSigns[indexPath!.row]
             FbHandler.shared.createFbStory(sign: sign)
+        }
+        else {
+            performSegue(withIdentifier: "authorizationSegue", sender: nil)
         }
     }
     

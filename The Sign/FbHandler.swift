@@ -15,7 +15,7 @@ class FbHandler: NSObject, FBSDKSharingDelegate {
 
     let fbAppId:String
     override init() {
-        fbAppId = Bundle.main.object(forInfoDictionaryKey: "764041143646669") as! String
+        fbAppId = Bundle.main.object(forInfoDictionaryKey: "FacebookAppID") as! String
     }
     
     func createFbStory(sign:SignObject) {
@@ -36,7 +36,7 @@ class FbHandler: NSObject, FBSDKSharingDelegate {
             "place:location:latitude":sign.latitude,
             "place:location:longitude":sign.longitude,
             "og:description":sign.mysteryText,
-            "og:url":""
+            "og:url":"https://olfe.app.link/aYiRtHw2wD"
         ] as [String : Any]
         return FBSDKShareOpenGraphObject(properties: properties)
     }

@@ -298,18 +298,8 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" red="0.1175331771" green="0.1147413999" blue="0.11184369030000001" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iGL-5C-bE9" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="77" y="319" width="220" height="28"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="220" id="qLe-rw-ak5"/>
-                                    <constraint firstAttribute="height" constant="28" id="w84-M5-QB4"/>
-                                </constraints>
-                                <connections>
-                                    <outlet property="delegate" destination="P0M-16-5q3" id="FKP-Hd-U6H"/>
-                                </connections>
-                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We use Facebook to share your signs with your friends" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cuz-xL-gb7">
-                                <rect key="frame" x="16" y="251" width="343" height="60"/>
+                                <rect key="frame" x="16" y="242" width="343" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="LR9-Ma-6gW"/>
                                 </constraints>
@@ -317,6 +307,18 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JnV-Yh-kFp">
+                                <rect key="frame" x="60.5" y="310" width="253" height="46"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="253" id="aHs-ZE-DdU"/>
+                                    <constraint firstAttribute="height" constant="46" id="c1Y-mf-hNX"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <state key="normal" title="Button" image="loginFacebook"/>
+                                <connections>
+                                    <action selector="fbLoginAction:" destination="P0M-16-5q3" eventType="touchUpInside" id="aAQ-f7-Fi8"/>
+                                </connections>
+                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Sign" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1er-mW-sXR" userLabel="Damn Sign">
                                 <rect key="frame" x="89" y="104" width="198" height="60"/>
                                 <constraints>
@@ -404,7 +406,7 @@
                                 </variation>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lfm-xI-geU" userLabel="Error message">
-                                <rect key="frame" x="0.0" y="367" width="375" height="0.0"/>
+                                <rect key="frame" x="0.0" y="376" width="375" height="0.0"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="200" id="28F-gJ-4Vv"/>
                                 </constraints>
@@ -424,21 +426,20 @@
                             </label>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="lfm-xI-geU" firstAttribute="top" secondItem="iGL-5C-bE9" secondAttribute="bottom" constant="20" id="2D6-ar-OBs"/>
                             <constraint firstItem="5k3-xr-aax" firstAttribute="leading" secondItem="3gl-zb-xXe" secondAttribute="leading" id="2Ib-rS-2FQ"/>
                             <constraint firstItem="QFT-Ao-Ivi" firstAttribute="centerX" secondItem="1er-mW-sXR" secondAttribute="centerX" id="5q1-04-pIA"/>
                             <constraint firstItem="ggd-fv-AkK" firstAttribute="top" secondItem="QFT-Ao-Ivi" secondAttribute="bottom" id="8mt-nR-pDB"/>
                             <constraint firstItem="1er-mW-sXR" firstAttribute="top" secondItem="5Wg-Tg-1p5" secondAttribute="bottom" constant="8" id="FWM-pK-kk5">
                                 <variation key="heightClass=regular-widthClass=compact" constant="84"/>
                             </constraint>
-                            <constraint firstItem="iGL-5C-bE9" firstAttribute="centerX" secondItem="3gl-zb-xXe" secondAttribute="centerX" id="G2S-rp-s9C"/>
-                            <constraint firstItem="iGL-5C-bE9" firstAttribute="centerY" secondItem="3gl-zb-xXe" secondAttribute="centerY" id="Hh2-zV-HGQ"/>
                             <constraint firstItem="5k3-xr-aax" firstAttribute="top" secondItem="3gl-zb-xXe" secondAttribute="top" id="UQ3-IE-2U2"/>
                             <constraint firstAttribute="bottom" secondItem="5k3-xr-aax" secondAttribute="bottom" id="WTo-X5-IRW"/>
                             <constraint firstItem="no5-zz-rir" firstAttribute="top" secondItem="1er-mW-sXR" secondAttribute="bottom" constant="10" id="XQL-RQ-L36"/>
                             <constraint firstItem="no5-zz-rir" firstAttribute="centerX" secondItem="1er-mW-sXR" secondAttribute="centerX" priority="750" id="aBo-gG-4ew"/>
-                            <constraint firstItem="iGL-5C-bE9" firstAttribute="top" secondItem="cuz-xL-gb7" secondAttribute="bottom" constant="8" id="dTs-5i-PWA"/>
+                            <constraint firstItem="lfm-xI-geU" firstAttribute="top" secondItem="JnV-Yh-kFp" secondAttribute="bottom" constant="20" id="agf-k9-MaH"/>
+                            <constraint firstItem="JnV-Yh-kFp" firstAttribute="top" secondItem="cuz-xL-gb7" secondAttribute="bottom" constant="8" id="c3n-31-gJa"/>
                             <constraint firstItem="lfm-xI-geU" firstAttribute="top" secondItem="3Od-L6-R7S" secondAttribute="bottom" constant="28" id="dbV-bk-CEy"/>
+                            <constraint firstItem="JnV-Yh-kFp" firstAttribute="centerY" secondItem="3gl-zb-xXe" secondAttribute="centerY" id="e6j-aE-nJZ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="QFT-Ao-Ivi" secondAttribute="trailing" constant="-16" id="gb2-TM-bWY"/>
                             <constraint firstItem="3Od-L6-R7S" firstAttribute="leading" secondItem="3gl-zb-xXe" secondAttribute="leadingMargin" constant="8" id="hRH-er-RNN"/>
                             <constraint firstItem="QFT-Ao-Ivi" firstAttribute="centerX" secondItem="lfm-xI-geU" secondAttribute="centerX" id="hux-Rh-J5z"/>
@@ -447,6 +448,7 @@
                             <constraint firstAttribute="leadingMargin" secondItem="cuz-xL-gb7" secondAttribute="leading" id="kpI-vh-VNe"/>
                             <constraint firstItem="QFT-Ao-Ivi" firstAttribute="leading" secondItem="3gl-zb-xXe" secondAttribute="leadingMargin" constant="-16" id="lLe-Gc-KA1"/>
                             <constraint firstItem="no5-zz-rir" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="3gl-zb-xXe" secondAttribute="leading" constant="20" id="mHi-hB-Mek"/>
+                            <constraint firstItem="JnV-Yh-kFp" firstAttribute="centerX" secondItem="3gl-zb-xXe" secondAttribute="centerX" id="oDN-Az-DfN"/>
                             <constraint firstItem="QFT-Ao-Ivi" firstAttribute="top" secondItem="3gl-zb-xXe" secondAttribute="topMargin" id="qbC-X4-zAa"/>
                             <constraint firstAttribute="trailing" secondItem="5k3-xr-aax" secondAttribute="trailing" id="sLF-F6-Tqj"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="no5-zz-rir" secondAttribute="trailing" constant="20" id="xPa-iv-nif"/>
@@ -461,14 +463,6 @@
                                 <exclude reference="lfm-xI-geU"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="FWM-pK-kk5"/>
-                                <exclude reference="XQL-RQ-L36"/>
-                                <exclude reference="aBo-gG-4ew"/>
-                                <exclude reference="mHi-hB-Mek"/>
-                                <exclude reference="xPa-iv-nif"/>
-                                <exclude reference="8mt-nR-pDB"/>
-                                <exclude reference="dbV-bk-CEy"/>
-                                <exclude reference="jD3-EL-33s"/>
                                 <exclude reference="hRH-er-RNN"/>
                                 <exclude reference="2Ib-rS-2FQ"/>
                                 <exclude reference="UQ3-IE-2U2"/>
@@ -479,6 +473,14 @@
                                 <exclude reference="hux-Rh-J5z"/>
                                 <exclude reference="lLe-Gc-KA1"/>
                                 <exclude reference="qbC-X4-zAa"/>
+                                <exclude reference="FWM-pK-kk5"/>
+                                <exclude reference="XQL-RQ-L36"/>
+                                <exclude reference="aBo-gG-4ew"/>
+                                <exclude reference="mHi-hB-Mek"/>
+                                <exclude reference="xPa-iv-nif"/>
+                                <exclude reference="dbV-bk-CEy"/>
+                                <exclude reference="jD3-EL-33s"/>
+                                <exclude reference="8mt-nR-pDB"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -491,14 +493,6 @@
                                 <include reference="lfm-xI-geU"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="FWM-pK-kk5"/>
-                                <include reference="XQL-RQ-L36"/>
-                                <include reference="aBo-gG-4ew"/>
-                                <include reference="mHi-hB-Mek"/>
-                                <include reference="xPa-iv-nif"/>
-                                <include reference="8mt-nR-pDB"/>
-                                <include reference="dbV-bk-CEy"/>
-                                <include reference="jD3-EL-33s"/>
                                 <include reference="hRH-er-RNN"/>
                                 <include reference="2Ib-rS-2FQ"/>
                                 <include reference="UQ3-IE-2U2"/>
@@ -509,6 +503,14 @@
                                 <include reference="hux-Rh-J5z"/>
                                 <include reference="lLe-Gc-KA1"/>
                                 <include reference="qbC-X4-zAa"/>
+                                <include reference="FWM-pK-kk5"/>
+                                <include reference="XQL-RQ-L36"/>
+                                <include reference="aBo-gG-4ew"/>
+                                <include reference="mHi-hB-Mek"/>
+                                <include reference="xPa-iv-nif"/>
+                                <include reference="dbV-bk-CEy"/>
+                                <include reference="jD3-EL-33s"/>
+                                <include reference="8mt-nR-pDB"/>
                             </mask>
                         </variation>
                     </view>
@@ -516,6 +518,7 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="QFT-Ao-Ivi" id="6sn-RQ-SX6"/>
                         <outlet property="fbErrorLabel" destination="lfm-xI-geU" id="uCK-e6-GRJ"/>
+                        <outlet property="fbLoginButton" destination="JnV-Yh-kFp" id="Lly-gd-CkU"/>
                         <outlet property="termsConditionsLabel" destination="3Od-L6-R7S" id="KdY-SI-UVy"/>
                     </connections>
                 </viewController>
@@ -527,5 +530,6 @@
     <resources>
         <image name="DefaultBackgroundImage" width="319" height="568"/>
         <image name="MapIcon" width="21" height="21"/>
+        <image name="loginFacebook" width="448" height="88"/>
     </resources>
 </document>
