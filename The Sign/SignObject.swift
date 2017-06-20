@@ -9,7 +9,11 @@
 import UIKit
 import CoreLocation
 
-public struct SignLocation {
+public struct SignLocation: CustomStringConvertible{
+    public var description: String {
+        return "ID:\(objectId), isCollected:\(isCollected)"
+    }
+    
     let objectId:String
     let location:CLLocation
     let isCollected:Bool

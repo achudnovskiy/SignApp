@@ -133,6 +133,24 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
         return renderer
     }
-
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation.isKind(of: MKUserLocation.self) {
+            return nil
+        }
+        
+        let annotationIdentifier = "AnnotationIdentifier"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier)
+        if annotationView != nil {
+            return annotationView
+        }
+        else {
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            annotationView?.canShowCallout = true
+            annotationView?.image = #imageLiteral(resourceName: "MapPin")
+//            annotationView?.image = UIImage(named: "MapPin")
+            return annotationView
+        }
+    }
 }
 

@@ -46,8 +46,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     @IBOutlet weak var stateButtonLabel: UILabel!
     @IBOutlet weak var shareProgressLabel: UILabel!
     
-    @IBOutlet weak var cnstrStateButtonWidth: NSLayoutConstraint!
-    @IBOutlet weak var cnstrMapButtonWidth: NSLayoutConstraint!
+    @IBOutlet weak var cnstrMapButtonLeading: NSLayoutConstraint!
     
     @IBOutlet weak var backgroundImage: UIImageView!
     
@@ -61,6 +60,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     var discoverySign:SignObject?
     var cachedImages = NSCache<NSString,UIImage>()
     
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     //TODO: REVIEW
     func prepareDataSource() {
         collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
@@ -74,14 +77,9 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
         
         LocationTracker.sharedInstance.getClosestSign(with: { (sign) in
-            guard sign != nil else {
-                return
-            }
-            
+            guard sign != nil else { return }
             self.discoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: sign!.objectId)
-            guard self.discoverySign != nil else {
-                return
-            }
+            guard self.discoverySign != nil else { return }
             
             DispatchQueue.main.async {
                 self.signCollectionView.performBatchUpdates({
@@ -99,6 +97,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         prepareDataSource()
         
         stateButtonView.applyPlainShadow()
@@ -122,6 +121,14 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             self.prepareDataSource()
             self.signCollectionView.reloadData()
         }
+        NotificationCenter.default.addObserver(forName: kNotificationScrollToSign, object: nil, queue: OperationQueue.main) { (notification) in
+            let signId = notification.userInfo![kNotificationScrollToSignId] as! String
+            guard let sign = SignDataSource.sharedInstance.findSignObjById(objectId: signId) else { return }
+            
+            guard let index = self.indexForSign(sign: sign) else { return }
+            self.delayedTransition = true
+            self.signCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: true)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -143,7 +150,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         let signInTransition = collectionSigns[cellId.row]
         signInTransition.isDiscovered = true
         let cellView = signInFocus!
-
         
         resetZPosition()
         if toFullscreen {
@@ -153,7 +159,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         else {
             stopMagnification()
         }
-
         
         cellView.viewMode = .Discovered
         cellView.prepareViewForAnimation(toFullscreen: toFullscreen)
@@ -364,6 +369,13 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
+    func indexForSign(sign:SignObject) -> IndexPath? {
+        guard let index = collectionSigns.index(of: sign) else {
+            return nil
+        }
+        return IndexPath(item: index, section: 0)
+    }
+    
     var indexForItemInFocus:IndexPath? {
         get {
             let viewCenter = view.convert(view.center, to: signCollectionView)
@@ -416,16 +428,17 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         self.mapButtonView.isUserInteractionEnabled = false
         
         if hide {
-            self.cnstrMapButtonWidth.constant = 0
+            self.cnstrMapButtonLeading.constant = -100
+                //(-1)*self.mapButtonView.bounds.width
         }
         else {
             self.mapButtonView.isHidden = false
-            self.cnstrMapButtonWidth.constant = 35
+            self.cnstrMapButtonLeading.constant = 0
         }
         
         UIView.animate(withDuration: 0.25, delay: 0.05, usingSpringWithDamping: 0.85, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: {
             self.mapButtonView.subviews.first?.alpha = hide ? 0 : 1
-            self.view.layoutIfNeeded()
+            self.mapButtonView.layoutIfNeeded()
         }, completion: {(Bool) in
             self.mapButtonView.isHidden = hide
             self.mapButtonView.isUserInteractionEnabled = !hide
@@ -438,8 +451,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             return
         }
         
-        let attrString = NSAttributedString(string: newButtonText, attributes: [NSFontAttributeName:self.stateButtonLabel.font])
-        self.cnstrStateButtonWidth.constant = ceil(attrString.size().width + 14)
         self.stateButtonView.isHidden = false
         
         self.stateButtonView.isUserInteractionEnabled = false
@@ -505,7 +516,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     func scheduleUpdateBackgroundForItemAtImdex(index:Int) {
         let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(2.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: dispatchTime, execute: {
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
             if self.signCollectionView.isDecelerating || self.signCollectionView.isDragging {
                 self.scheduleUpdateBackgroundForItemAtImdex(index: index)
                 return
@@ -521,7 +532,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                 let actualNextSign = self.collectionSigns[newIndex!.row]
                 self.updateBackgroundBlurWithImage(image: actualNextSign.image, imageTag: actualNextSign.objectId)
             }
-        })
+        }
     }
     
     func updateBackgroundBlurWithImage(image:UIImage, imageTag:String) {
@@ -529,12 +540,9 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         if backgroundImage.tag != newHash {
             let newImageBlurred = image.applyDefaultEffect()?.optimizedImage()
             backgroundImage.tag = newHash
-            DispatchQueue.main.async {
-                UIView.transition(with: self.backgroundImage, duration: 5.8, options: [.transitionCrossDissolve], animations: {
+                UIView.transition(with: self.backgroundImage, duration: 2, options: [.transitionCrossDissolve], animations: {
                     self.backgroundImage.image = newImageBlurred
                 }, completion:nil)
-                
-            }
         }
     }
 }

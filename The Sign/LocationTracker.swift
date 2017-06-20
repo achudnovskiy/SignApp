@@ -32,9 +32,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     internal var monitoredRegions:[CLCircularRegion] = []
     
-    internal var closeLocations:[CLLocation]
-    
-    internal var completionHandler:((_ location:SignLocation) -> Void)!
+    internal var detectionHandler:((_ location:SignLocation) -> Void)!
     
     internal var closestSignRequestHandler:((_ closestSign:SignLocation?) -> Void)?
     internal var shouldUpdateMonitoredRegions:Bool = false
@@ -45,7 +43,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     {
         locationManager = CLLocationManager()
         allLocations = []
-        closeLocations = []
         
         super.init()
     }
@@ -55,8 +52,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         locationManager.delegate = self
 //        locationManager.distanceFilter = 2
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-
-        completionHandler = completion
+        detectionHandler = completion
         allLocations = locationsToMonitor
         prepareForTracking()
     }
@@ -123,6 +119,9 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     open func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion)
     {
+        if manager.location!.horizontalAccuracy > kCLLocationAccuracyNearestTenMeters {
+            return
+        }
         if region.identifier == "CurrentRegion" {
             print("Detected Enter. Requesting data to update all regions")
             shouldUpdateMonitoredRegions = true
@@ -135,14 +134,17 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
             })
             if hit != nil {
                 print("Got location hit \(hit!.objectId)")
-                completionHandler(hit!)
+                detectionHandler(hit!)
             }
         }
     }
 
     open func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion)
     {
-        print("Detected Exit. Requesting data to update alll regions")
+        if manager.location!.horizontalAccuracy > kCLLocationAccuracyNearestTenMeters {
+            return
+        }
+        print("Detected Exit. Requesting data to update all regions")
         shouldUpdateMonitoredRegions = true
         locationManager.requestLocation()
     }
@@ -242,5 +244,12 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         
         return closestSign
     }
-
+    
+    func distanceFromLocation(signLocation:SignLocation)->Int {
+        let meterToStepRatio = 1.3123
+        
+        let distance = self.locationManager.location!.distance(from: signLocation.location)
+        
+        return Int(distance * meterToStepRatio)
+    }
 }

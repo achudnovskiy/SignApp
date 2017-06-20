@@ -18,3 +18,5 @@ let kCollectionItemKeywordHeightMin:CGFloat = 70
 let kCollectionItemKeywordHeightMax:CGFloat = 140
 
 let kNotificationReloadData = NSNotification.Name(rawValue:"ReloadData")
+let kNotificationScrollToSign = NSNotification.Name(rawValue:"NotificationScrollToSign")
+let kNotificationScrollToSignId = "NotificationScrollToSignId"

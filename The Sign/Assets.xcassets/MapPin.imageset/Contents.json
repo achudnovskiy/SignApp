@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "compassIcon.png"
+      "filename" : "group.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "compassIcon@2x.png"
+      "filename" : "group@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "compassIcon@3x.png"
+      "filename" : "group@3x.png"
     }
   ],
   "info" : {

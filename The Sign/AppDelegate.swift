@@ -14,14 +14,17 @@ import FBSDKCoreKit
 import Branch
 
 let regionRadius:Double = 30
-let kNotificationSignId = "Notificaiton_SignId"
+let kUserNotificationSignId = "Notificaiton_SignId"
+
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
         UNUserNotificationCenter.current().delegate = self
 //        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
 //            <#code#>
@@ -33,10 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         restoreUserData()
         setupLocalNotifications()
         setupLocationMonitoring()
-        
-        if launchOptions?[UIApplicationLaunchOptionsKey.location] != nil {
-            
-        }
         
         
         let branch: Branch = Branch.getInstance()
@@ -56,7 +55,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     //MARK: - UNUserNotificationCenterDelegate
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
-            
+            let signId = response.notification.request.content.userInfo[kUserNotificationSignId]
+            NotificationCenter.default.post(name: kNotificationScrollToSign, object: nil, userInfo: [kNotificationScrollToSignId:signId])
         }
         else if (response.actionIdentifier == UNNotificationDismissActionIdentifier) {
         
@@ -139,7 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 //             notificationContent.attachments
             // notificationContent.body - add for more descriptive notifcation
             // notificationContent.categoryIdentifier - Add for actions i.e. add or skip the sign
-            notificationContent.userInfo = [kNotificationSignId: sign!.objectId]
+            notificationContent.userInfo = [kUserNotificationSignId: sign!.objectId]
 
             
             let notificationRequest = UNNotificationRequest(identifier: "SignDiscover", content: notificationContent, trigger: nil)
@@ -168,7 +168,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     
     //  let settingsURL = URL(string: UIApplicationOpenSettingsURLString)!
-    //  UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+    //  UIApplication.shared.open(settingsURL, options: [:], detectionHandler: nil)
 
     func notifyAboutPermissionProblem() {
         
