@@ -148,7 +148,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         
         let cellId = indexForItemInFocus!
         let signInTransition = collectionSigns[cellId.row]
-        signInTransition.isDiscovered = true
         let cellView = signInFocus!
         
         resetZPosition()
@@ -160,7 +159,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             stopMagnification()
         }
         
-        cellView.viewMode = .Discovered
         cellView.prepareViewForAnimation(toFullscreen: toFullscreen)
 
         UIView.animate(withDuration: 0.33, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
@@ -169,12 +167,20 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }) { (Bool) in
             cellView.prepareViewAfterAnimation(toFullscreen: toFullscreen)
             
-            cellView.keywordLabel.text = signInTransition.thumbnailText
+            self.processSignDiscovery(sign: signInTransition, signCard: cellView)
             self.currentState = newState
             self.view.isUserInteractionEnabled = true
             self.updateStateButton()
         }
     }
+    
+    func processSignDiscovery(sign:SignObject, signCard:SignCard) {
+        print("sign discovered \(sign.objectId)")
+        sign.isDiscovered = true
+        signCard.viewMode = .Discovered
+        signCard.keywordLabel.text = sign.thumbnailText.uppercased()
+    }
+    
     func stopMagnification() {
         if self.signCollectionLayout.fullScreenItemIndex != nil {
             

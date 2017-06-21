@@ -157,7 +157,7 @@ class SignDataSource: NSObject {
     func restoreUserData(userData:[String:AnyObject]) {
         dataArray.forEach { (sign) in
             if userData[sign.objectId] != nil {
-                restoreUserData(userData: userData[sign.objectId] as! [String : AnyObject])
+                sign.unarchive(archivedData: userData[sign.objectId] as! [String : AnyObject])
             }
         }
     }

@@ -26,7 +26,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     @IBOutlet weak var cnstrContentWrapperBottom: NSLayoutConstraint!
     
     var viewMode:SignCardViewMode = .Discovered
-
+    
 
     var shareDelegate:SignShareProtocol!
 
@@ -54,7 +54,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         removeGestureRecognizer(panGesture)
         contentImage.alpha = 1
         keywordLabel.alpha = 1
-//        keywordLabel.isHidden = true
+        keywordLabel.isHidden = true
         contentImage.isHidden = true
         contentImage.image = nil
         wrapperView.image = nil
@@ -77,7 +77,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         case .Discovered:
             isFullscreen ? setConstraintsForFullscreen() : setConstraintsForThumbnail()
         case .NotDiscovered:
-             setConstraintsForThumbnailNotDiscovered()
+            isFullscreen ? setConstraintsForFullscreen() : setConstraintsForThumbnailNotDiscovered()
         case .NotCollected:
              setConstraintsForThumbnailNotCollected()
         }
@@ -235,7 +235,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         cnstrContentWrapperBottom.constant = bottomConstraintForHeight()
         
         contentImage.isHidden = false
-//        keywordLabel.isHidden = true
+        keywordLabel.isHidden = true
     }
 
     func setConstraintsForThumbnail() {
@@ -243,7 +243,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         cnstrContentWrapperBottom.constant = bottomConstraintForHeight()
         
         contentImage.isHidden = true
-//        keywordLabel.isHidden = false
+        keywordLabel.isHidden = false
     }
 
     func bottomConstraintForHeight() -> CGFloat {

@@ -153,11 +153,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func saveUserData() {
         let data = SignDataSource.sharedInstance.exportUserData()
+        print("saving data \(data)")
         UserDefaults.standard.set(data, forKey: "SavedUserData")
     }
     func restoreUserData() {
         let data = UserDefaults.standard.object(forKey: "SavedUserData")
         if data != nil {
+            print("restoring data \(String(describing: data))")
             SignDataSource.sharedInstance.restoreUserData(userData: data as! [String : AnyObject])
         }
     }
