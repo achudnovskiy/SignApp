@@ -339,26 +339,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let itemWidth = signCollectionLayout.itemSize.width
-        let itemSpacing = signCollectionLayout.minimumLineSpacing
         
-        let index = Int(ceil((targetContentOffset.pointee.x) / (itemWidth + itemSpacing)))
-        let newTarget = CGPoint( x: CGFloat(index)  * (itemWidth + itemSpacing) ,y: 0)
-    
-        if newTarget == startScrollOffset && velocity.x != 0 {
-            //Avoid choppy return to original spot when user abruptly lifted the finger
-            DispatchQueue.main.async {
-                scrollView.setContentOffset(newTarget, animated: true)
-            }
-        }
-        else
-        {
-            targetContentOffset.pointee = newTarget
-        }
-        
-        if currentState == .FullscreenView && collectionSigns[index].isDiscovered == false {
-            delayedTransition = true
-        }
+//        if currentState == .FullscreenView && collectionSigns[index].isDiscovered == false {
+//            delayedTransition = true
+//        }
     }
     
     
