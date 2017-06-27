@@ -47,6 +47,9 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     @IBOutlet weak var shareProgressLabel: UILabel!
     
     @IBOutlet weak var cnstrMapButtonLeading: NSLayoutConstraint!
+    @IBOutlet weak var cnstrMapButtonWidth: NSLayoutConstraint!
+    
+    
     
     @IBOutlet weak var backgroundImage: UIImageView!
     
@@ -64,6 +67,13 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    
+    func prepareConstraints() {
+        
+        DimensionGenerator.current.phoneSizeRatio = view.bounds.width / 320
+        self.cnstrMapButtonWidth.constant = DimensionGenerator.current.mapButtonWidth
+    }
+    
     //TODO: REVIEW
     func prepareDataSource() {
         collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
@@ -93,10 +103,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         })
     }
     
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        prepareConstraints()
         
         prepareDataSource()
         
@@ -144,16 +154,16 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
         self.view.isUserInteractionEnabled = false
         let toFullscreen = newState == .FullscreenView
-        let newSize = toFullscreen ? signCollectionView.bounds.size : kCollectionItemSize;
+        let newSize = toFullscreen ? signCollectionView.bounds.size : DimensionGenerator.current.collectionItemSize;
         
         let cellId = indexForItemInFocus!
         let signInTransition = collectionSigns[cellId.row]
         let cellView = signInFocus!
         
         resetZPosition()
+        
         if toFullscreen {
             signCollectionLayout.fullScreenItemIndex = indexForItemInFocus
-            signCollectionLayout.referencePoint = view.convert(view.center, to: signCollectionView)
         }
         else {
             stopMagnification()
@@ -161,7 +171,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         
         cellView.prepareViewForAnimation(toFullscreen: toFullscreen)
 
-        UIView.animate(withDuration: 0.33, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
             cellView.setViewSizeForAnimation(newSize: newSize, toFullscreen: toFullscreen)
             cellView.layoutIfNeeded()
         }) { (Bool) in
@@ -191,8 +201,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
 
             
             self.signCollectionLayout.fullScreenItemIndex = nil
-            self.signCollectionLayout.referencePoint = nil
-            
         }
     }
     func resetZPosition() {
@@ -209,11 +217,13 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cardCollectionViewItemIdentifier, for: indexPath) as! SignCard
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Card", for: indexPath) as! SignCard
         let signToShow = collectionSigns[indexPath.row]
         cell.isOpaque = true
         cell.keywordLabel.text = signToShow.thumbnailText.uppercased()
-        cell.contentImage.image = signToShow.infographic
+        cell.contentLabel.text = signToShow.content.uppercased()
+        cell.locationLabel.text = signToShow.locationName.uppercased()
+//        cell.contentImage.image = signToShow.infographic
         
         var cachedImage = cachedImages.object(forKey: signToShow.uniqueId)
         if cachedImage == nil {
@@ -229,6 +239,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         signCollectionView.panGestureRecognizer.require(toFail: cell.panGesture!)
         cell.shareDelegate = self
         
+        cell.layoutIfNeeded()
         return cell
     }
     
@@ -386,10 +397,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             collectionLayout.sectionInset = UIEdgeInsets();
         }
         else {
-            collectionLayout.itemSize = kCollectionItemSize
-            collectionLayout.minimumLineSpacing = kCollectionItemSpacing
+            collectionLayout.itemSize = DimensionGenerator.current.collectionItemSize
+            collectionLayout.minimumLineSpacing = DimensionGenerator.current.collectionItemSpacing
             let sideInset = signCollectionView.bounds.size.width / 2 - collectionLayout.itemSize.width / 2
-            collectionLayout.sectionInset = UIEdgeInsets(top: kCollectionItemThumbnailInset + kCollectionItemCenterOffset, left: sideInset, bottom: kCollectionItemThumbnailInset, right: sideInset)
+            collectionLayout.sectionInset = UIEdgeInsets(top: DimensionGenerator.current.collectionItemThumbnailInset + DimensionGenerator.current.collectionItemThumbnailOffset, left: sideInset, bottom: DimensionGenerator.current.collectionItemThumbnailInset, right: sideInset)
         }
         collectionLayout.invalidateLayout()
     }

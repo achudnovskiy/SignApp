@@ -10,43 +10,49 @@ import UIKit
 
 class SignCollectionLayout: UICollectionViewFlowLayout {
     var fullScreenItemIndex:IndexPath?
-    var referencePoint:CGPoint?
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        let array = super.layoutAttributesForElements(in: rect)!
+        guard let superAttributes = super.layoutAttributesForElements(in: rect),
+            let attributes = NSArray(array: superAttributes, copyItems: true) as? [UICollectionViewLayoutAttributes]
+            else { return nil }
         
-        return array.map {
+        return attributes.map({
             atts in
-
+            
             var atts = atts
             if atts.representedElementCategory == .cell {
                 let ip = atts.indexPath
                 atts = self.layoutAttributesForItem(at:ip)!
             }
             return atts
-        }
+            
+        })
+        
+        
     }
     
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        let layoutAttributes = super.layoutAttributesForItem(at: indexPath)
+        guard let layoutAttributes = super.layoutAttributesForItem(at: indexPath)?.copy() as? UICollectionViewLayoutAttributes else { return nil}
         guard let collectionView = self.collectionView else { return layoutAttributes }
         
         if indexPath == fullScreenItemIndex {
             
+            guard let focusSignCenter = collectionView.cellForItem(at: fullScreenItemIndex!)?.center else {return layoutAttributes}
             let bound = collectionView.bounds.width / 3
-            let diff =  abs(collectionView.contentOffset.x + collectionView.bounds.width / 2 - referencePoint!.x) / bound
+            
+            let diff =  abs(collectionView.contentOffset.x + collectionView.bounds.width / 2 - focusSignCenter.x) / bound
             
             let fullScreenSize = collectionView.bounds.size
             if diff <= 0.5 {
-                layoutAttributes?.size = CGSize(width: fullScreenSize.width * (1 - diff), height: fullScreenSize.height * (1 - diff))
-                layoutAttributes?.center = CGPoint(x: referencePoint!.x, y: referencePoint!.y + kCollectionItemCenterOffset / 2 * diff * 2)
+                layoutAttributes.size = CGSize(width: fullScreenSize.width * (1 - diff), height: fullScreenSize.height * (1 - diff))
+//                layoutAttributes?.center = CGPoint(x: focusSignCenter.x, y: focusSignCenter.y + kCollectionItemCenterOffset / 2 * diff * 2)
             }
-            layoutAttributes?.zIndex = 1
+            layoutAttributes.zIndex = 1
         }
         else {
             let collectionCenter = collectionView.frame.size.width/2
             let offset = collectionView.contentOffset.x
-            let normalizedCenter = layoutAttributes!.center.x - offset
+            let normalizedCenter = layoutAttributes.center.x - offset
             
             let maxDistance = self.itemSize.width + self.minimumLineSpacing
             let distance = min(abs(collectionCenter - normalizedCenter), maxDistance)
@@ -54,7 +60,8 @@ class SignCollectionLayout: UICollectionViewFlowLayout {
             
             let scaleFactor:CGFloat = 0.9
             let scale = ratio * (1 - scaleFactor) + scaleFactor
-            layoutAttributes!.transform3D = CATransform3DScale(CATransform3DIdentity, scale, scale, 1)
+            layoutAttributes.transform3D = CATransform3DScale(CATransform3DIdentity, scale, scale, 1)
+            
         }
         return layoutAttributes
     }

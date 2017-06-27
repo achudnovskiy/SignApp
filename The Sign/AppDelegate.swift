@@ -51,11 +51,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         return true
     }
-
+    
     //MARK: - UNUserNotificationCenterDelegate
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert])
+    }
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
-            let signId = response.notification.request.content.userInfo[kUserNotificationSignId]
+            let signId = response.notification.request.content.userInfo[kUserNotificationSignId]!
+            
             NotificationCenter.default.post(name: kNotificationScrollToSign, object: nil, userInfo: [kNotificationScrollToSignId:signId])
         }
         else if (response.actionIdentifier == UNNotificationDismissActionIdentifier) {

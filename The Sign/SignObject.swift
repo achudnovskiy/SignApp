@@ -27,9 +27,8 @@ public class SignObject: NSObject {
     let objectId:String
     
     let title:String
-    let mysteryText:String
     let image:UIImage
-    let infographic:UIImage
+    let content:String
     var isDiscovered: Bool = false;
     var isCollected: Bool = false;
     
@@ -41,29 +40,25 @@ public class SignObject: NSObject {
     let latitude:Double
     let longitude:Double
     let locationName:String
-    let LocationDescription:String
     
     var lastVisitedDate:Date?
     var sharedDate:Date?
 
     init(objectId:String,
          title:String,
-         mysteryText:String,
+         content:String,
          image:UIImage,
-         infographic:UIImage,
          latitude: CLLocationDegrees,
          longitude: CLLocationDegrees,
-         locationName:String,
-         locationDescription:String) {
+         locationName:String) {
         self.objectId = objectId
         self.title = title
-        self.mysteryText = mysteryText
         self.image = image
-        self.infographic = infographic
+        self.content = content
+        
         self.latitude = latitude
         self.longitude = longitude
         self.locationName = locationName
-        self.LocationDescription = locationDescription
     }
     
     public override var description: String {
@@ -91,9 +86,7 @@ public class SignObject: NSObject {
                     return "Tap to see a new Sign"
                 }
             }
-            else {
-                return mysteryText
-            }
+            return ""
         }
     }
     

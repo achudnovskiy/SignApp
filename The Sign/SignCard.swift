@@ -18,12 +18,22 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var wrapperView: UIImageView!
     @IBOutlet weak var keywordLabel: UILabel!
-  
-    @IBOutlet weak var contentWrapperView: UIView!
-    @IBOutlet weak var contentImage: UIImageView!
+    @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var contentLabel: UILabel!
     
+    @IBOutlet weak var cnstrKeywordTop: NSLayoutConstraint!
+//    @IBOutlet weak var cnstrKeywordBottom: NSLayoutConstraint!
+    @IBOutlet weak var cnstrKeywordAllignY: NSLayoutConstraint!
+    @IBOutlet weak var cnstrKeywordAlignX: NSLayoutConstraint!
+    
+    @IBOutlet weak var cnstrKeywordLead: NSLayoutConstraint!
+    
+    @IBOutlet weak var contentWrapperView: UIView!
+    
+    @IBOutlet weak var cnstrContentWrapperHeightLess: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperHeight: NSLayoutConstraint!
-    @IBOutlet weak var cnstrContentWrapperBottom: NSLayoutConstraint!
+    @IBOutlet weak var cnstrContentWrapperWidth: NSLayoutConstraint!
+    
     
     var viewMode:SignCardViewMode = .Discovered
     
@@ -52,13 +62,16 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     
     override func prepareForReuse() {
         removeGestureRecognizer(panGesture)
-        contentImage.alpha = 1
+        contentLabel.alpha = 1
+        contentLabel.isHidden = true
+        contentLabel.text = nil
+        locationLabel.alpha = 1
+        locationLabel.isHidden = true
+        locationLabel.text = nil
+        
         keywordLabel.alpha = 1
-        keywordLabel.isHidden = true
-        contentImage.isHidden = true
-        contentImage.image = nil
-        wrapperView.image = nil
         keywordLabel.text = nil
+        wrapperView.image = nil
         wrapperView.isOpaque = true
         
         
@@ -92,16 +105,16 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         if isFullscreen {
-            let maxDistance = UIScreen.main.bounds.height - kCollectionItemSize.height
+            
+            let maxDistance = UIScreen.main.bounds.height - DimensionGenerator.current.collectionItemSize.height
             let curDistance = UIScreen.main.bounds.height - wrapperView.bounds.height
             let ratio = curDistance / maxDistance //0 when fullscreen, 1 when thumbnail
-            let newHeight = round(70 + 70 * (1-ratio))
-            cnstrContentWrapperHeight.constant = newHeight
-            cnstrContentWrapperBottom.constant = bottomConstraintForHeight()
+//            let newHeight = round(70 + 70 * (1-ratio))
+//            cnstrContentWrapperHeight.constant = newHeight
             
-            keywordLabel.alpha = ratio
-            contentImage.alpha = 1 - ratio
             
+            locationLabel.alpha = 1 - ratio
+            contentLabel.alpha = 1 - ratio
             self.layoutIfNeeded()
         }
     }
@@ -195,12 +208,14 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         layer.zPosition = 1
         prepareViewForMode(viewMode: viewMode, isFullscreenView: toFullscreen)
         if toFullscreen {
-            contentImage.alpha = 0
-            contentImage.isHidden =  false
+            
+            locationLabel.isHidden = false
+            contentLabel.isHidden = false
+            locationLabel.alpha = 0
+            contentLabel.alpha = 0
+            
         }
         else {
-            keywordLabel.alpha = 0
-            keywordLabel.isHidden = false
         }
     }
     
@@ -210,60 +225,63 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         frame.size = newSize
         self.bounds = frame;
         if toFullscreen {
-            self.center = CGPoint(x: center.x, y: center.y - kCollectionItemCenterOffset / 2)
-            keywordLabel.alpha = 0
-            contentImage.alpha = 1
-
+            self.center = CGPoint(x: center.x, y: center.y - DimensionGenerator.current.collectionItemThumbnailOffset / 2)
+            locationLabel.alpha = 1
+            contentLabel.alpha = 1
+            keywordLabel.textAlignment = .left
         }
         else {
-            self.center = CGPoint(x: center.x, y: center.y + kCollectionItemCenterOffset / 2)
-            keywordLabel.alpha = 1
-            contentImage.alpha = 0
-
+            self.center = CGPoint(x: center.x, y: center.y + DimensionGenerator.current.collectionItemThumbnailOffset / 2)
+            locationLabel.alpha = 0
+            contentLabel.alpha = 0
         }
     }
 
     
     func prepareViewAfterAnimation(toFullscreen:Bool) {
-        contentImage.isHidden =  !toFullscreen
-        keywordLabel.isHidden =  false
         self.isFullscreen = toFullscreen
     }
 
     func setConstraintsForFullscreen() {
-        cnstrContentWrapperHeight.constant = 140
-        cnstrContentWrapperBottom.constant = bottomConstraintForHeight()
+        cnstrContentWrapperHeight.isActive = false
+        cnstrContentWrapperHeightLess.isActive = true
+        cnstrContentWrapperHeightLess.constant = DimensionGenerator.current.collectionItemContentFullHeight
         
-        contentImage.isHidden = false
-        keywordLabel.isHidden = true
+        cnstrKeywordAlignX.isActive = false
+        cnstrKeywordLead.isActive = true
+        cnstrKeywordAllignY.isActive = false
+        cnstrKeywordTop.isActive = true
+        cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentFullWidth
+        cnstrContentWrapperHeight.constant = DimensionGenerator.current.collectionItemContentFullHeight
+//        cnstrKeywordBottom.constant = 160
     }
 
     func setConstraintsForThumbnail() {
-        cnstrContentWrapperHeight.constant = 70
-        cnstrContentWrapperBottom.constant = bottomConstraintForHeight()
         
-        contentImage.isHidden = true
-        keywordLabel.isHidden = false
-    }
-
-    func bottomConstraintForHeight() -> CGFloat {
+        cnstrContentWrapperHeightLess.isActive = false
+        cnstrContentWrapperHeight.isActive = true
+        cnstrContentWrapperHeight.constant = DimensionGenerator.current.collectionItemContentSmallHeight
         
-        return (kCollectionItemSize.height - cnstrContentWrapperHeight.constant) / 2
+        cnstrKeywordLead.isActive = false
+        cnstrKeywordAlignX.isActive = true
+        cnstrKeywordTop.isActive = false
+        cnstrKeywordAllignY.isActive = true
+//        cnstrKeywordBottom.constant = cnstrKeywordTop.constant
+        cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentSmallWidth
+        locationLabel.isHidden = true
+        contentLabel.isHidden = true
+        locationLabel.alpha = 0
+        contentLabel.alpha = 0
     }
+    
     
     func setConstraintsForThumbnailNotDiscovered() {
         cnstrContentWrapperHeight.constant = wrapperView.bounds.height
-        cnstrContentWrapperBottom.constant = bottomConstraintForHeight()
         
-        contentImage.isHidden = true
-        keywordLabel.isHidden = false
     }
     
     func setConstraintsForThumbnailNotCollected() {
         cnstrContentWrapperHeight.constant = wrapperView.bounds.height
-        cnstrContentWrapperBottom.constant = bottomConstraintForHeight()
         
-        contentImage.isHidden = true
-        keywordLabel.isHidden = false
     }
 }

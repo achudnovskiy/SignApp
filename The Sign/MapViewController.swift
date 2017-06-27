@@ -110,7 +110,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     {
         let signAnnotation = MKPointAnnotation()
         signAnnotation.title = sign.locationName
-//        signAnnotation.subtitle = sign.LocationDescription
         signAnnotation.coordinate = CLLocationCoordinate2D(latitude: sign.latitude, longitude: sign.longitude)
         return signAnnotation
     }
