@@ -45,7 +45,7 @@ class SignCollectionLayout: UICollectionViewFlowLayout {
             let fullScreenSize = collectionView.bounds.size
             if diff <= 0.5 {
                 layoutAttributes.size = CGSize(width: fullScreenSize.width * (1 - diff), height: fullScreenSize.height * (1 - diff))
-//                layoutAttributes?.center = CGPoint(x: focusSignCenter.x, y: focusSignCenter.y + kCollectionItemCenterOffset / 2 * diff * 2)
+                layoutAttributes.center = CGPoint(x: focusSignCenter.x, y: collectionView.center.y + DimensionGenerator.current.collectionItemThumbnailInset )
             }
             layoutAttributes.zIndex = 1
         }

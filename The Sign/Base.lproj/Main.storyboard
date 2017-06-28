@@ -88,6 +88,7 @@
                                                                 </label>
                                                             </subviews>
                                                             <color key="backgroundColor" red="0.15686274510000001" green="0.1529411765" blue="0.14901960780000001" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <rect key="contentStretch" x="0.050000000000000003" y="0.0" width="1" height="1"/>
                                                             <constraints>
                                                                 <constraint firstItem="qaR-k0-aw1" firstAttribute="centerY" secondItem="9bC-70-8AO" secondAttribute="centerY" id="3my-Pd-Ld3"/>
                                                                 <constraint firstItem="EFT-Sb-THE" firstAttribute="leading" secondItem="9bC-70-8AO" secondAttribute="leading" constant="20" identifier="ContentLocationLead" id="Jh3-oZ-m6d"/>
@@ -95,8 +96,10 @@
                                                                 <constraint firstAttribute="trailing" secondItem="EFT-Sb-THE" secondAttribute="trailing" constant="20" id="M3I-Wn-Isg"/>
                                                                 <constraint firstAttribute="height" relation="lessThanOrEqual" constant="130" id="Qfc-J0-8mM"/>
                                                                 <constraint firstItem="qaR-k0-aw1" firstAttribute="leading" secondItem="9bC-70-8AO" secondAttribute="leading" constant="20" id="USn-in-vtq"/>
+                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="9bC-70-8AO" secondAttribute="leading" priority="750" constant="20" id="VQC-XH-cXc"/>
                                                                 <constraint firstItem="M9k-k7-SeD" firstAttribute="trailing" secondItem="EFT-Sb-THE" secondAttribute="trailing" id="WmQ-Om-5By"/>
                                                                 <constraint firstItem="EFT-Sb-THE" firstAttribute="top" secondItem="qaR-k0-aw1" secondAttribute="bottom" constant="5" id="boC-g9-TBf"/>
+                                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qaR-k0-aw1" secondAttribute="trailing" priority="750" constant="20" id="cqe-fE-nYY"/>
                                                                 <constraint firstItem="qaR-k0-aw1" firstAttribute="top" secondItem="9bC-70-8AO" secondAttribute="top" constant="20" identifier="ContentKeywordTop" id="fxy-Nd-R76"/>
                                                                 <constraint firstAttribute="bottom" secondItem="M9k-k7-SeD" secondAttribute="bottom" constant="20" identifier="ContentBottom" id="l8k-pA-Rbj"/>
                                                                 <constraint firstAttribute="height" constant="130" identifier="ContenWrappertHeight" id="mxJ-y6-iaT"/>
@@ -119,7 +122,7 @@
                                                         <constraint firstAttribute="trailing" secondItem="9bC-70-8AO" secondAttribute="trailing" identifier="ContentTrail" id="aa2-QE-JdR"/>
                                                     </constraints>
                                                 </view>
-                                                <visualEffectView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pcd-Cm-jVT">
+                                                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pcd-Cm-jVT">
                                                     <rect key="frame" x="0.0" y="-0.5" width="200" height="354.5"/>
                                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="onN-qQ-0uT">
                                                         <rect key="frame" x="0.0" y="0.0" width="200" height="354.5"/>
@@ -141,11 +144,13 @@
                                             <constraint firstItem="Pcd-Cm-jVT" firstAttribute="trailing" secondItem="8jb-DP-DoQ" secondAttribute="trailing" id="wNQ-eG-n0D"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="blurEffectView" destination="Pcd-Cm-jVT" id="JiZ-yG-0Eb"/>
                                             <outlet property="cnstrContentWrapperHeight" destination="mxJ-y6-iaT" id="zQn-RA-rKA"/>
                                             <outlet property="cnstrContentWrapperHeightLess" destination="Qfc-J0-8mM" id="UTa-9h-rTb"/>
                                             <outlet property="cnstrContentWrapperWidth" destination="n3B-AP-V3K" id="UAR-Sk-MRF"/>
                                             <outlet property="cnstrKeywordAlignX" destination="LWf-Sf-ZpM" id="cJI-JV-Elo"/>
                                             <outlet property="cnstrKeywordAllignY" destination="3my-Pd-Ld3" id="zA2-eh-5By"/>
+                                            <outlet property="cnstrKeywordHeight" destination="3VF-1b-3ya" id="1Vb-SB-yR7"/>
                                             <outlet property="cnstrKeywordLead" destination="USn-in-vtq" id="9zX-Bd-jOn"/>
                                             <outlet property="cnstrKeywordTop" destination="fxy-Nd-R76" id="lqo-uh-LLw"/>
                                             <outlet property="contentLabel" destination="M9k-k7-SeD" id="nLn-4H-jIE"/>

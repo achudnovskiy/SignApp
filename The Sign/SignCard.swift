@@ -21,20 +21,22 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var contentLabel: UILabel!
     
-    @IBOutlet weak var cnstrKeywordTop: NSLayoutConstraint!
-//    @IBOutlet weak var cnstrKeywordBottom: NSLayoutConstraint!
-    @IBOutlet weak var cnstrKeywordAllignY: NSLayoutConstraint!
-    @IBOutlet weak var cnstrKeywordAlignX: NSLayoutConstraint!
+    @IBOutlet var cnstrKeywordTop: NSLayoutConstraint!
+    @IBOutlet var cnstrKeywordAllignY: NSLayoutConstraint!
+    @IBOutlet var cnstrKeywordAlignX: NSLayoutConstraint!
     
-    @IBOutlet weak var cnstrKeywordLead: NSLayoutConstraint!
+    @IBOutlet var cnstrKeywordHeight: NSLayoutConstraint!
+    @IBOutlet var cnstrKeywordLead: NSLayoutConstraint!
     
     @IBOutlet weak var contentWrapperView: UIView!
     
-    @IBOutlet weak var cnstrContentWrapperHeightLess: NSLayoutConstraint!
-    @IBOutlet weak var cnstrContentWrapperHeight: NSLayoutConstraint!
+    @IBOutlet var cnstrContentWrapperHeightLess: NSLayoutConstraint!
+    @IBOutlet var cnstrContentWrapperHeight: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperWidth: NSLayoutConstraint!
     
-    
+    @IBOutlet weak var blurEffectView: UIVisualEffectView!
+    var animator: UIViewPropertyAnimator?
+
     var viewMode:SignCardViewMode = .Discovered
     
 
@@ -74,25 +76,53 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         wrapperView.image = nil
         wrapperView.isOpaque = true
         
+        animator = UIViewPropertyAnimator(duration: 1, curve: .linear) {
+            self.blurEffectView.effect = nil
+        }
+//        cnstrKeywordTop = nil
+//        cnstrKeywordAllignY = nil
+//        cnstrKeywordAlignX = nil
+//        cnstrKeywordHeight = nil
+//        cnstrKeywordLead = nil
+//        cnstrContentWrapperHeightLess = nil
+//        cnstrContentWrapperHeight = nil
         
         super.prepareForReuse()
     }
     
     func prepareViewForMode(viewMode:SignCardViewMode, isFullscreenView isFullscreen :Bool) {
         self.viewMode = viewMode
+        
         if isFullscreen {
             self.applyBorder(visible: false)
+            setConstraintsForFullscreen()
+            updateElementsVisibility(isVisible: true)
         }
         else {
             self.applyBorder(visible: true)
+            switch viewMode {
+            case .Discovered:
+                setConstraintsForThumbnail()
+            case .NotDiscovered:
+                setConstraintsForThumbnailNotDiscovered()
+            case .NotCollected:
+                setConstraintsForThumbnailNotCollected()
+            }
+            updateElementsVisibility(isVisible: false)
         }
-        switch viewMode {
-        case .Discovered:
-            isFullscreen ? setConstraintsForFullscreen() : setConstraintsForThumbnail()
-        case .NotDiscovered:
-            isFullscreen ? setConstraintsForFullscreen() : setConstraintsForThumbnailNotDiscovered()
-        case .NotCollected:
-             setConstraintsForThumbnailNotCollected()
+//        contentWrapperView.layoutIfNeeded()
+//        keywordLabel.layoutIfNeeded()
+//        self.layoutIfNeeded()
+    }
+    
+    func updateElementsVisibility(isVisible:Bool) {
+        if isVisible {
+            locationLabel.isHidden = false
+            contentLabel.isHidden = false
+        }
+        else {
+            locationLabel.isHidden = true
+            contentLabel.isHidden = true
         }
     }
     
@@ -103,20 +133,33 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         addGestureRecognizer(panGesture)
     }
     
+    func prepareBlurAnimator() {
+        
+    }
+    
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
+        let ratio = layoutAttributes.frame.height / DimensionGenerator.current.collectionItemSize.height*1.8 - 0.8
+        
+//        if ratio < 1 {
+//            ratio /= 2
+//        }
         if isFullscreen {
             
-            let maxDistance = UIScreen.main.bounds.height - DimensionGenerator.current.collectionItemSize.height
-            let curDistance = UIScreen.main.bounds.height - wrapperView.bounds.height
-            let ratio = curDistance / maxDistance //0 when fullscreen, 1 when thumbnail
-//            let newHeight = round(70 + 70 * (1-ratio))
-//            cnstrContentWrapperHeight.constant = newHeight
+//            let maxDistance = UIScreen.main.bounds.height - DimensionGenerator.current.collectionItemSize.height
+//            let curDistance = UIScreen.main.bounds.height - wrapperView.bounds.height
+//            let ratio = curDistance / maxDistance //0 when fullscreen, 1 when thumbnail
             
+//            let newHeight = round(70 + 70 * (1-ratio))
+//            cnstrContentWrapperHeight.constant = DimensionGenerator.current/
             
             locationLabel.alpha = 1 - ratio
             contentLabel.alpha = 1 - ratio
-            self.layoutIfNeeded()
         }
+        else {
+            print("animator set to \(ratio)")
+            animator?.fractionComplete = CGFloat(ratio)
+        }
+//            self.layoutIfNeeded()
     }
 
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -208,9 +251,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         layer.zPosition = 1
         prepareViewForMode(viewMode: viewMode, isFullscreenView: toFullscreen)
         if toFullscreen {
-            
-            locationLabel.isHidden = false
-            contentLabel.isHidden = false
+            self.updateElementsVisibility(isVisible: true)
             locationLabel.alpha = 0
             contentLabel.alpha = 0
             
@@ -240,20 +281,21 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     
     func prepareViewAfterAnimation(toFullscreen:Bool) {
         self.isFullscreen = toFullscreen
+        self.updateElementsVisibility(isVisible: self.isFullscreen)
     }
 
     func setConstraintsForFullscreen() {
         cnstrContentWrapperHeight.isActive = false
         cnstrContentWrapperHeightLess.isActive = true
         cnstrContentWrapperHeightLess.constant = DimensionGenerator.current.collectionItemContentFullHeight
+        cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentFullWidth
         
         cnstrKeywordAlignX.isActive = false
         cnstrKeywordLead.isActive = true
         cnstrKeywordAllignY.isActive = false
         cnstrKeywordTop.isActive = true
-        cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentFullWidth
-        cnstrContentWrapperHeight.constant = DimensionGenerator.current.collectionItemContentFullHeight
-//        cnstrKeywordBottom.constant = 160
+        
+        keywordLabel.numberOfLines = 1
     }
 
     func setConstraintsForThumbnail() {
@@ -261,27 +303,46 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         cnstrContentWrapperHeightLess.isActive = false
         cnstrContentWrapperHeight.isActive = true
         cnstrContentWrapperHeight.constant = DimensionGenerator.current.collectionItemContentSmallHeight
+        cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentSmallWidth
         
         cnstrKeywordLead.isActive = false
         cnstrKeywordAlignX.isActive = true
         cnstrKeywordTop.isActive = false
         cnstrKeywordAllignY.isActive = true
-//        cnstrKeywordBottom.constant = cnstrKeywordTop.constant
-        cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentSmallWidth
-        locationLabel.isHidden = true
-        contentLabel.isHidden = true
-        locationLabel.alpha = 0
-        contentLabel.alpha = 0
+        
+        cnstrKeywordHeight.isActive = true
+        keywordLabel.numberOfLines = 1
     }
     
     
     func setConstraintsForThumbnailNotDiscovered() {
+        cnstrContentWrapperHeightLess.isActive = false
+        cnstrContentWrapperHeight.isActive = true
         cnstrContentWrapperHeight.constant = wrapperView.bounds.height
+        cnstrContentWrapperWidth.constant = wrapperView.bounds.width
         
+        cnstrKeywordLead.isActive = false
+        cnstrKeywordAlignX.isActive = true
+        cnstrKeywordTop.isActive = false
+        cnstrKeywordAllignY.isActive = true
+        
+        cnstrKeywordHeight.isActive = false
+        keywordLabel.numberOfLines = 5
     }
     
     func setConstraintsForThumbnailNotCollected() {
+        cnstrContentWrapperHeightLess.isActive = false
+        cnstrContentWrapperHeight.isActive = true
         cnstrContentWrapperHeight.constant = wrapperView.bounds.height
+        cnstrContentWrapperWidth.constant = wrapperView.bounds.width
         
+        cnstrKeywordLead.isActive = false
+        cnstrKeywordAlignX.isActive = true
+        cnstrKeywordTop.isActive = false
+        cnstrKeywordAllignY.isActive = true
+        
+        
+        cnstrKeywordHeight.isActive = false
+        keywordLabel.numberOfLines = 2
     }
 }
