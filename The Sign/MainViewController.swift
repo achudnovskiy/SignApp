@@ -86,64 +86,84 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             cachedImages.setObject(sign.proccessImage(), forKey: sign.uniqueId)
         }
         
-        LocationTracker.sharedInstance.getClosestSign(with: { (sign) in
-            guard sign != nil else { return }
-            self.discoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: sign!.objectId)
-            guard self.discoverySign != nil else { return }
-            
-            DispatchQueue.main.async {
-                self.signCollectionView.performBatchUpdates({
-                    self.collectionSigns = self.collectionSigns + [self.discoverySign!]
-                    self.signCollectionView.performBatchUpdates({
-                        self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
-                    }, completion: nil)
-                }, completion: nil)
-            }
-            
-        })
+        
+    }
+    
+    func showSignNearby(sign:SignObject) {
+        self.discoverySign = nil
+        guard let newDiscoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: sign.objectId)  else { return }
+        self.discoverySign = newDiscoverySign
+        
+        DispatchQueue.main.async {
+            self.collectionSigns = self.collectionSigns + [self.discoverySign!]
+            self.signCollectionView.performBatchUpdates({
+                self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
+            }, completion: nil)
+        }
+        
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareConstraints()
-        
         prepareDataSource()
         
         stateButtonView.applyPlainShadow()
         mapButtonView.applyPlainShadow()
-        
-        currentState = .ThumbnailView
+        setCollectionLayoutProperties(collectionLayout: signCollectionLayout, isFullscreen: false)
         signCollectionView.backgroundColor = UIColor.clear
+        
         updateStateButton()
         
         if collectionSigns.count != 0 {
             backgroundImage.image = collectionSigns.first?.image.applyDefaultEffect()?.optimizedImage()
         }
         else {
-            let path = Bundle.main.path(forResource: "DefaultBackgroundImage", ofType: "png", inDirectory: "Content")!
-            backgroundImage.image = UIImage(contentsOfFile: path)!.applyDefaultEffect()?.optimizedImage()
+            backgroundImage.image = UIImage(named: "DefaultBackgroundImage")?.applyDefaultEffect()?.optimizedImage()
         }
         
-        setCollectionLayoutProperties(collectionLayout: signCollectionLayout, isFullscreen: false)
         
-        NotificationCenter.default.addObserver(forName: kNotificationReloadData, object: nil, queue: OperationQueue.main) { (notification) in
+    }
+    
+    func observerNotifications() {
+        NotificationCenter.default.addObserver(forName: kNotificationReloadData,
+                                               object: nil,
+                                               queue: OperationQueue.current) {
+                                                (notification) in
             self.prepareDataSource()
-            self.signCollectionView.reloadData()
+            DispatchQueue.main.async {
+                self.signCollectionView.reloadData()
+            }
         }
-        NotificationCenter.default.addObserver(forName: kNotificationScrollToSign, object: nil, queue: OperationQueue.main) { (notification) in
+        
+        NotificationCenter.default.addObserver(forName: kNotificationScrollToSign,
+                                               object: nil,
+                                               queue: OperationQueue.current) {
+                                                (notification) in
             let signId = notification.userInfo![kNotificationScrollToSignId] as! String
             guard let sign = SignDataSource.sharedInstance.findSignObjById(objectId: signId) else { return }
             
             guard let index = self.indexForSign(sign: sign) else { return }
             self.delayedTransition = true
-            self.signCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: true)
+            DispatchQueue.main.async {
+                self.signCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: true)
+            }
+        }
+        
+        NotificationCenter.default.addObserver(forName: kNotificationSignNearby,
+                                               object: LocationTracker.sharedInstance,
+                                               queue: OperationQueue.current) {
+                                                (notification) in
+            let signId = notification.userInfo![kNotificationSignNearbyId] as! String
+            guard let sign = SignDataSource.sharedInstance.findSignObjById(objectId: signId) else { return }
+            self.showSignNearby(sign: sign)
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        cachedImages.removeAllObjects()
     }
     
     
@@ -234,7 +254,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         cell.wrapperView.image = cachedImages.object(forKey: signToShow.uniqueId)
         cell.prepareViewForMode(viewMode: signToShow.viewMode, isFullscreenView: false)
         cell.prepareGestureRecognition()
-//        cell.prepareBlurAnimator()
         
         signCollectionView.panGestureRecognizer.require(toFail: cell.panGesture!)
         cell.shareDelegate = self

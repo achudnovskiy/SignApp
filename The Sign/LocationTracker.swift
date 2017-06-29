@@ -34,7 +34,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     internal var detectionHandler:((_ location:SignLocation) -> Void)!
     
-    internal var closestSignRequestHandler:((_ closestSign:SignLocation?) -> Void)?
+//    internal var closestSignRequestHandler:((_ closestSign:SignLocation?) -> Void)?
     internal var shouldUpdateMonitoredRegions:Bool = false
     
     //MARK:- Public API
@@ -104,17 +104,21 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         return false
     }
     
-    public func getClosestSign(with completioHandler:@escaping (_ location:SignLocation?) -> Void) {
-        if shouldUpdateCurrentLocation(current: self.currentLocation) {
-            closestSignRequestHandler = completioHandler
-            locationManager.requestLocation()
-        }
-        else {
-            let closest = getClosestSign(location: self.currentLocation!, from: self.allLocations)
-            completioHandler(closest)
-        }
+//    if shouldUpdateCurrentLocation(current: self.currentLocation) {
+//    closestSignRequestHandler = completioHandler
+//    locationManager.requestLocation()
+//    }
+//    else {
+//    let closest = getClosestSign(location: self.currentLocation!, from: self.allLocations)
+//    completioHandler(closest)
+//    }
+    
+    func notifyAboutSignNearby(sign:SignLocation) {
+        NotificationCenter.default.post(name: kNotificationSignNearby,
+                                        object: self,
+                                        userInfo: [ kNotificationSignNearbyId: sign.objectId])
     }
-
+    
     //MARK:- CLLocaitonManager Delegate protocol
     
     open func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion)
@@ -129,13 +133,11 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         }
         else {
             print("Checking for location hit with \(region.identifier)")
-            let hit = allLocations.first(where: { (sign) -> Bool in
+            guard let hit = allLocations.first(where: { (sign) -> Bool in
                 return sign.objectId == region.identifier
-            })
-            if hit != nil {
-                print("Got location hit \(hit!.objectId)")
-                detectionHandler(hit!)
-            }
+            }) else {return}
+            print("Got location hit \(hit.objectId)")
+            detectionHandler(hit)
         }
     }
 
@@ -181,35 +183,43 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         if currentRegion != nil {
             locationManager.stopMonitoring(for: currentRegion!)
         }
-        
         if currentLocation != nil {
             print("Setting home region to \(location.coordinate)")
             currentRegion = CLCircularRegion(center: currentLocation!.coordinate, radius: kCurrentLocationRadius, identifier: "CurrentRegion")
             locationManager.startMonitoring(for: currentRegion!)
         }
     }
-
+    
+    func processDeferredLocationUpdates(locations:[CLLocation]) {
+        //TODO: process delayed location updates for sign discoveries
+    }
+    
     open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        currentLocation = manager.location
-        print("Updating current location to \(String(describing: manager.location?.coordinate))")
-        if closestSignRequestHandler != nil {
-            let closest = getClosestSign(location: currentLocation, from: self.allLocations)
-            closestSignRequestHandler!(closest)
-            closestSignRequestHandler = nil
-            print("Finding closest sign: \(String(describing: closest))")
+        if locations.count > 1 {
+            let defferredLocatonUpadtes = locations[0...locations.count-1]
+            self.processDeferredLocationUpdates(locations: Array(defferredLocatonUpadtes))
+        }
+        
+        guard let newCurrentLocation = locations.last,  newCurrentLocation.horizontalAccuracy<=kCLLocationAccuracyNearestTenMeters else {
+            locationManager.requestLocation()
+            return
+        }
+        
+        currentLocation = newCurrentLocation
+        
+        print("Updating current location to \(String(describing: newCurrentLocation.coordinate))")
+        if let closest = getClosestSign(location: newCurrentLocation, from: self.allLocations) {
+            notifyAboutSignNearby(sign: closest)
         }
         
         if shouldUpdateMonitoredRegions {
             print("Starting Updating regions")
-            if currentLocation != nil {
-                updateMonitoredRegions(location: currentLocation!)
-            }
-            else {
-                locationManager.requestLocation()
-            }
+            updateMonitoredRegions(location: newCurrentLocation)
             shouldUpdateMonitoredRegions = false
         }
     }
+    
+    
     
     
     open func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
@@ -247,7 +257,9 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     func distanceFromLocation(signLocation:SignLocation)->Int {
         let meterToStepRatio = 1.3123
-        
+//        if self.locationManager.location!.horizontalAccuracy > kCLLocationAccuracyNearestTenMeters {
+//            return
+//        }
         let distance = self.locationManager.location!.distance(from: signLocation.location)
         
         return Int(distance * meterToStepRatio)

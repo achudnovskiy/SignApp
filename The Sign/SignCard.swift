@@ -63,6 +63,8 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     }
     
     override func prepareForReuse() {
+        super.prepareForReuse()
+        
         removeGestureRecognizer(panGesture)
         contentLabel.alpha = 1
         contentLabel.isHidden = true
@@ -75,10 +77,9 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         keywordLabel.text = nil
         wrapperView.image = nil
         wrapperView.isOpaque = true
-        
-        animator = UIViewPropertyAnimator(duration: 1, curve: .linear) {
-            self.blurEffectView.effect = nil
-        }
+        blurEffectView = nil
+//        blurEffectView = nil
+//        animator = nil
 //        cnstrKeywordTop = nil
 //        cnstrKeywordAllignY = nil
 //        cnstrKeywordAlignX = nil
@@ -87,11 +88,12 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
 //        cnstrContentWrapperHeightLess = nil
 //        cnstrContentWrapperHeight = nil
         
-        super.prepareForReuse()
     }
     
     func prepareViewForMode(viewMode:SignCardViewMode, isFullscreenView isFullscreen :Bool) {
         self.viewMode = viewMode
+        
+        
         
         if isFullscreen {
             self.applyBorder(visible: false)
@@ -110,6 +112,24 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             }
             updateElementsVisibility(isVisible: false)
         }
+        
+//        if animator == nil {
+            animator = UIViewPropertyAnimator(duration: 0.1, curve: .linear) {
+                self.blurEffectView.effect = nil
+            }
+//        animator?.addCompletion({ (position) in
+//
+//            var animationState:String = ""
+//            switch self.animator!.state {
+//            case .active: animationState = "active"
+//            case .inactive: animationState = "inactive"
+//            case .stopped: animationState = "start"
+//            }
+//            print("XXXX \(self.locationLabel!.text) \(animationState)")
+//        })
+//        animator?.startAnimation()
+//            animator?.pausesOnCompletion = true
+//        }
 //        contentWrapperView.layoutIfNeeded()
 //        keywordLabel.layoutIfNeeded()
 //        self.layoutIfNeeded()
@@ -138,7 +158,14 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     }
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
-        let ratio = layoutAttributes.frame.height / DimensionGenerator.current.collectionItemSize.height*1.8 - 0.8
+//        if self.animator?.state == .inactive {
+//            animator = UIViewPropertyAnimator(duration: 0.1, curve: .linear) {
+//                self.blurEffectView.effect = nil
+//            }
+//            self.animator?.startAnimation()
+//        }
+//
+        let ratio = layoutAttributes.frame.height / DimensionGenerator.current.collectionItemSize.height*1.9 - 0.9
         
 //        if ratio < 1 {
 //            ratio /= 2
@@ -156,7 +183,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             contentLabel.alpha = 1 - ratio
         }
         else {
-            print("animator set to \(ratio)")
+//            print("animator set to \(ratio)")
             animator?.fractionComplete = CGFloat(ratio)
         }
 //            self.layoutIfNeeded()
