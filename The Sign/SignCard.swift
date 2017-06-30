@@ -34,11 +34,10 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     @IBOutlet var cnstrContentWrapperHeight: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperWidth: NSLayoutConstraint!
     
-    @IBOutlet weak var blurEffectView: UIVisualEffectView!
-    var animator: UIViewPropertyAnimator?
+    var blurEffectView: UIVisualEffectView!
+    var animator: UIViewPropertyAnimator!
 
     var viewMode:SignCardViewMode = .Discovered
-    
 
     var shareDelegate:SignShareProtocol!
 
@@ -49,7 +48,12 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     var isFullscreen:Bool = false
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
         self.applyPlainShadow()
+        self.prepareViewForMode(viewMode: .Discovered, isFullscreenView: false)
     }
     
     func applyBorder(visible:Bool) {
@@ -77,23 +81,16 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         keywordLabel.text = nil
         wrapperView.image = nil
         wrapperView.isOpaque = true
-        blurEffectView = nil
-//        blurEffectView = nil
-//        animator = nil
-//        cnstrKeywordTop = nil
-//        cnstrKeywordAllignY = nil
-//        cnstrKeywordAlignX = nil
-//        cnstrKeywordHeight = nil
-//        cnstrKeywordLead = nil
-//        cnstrContentWrapperHeightLess = nil
-//        cnstrContentWrapperHeight = nil
         
+        animator.stopAnimation(false)
+        animator.finishAnimation(at: .end)
+        animator = nil
+        blurEffectView.removeFromSuperview()
+        blurEffectView = nil
     }
     
     func prepareViewForMode(viewMode:SignCardViewMode, isFullscreenView isFullscreen :Bool) {
         self.viewMode = viewMode
-        
-        
         
         if isFullscreen {
             self.applyBorder(visible: false)
@@ -112,27 +109,18 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             }
             updateElementsVisibility(isVisible: false)
         }
-        
-//        if animator == nil {
-            animator = UIViewPropertyAnimator(duration: 0.1, curve: .linear) {
-                self.blurEffectView.effect = nil
-            }
-//        animator?.addCompletion({ (position) in
-//
-//            var animationState:String = ""
-//            switch self.animator!.state {
-//            case .active: animationState = "active"
-//            case .inactive: animationState = "inactive"
-//            case .stopped: animationState = "start"
-//            }
-//            print("XXXX \(self.locationLabel!.text) \(animationState)")
-//        })
-//        animator?.startAnimation()
-//            animator?.pausesOnCompletion = true
-//        }
-//        contentWrapperView.layoutIfNeeded()
-//        keywordLabel.layoutIfNeeded()
-//        self.layoutIfNeeded()
+    }
+    
+    
+    func startBlur() {
+        self.blurEffectView = UIVisualEffectView(frame: self.bounds)
+        self.blurEffectView.effect = UIBlurEffect(style: .light)
+        self.addSubview(self.blurEffectView)
+        self.animator = UIViewPropertyAnimator(duration: 0, curve: .linear) {
+            self.blurEffectView.effect = nil
+        }
+        self.animator.startAnimation()
+        self.animator.pauseAnimation()
     }
     
     func updateElementsVisibility(isVisible:Bool) {
@@ -153,23 +141,10 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         addGestureRecognizer(panGesture)
     }
     
-    func prepareBlurAnimator() {
-        
-    }
-    
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
-//        if self.animator?.state == .inactive {
-//            animator = UIViewPropertyAnimator(duration: 0.1, curve: .linear) {
-//                self.blurEffectView.effect = nil
-//            }
-//            self.animator?.startAnimation()
-//        }
-//
+        
         let ratio = layoutAttributes.frame.height / DimensionGenerator.current.collectionItemSize.height*1.9 - 0.9
         
-//        if ratio < 1 {
-//            ratio /= 2
-//        }
         if isFullscreen {
             
 //            let maxDistance = UIScreen.main.bounds.height - DimensionGenerator.current.collectionItemSize.height
@@ -182,11 +157,6 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             locationLabel.alpha = 1 - ratio
             contentLabel.alpha = 1 - ratio
         }
-        else {
-//            print("animator set to \(ratio)")
-            animator?.fractionComplete = CGFloat(ratio)
-        }
-//            self.layoutIfNeeded()
     }
 
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -198,8 +168,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         return true
     }
     
-    func actionPan(_ sender: UIGestureRecognizer)
-    {
+    func actionPan(_ sender: UIGestureRecognizer) {
         let location:CGPoint = sender.location(in: superview)
 
         switch sender.state {

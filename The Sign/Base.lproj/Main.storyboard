@@ -122,14 +122,6 @@
                                                         <constraint firstAttribute="trailing" secondItem="9bC-70-8AO" secondAttribute="trailing" identifier="ContentTrail" id="aa2-QE-JdR"/>
                                                     </constraints>
                                                 </view>
-                                                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pcd-Cm-jVT">
-                                                    <rect key="frame" x="0.0" y="-0.5" width="200" height="354.5"/>
-                                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="onN-qQ-0uT">
-                                                        <rect key="frame" x="0.0" y="0.0" width="200" height="354.5"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    </view>
-                                                    <blurEffect style="regular"/>
-                                                </visualEffectView>
                                             </subviews>
                                         </view>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -137,14 +129,9 @@
                                             <constraint firstAttribute="trailing" secondItem="8jb-DP-DoQ" secondAttribute="trailing" identifier="CellWrapperTrail" id="2Za-ps-MAt"/>
                                             <constraint firstAttribute="bottom" secondItem="8jb-DP-DoQ" secondAttribute="bottom" identifier="CellWrapperBottom" id="7hO-Wu-wzl"/>
                                             <constraint firstItem="8jb-DP-DoQ" firstAttribute="leading" secondItem="WFN-1c-orv" secondAttribute="leading" identifier="CellWrapperLead" id="9GY-Qd-fqF"/>
-                                            <constraint firstItem="Pcd-Cm-jVT" firstAttribute="top" secondItem="8jb-DP-DoQ" secondAttribute="top" id="V6z-8J-V0B"/>
-                                            <constraint firstItem="Pcd-Cm-jVT" firstAttribute="bottom" secondItem="8jb-DP-DoQ" secondAttribute="bottom" id="ZLf-JY-NVl"/>
                                             <constraint firstItem="8jb-DP-DoQ" firstAttribute="top" secondItem="WFN-1c-orv" secondAttribute="top" identifier="CellWrapperTop" id="fzk-xN-E9V"/>
-                                            <constraint firstItem="Pcd-Cm-jVT" firstAttribute="leading" secondItem="8jb-DP-DoQ" secondAttribute="leading" id="qS6-hZ-j2f"/>
-                                            <constraint firstItem="Pcd-Cm-jVT" firstAttribute="trailing" secondItem="8jb-DP-DoQ" secondAttribute="trailing" id="wNQ-eG-n0D"/>
                                         </constraints>
                                         <connections>
-                                            <outlet property="blurEffectView" destination="Pcd-Cm-jVT" id="JiZ-yG-0Eb"/>
                                             <outlet property="cnstrContentWrapperHeight" destination="mxJ-y6-iaT" id="zQn-RA-rKA"/>
                                             <outlet property="cnstrContentWrapperHeightLess" destination="Qfc-J0-8mM" id="UTa-9h-rTb"/>
                                             <outlet property="cnstrContentWrapperWidth" destination="n3B-AP-V3K" id="UAR-Sk-MRF"/>

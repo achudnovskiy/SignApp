@@ -257,8 +257,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         
         signCollectionView.panGestureRecognizer.require(toFail: cell.panGesture!)
         cell.shareDelegate = self
-        
-        cell.layoutIfNeeded()
+        cell.startBlur()
+//        cell.layoutIfNeeded()
         
         return cell
     }
@@ -339,6 +339,16 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     
     // MARK: - ScrollViewDelegate
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let center = signCollectionView.contentOffset.x + signCollectionView.bounds.width / 2
+        signCollectionView.visibleCells.forEach { (cell) in
+            let card = (cell as! SignCard)
+            let ratio = 1 - abs((cell.center.x - center) / self.signCollectionView.bounds.width / 2)
+            card.animator.fractionComplete = ratio
+        }
+    }
     
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         if delayedTransition {
