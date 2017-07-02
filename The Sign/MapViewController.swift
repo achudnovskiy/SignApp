@@ -146,7 +146,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         else {
             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
             annotationView?.canShowCallout = true
-            annotationView?.image = #imageLiteral(resourceName: "MapPin")
+            annotationView?.image = #imageLiteral(resourceName: "MapPin").resizeTo(CGSize(width: 18, height: 40))
 //            annotationView?.image = UIImage(named: "MapPin")
             return annotationView
         }

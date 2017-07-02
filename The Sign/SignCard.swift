@@ -52,8 +52,15 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.applyPlainShadow()
-        self.prepareViewForMode(viewMode: .Discovered, isFullscreenView: false)
+//        self.applyPlainShadow()
+//        
+//        cnstrContentWrapperHeightLess.isActive = false
+//        cnstrContentWrapperHeight.isActive = false
+//        cnstrKeywordHeight.isActive = false
+//        cnstrKeywordLead.isActive = false
+//        cnstrKeywordTop.isActive = false
+//        cnstrKeywordAllignY.isActive = false
+//        cnstrKeywordAlignX.isActive = false
     }
     
     func applyBorder(visible:Bool) {

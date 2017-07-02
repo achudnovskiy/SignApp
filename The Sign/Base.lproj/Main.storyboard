@@ -58,20 +58,13 @@
                                                         <view opaque="NO" clipsSubviews="YES" tag="5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9bC-70-8AO">
                                                             <rect key="frame" x="50" y="229.5" width="150" height="125"/>
                                                             <subviews>
-                                                                <label opaque="NO" userInteractionEnabled="NO" tag="6" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="clip" baselineAdjustment="alignBaselines" minimumFontSize="22" translatesAutoresizingMaskIntoConstraints="NO" id="qaR-k0-aw1">
-                                                                    <rect key="frame" x="39" y="20" width="72" height="30"/>
+                                                                <label opaque="NO" userInteractionEnabled="NO" tag="6" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="label" textAlignment="center" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qaR-k0-aw1">
+                                                                    <rect key="frame" x="42" y="20" width="67.5" height="30"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="30" id="3VF-1b-3ya"/>
                                                                     </constraints>
-                                                                    <attributedString key="attributedText">
-                                                                        <fragment content="label">
-                                                                            <attributes>
-                                                                                <color key="NSColor" white="1" alpha="1" colorSpace="deviceWhite"/>
-                                                                                <font key="NSFont" size="32" name="AvenirNext-Regular"/>
-                                                                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="truncatingTail" baseWritingDirection="natural" lineSpacing="0.90000000000000002" tighteningFactorForTruncation="0.0"/>
-                                                                            </attributes>
-                                                                        </fragment>
-                                                                    </attributedString>
+                                                                    <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="30"/>
+                                                                    <color key="textColor" white="1" alpha="1" colorSpace="deviceWhite"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EFT-Sb-THE" userLabel="Location Label">
@@ -96,10 +89,10 @@
                                                                 <constraint firstAttribute="trailing" secondItem="EFT-Sb-THE" secondAttribute="trailing" constant="20" id="M3I-Wn-Isg"/>
                                                                 <constraint firstAttribute="height" relation="lessThanOrEqual" constant="130" id="Qfc-J0-8mM"/>
                                                                 <constraint firstItem="qaR-k0-aw1" firstAttribute="leading" secondItem="9bC-70-8AO" secondAttribute="leading" constant="20" id="USn-in-vtq"/>
-                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="9bC-70-8AO" secondAttribute="leading" priority="750" constant="20" id="VQC-XH-cXc"/>
+                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="9bC-70-8AO" secondAttribute="leading" priority="750" constant="15" id="VQC-XH-cXc"/>
                                                                 <constraint firstItem="M9k-k7-SeD" firstAttribute="trailing" secondItem="EFT-Sb-THE" secondAttribute="trailing" id="WmQ-Om-5By"/>
                                                                 <constraint firstItem="EFT-Sb-THE" firstAttribute="top" secondItem="qaR-k0-aw1" secondAttribute="bottom" constant="5" id="boC-g9-TBf"/>
-                                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qaR-k0-aw1" secondAttribute="trailing" priority="750" constant="20" id="cqe-fE-nYY"/>
+                                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qaR-k0-aw1" secondAttribute="trailing" priority="750" constant="15" id="cqe-fE-nYY"/>
                                                                 <constraint firstItem="qaR-k0-aw1" firstAttribute="top" secondItem="9bC-70-8AO" secondAttribute="top" constant="20" identifier="ContentKeywordTop" id="fxy-Nd-R76"/>
                                                                 <constraint firstAttribute="bottom" secondItem="M9k-k7-SeD" secondAttribute="bottom" constant="20" identifier="ContentBottom" id="l8k-pA-Rbj"/>
                                                                 <constraint firstAttribute="height" constant="130" identifier="ContenWrappertHeight" id="mxJ-y6-iaT"/>

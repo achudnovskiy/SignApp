@@ -50,8 +50,9 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     open func startMonitoringForLocations(_ locationsToMonitor: [SignLocation], completion:@escaping (_ location:SignLocation) -> Void)
     {
         locationManager.delegate = self
-//        locationManager.distanceFilter = 2
+        locationManager.distanceFilter = 5
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         detectionHandler = completion
         allLocations = locationsToMonitor
         prepareForTracking()
@@ -73,7 +74,8 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         // find N close locations, start monigoring their regions
         if shouldUpdateCurrentLocation(current: self.currentLocation) {
             shouldUpdateMonitoredRegions = true
-            locationManager.requestLocation()
+            locationManager.startUpdatingLocation()
+//            locationManager.requestLocation()
         }
         else {
             updateMonitoredRegions(location: self.currentLocation!)
@@ -115,7 +117,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     func notifyAboutSignNearby(sign:SignLocation) {
         NotificationCenter.default.post(name: kNotificationSignNearby,
-                                        object: self,
+                                        object: nil,
                                         userInfo: [ kNotificationSignNearbyId: sign.objectId])
     }
     
@@ -129,7 +131,8 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         if region.identifier == "CurrentRegion" {
             print("Detected Enter. Requesting data to update all regions")
             shouldUpdateMonitoredRegions = true
-            locationManager.requestLocation()
+            locationManager.startUpdatingLocation()
+//            locationManager.requestLocation()
         }
         else {
             print("Checking for location hit with \(region.identifier)")
@@ -148,7 +151,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         }
         print("Detected Exit. Requesting data to update all regions")
         shouldUpdateMonitoredRegions = true
-        locationManager.requestLocation()
+        locationManager.startUpdatingLocation()
     }
     
     func getClosestSign(location:CLLocation?, from locationSet:[SignLocation]) -> SignLocation? {
@@ -196,14 +199,17 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if locations.count > 1 {
-            let defferredLocatonUpadtes = locations[0...locations.count-1]
+            let defferredLocatonUpadtes = locations[0...locations.count-1].filter({ (location) -> Bool in
+                return location.horizontalAccuracy<=20
+            })
             self.processDeferredLocationUpdates(locations: Array(defferredLocatonUpadtes))
         }
         
-        guard let newCurrentLocation = locations.last,  newCurrentLocation.horizontalAccuracy<=kCLLocationAccuracyNearestTenMeters else {
-            locationManager.requestLocation()
+        guard let newCurrentLocation = locations.last,  newCurrentLocation.horizontalAccuracy<=20 else {
+            print("location accuracy \(locations.last?.horizontalAccuracy) is too low")
             return
         }
+//        locationManager.stopUpdatingLocation()
         
         currentLocation = newCurrentLocation
         

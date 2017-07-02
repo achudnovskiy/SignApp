@@ -105,7 +105,15 @@ import UIKit
 import Accelerate
 
 public extension UIImage {
-
+    
+    public func resizeTo(_ newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
+        self.draw(in: CGRect(origin: CGPoint.zero, size: CGSize(width: newSize.width, height: newSize.height)))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+    
     public func optimizedImage()->UIImage {
         UIGraphicsBeginImageContextWithOptions(size, true, scale)
         draw(in: CGRect(origin: CGPoint(x: 0, y: 0), size: size))

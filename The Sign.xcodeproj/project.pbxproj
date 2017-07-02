@@ -91,6 +91,7 @@
 		5559F74E1E248475007354BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5572A72A1E6257D1007B5259 /* Content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Content; sourceTree = "<group>"; };
 		559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
+		55BAF3D51F085300003FF5D1 /* MicrosoftAzureMobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MicrosoftAzureMobile.framework; path = "The Sign/frameworks/MicrosoftAzureMobile.framework"; sourceTree = "<group>"; };
 		55C222091ED9F184007E2E7C /* FbHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FbHandler.swift; sourceTree = "<group>"; };
 		55FF72571E2AD15D00562B65 /* SignCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignCard.swift; sourceTree = "<group>"; };
 		55FF72591E2AD1D900562B65 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -218,6 +219,7 @@
 		55FF726D1E2C66C100562B65 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				55BAF3D51F085300003FF5D1 /* MicrosoftAzureMobile.framework */,
 				55305CF51EDA8F3C004DC615 /* iAd.framework */,
 				55305CF31EDA8F35004DC615 /* MobileCoreServices.framework */,
 				55305CF11EDA8F2E004DC615 /* CoreSpotlight.framework */,

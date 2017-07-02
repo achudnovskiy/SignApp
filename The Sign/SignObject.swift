@@ -31,6 +31,7 @@ public class SignObject: NSObject {
     let content:String
     var isDiscovered: Bool = false;
     var isCollected: Bool = false;
+    var distance:Double
     
     var location:SignLocation {
         get {
@@ -59,6 +60,8 @@ public class SignObject: NSObject {
         self.latitude = latitude
         self.longitude = longitude
         self.locationName = locationName
+        
+        self.distance = 0
     }
     
     public override var description: String {
@@ -86,7 +89,9 @@ public class SignObject: NSObject {
                     return "Tap to see a new Sign"
                 }
             }
-            return ""
+            else {
+                return "Steps to new Sign\n\(distance)"
+            }
         }
     }
     

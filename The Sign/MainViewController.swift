@@ -16,6 +16,12 @@ enum SignAppState {
     case MapView
 }
 
+enum SignDiscovery {
+    case FirstDiscovery
+    case NewDiscovery
+    case DistanceUpdate
+}
+
 protocol SignShareProtocol {
     func updateShareProgress(progress:CGFloat, didPassThreshold:Bool)
     func resetShareProgress()
@@ -85,29 +91,14 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             let sign = collectionSigns[i]
             cachedImages.setObject(sign.proccessImage(), forKey: sign.uniqueId)
         }
-        
-        
     }
-    
-    func showSignNearby(sign:SignObject) {
-        self.discoverySign = nil
-        guard let newDiscoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: sign.objectId)  else { return }
-        self.discoverySign = newDiscoverySign
-        
-        DispatchQueue.main.async {
-            self.collectionSigns = self.collectionSigns + [self.discoverySign!]
-            self.signCollectionView.performBatchUpdates({
-                self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
-            }, completion: nil)
-        }
-        
-    }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareConstraints()
         prepareDataSource()
+        observerNotifications()
+        
         
         stateButtonView.applyPlainShadow()
         mapButtonView.applyPlainShadow()
@@ -126,10 +117,18 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        DispatchQueue.main.async {
+//            self.signCollectionView.reloadData()
+        }
+        
+    }
+    
     func observerNotifications() {
         NotificationCenter.default.addObserver(forName: kNotificationReloadData,
                                                object: nil,
-                                               queue: OperationQueue.current) {
+                                               queue: OperationQueue.main) {
                                                 (notification) in
             self.prepareDataSource()
             DispatchQueue.main.async {
@@ -139,7 +138,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         
         NotificationCenter.default.addObserver(forName: kNotificationScrollToSign,
                                                object: nil,
-                                               queue: OperationQueue.current) {
+                                               queue: OperationQueue.main) {
                                                 (notification) in
             let signId = notification.userInfo![kNotificationScrollToSignId] as! String
             guard let sign = SignDataSource.sharedInstance.findSignObjById(objectId: signId) else { return }
@@ -151,15 +150,63 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             }
         }
         
-        NotificationCenter.default.addObserver(forName: kNotificationSignNearby,
-                                               object: LocationTracker.sharedInstance,
-                                               queue: OperationQueue.current) {
-                                                (notification) in
-            let signId = notification.userInfo![kNotificationSignNearbyId] as! String
-            guard let sign = SignDataSource.sharedInstance.findSignObjById(objectId: signId) else { return }
-            self.showSignNearby(sign: sign)
+        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.showSignNearby(withNotification:)), name: kNotificationSignNearby, object: nil)
+//        NotificationCenter.default.addObserver(forName: kNotificationSignNearby,
+//                                               object: nil,
+//                                               queue: OperationQueue.current) {
+//                                                (notification) in
+//            let signId = notification.userInfo![kNotificationSignNearbyId] as! String
+//            guard let sign = SignDataSource.sharedInstance.findSignObjById(objectId: signId) else { return }
+//            self.showSignNearby(sign: sign)
+//        }
+    }
+    
+    
+    func showSignNearby(withNotification notification:Notification) {
+        self.discoverySign = nil
+        guard
+            let signId = notification.userInfo?[kNotificationSignNearbyId] as? String,
+            let distance = notification.userInfo?[kNotificationSignNearbyId] as? Double,
+            let newDiscoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: signId)  else { return }
+        newDiscoverySign.distance = distance
+        
+        let discoveryMode:SignDiscovery
+        
+        if self.discoverySign != nil {
+            if self.discoverySign == newDiscoverySign {
+                discoveryMode = .DistanceUpdate
+            }
+            else {
+                discoveryMode = .NewDiscovery
+            }
+        }
+        else {
+            discoveryMode = .FirstDiscovery
+        }
+        
+        DispatchQueue.main.async {
+            self.collectionSigns = self.collectionSigns + [newDiscoverySign]
+            switch discoveryMode {
+            case .FirstDiscovery:
+                self.signCollectionView.performBatchUpdates({
+                    self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
+                }, completion: nil)
+                
+            case .NewDiscovery:
+                self.signCollectionView.performBatchUpdates({
+                    self.signCollectionView.deleteItems(at: [self.signCollectionView.indexPathForLastRow])
+                    self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
+                }, completion: nil)
+                
+            case .DistanceUpdate:
+                //                let card = self.signCollectionView.cellForItem(at: self.signCollectionView.indexPathForLastRow) as! SignCard
+                //                card.keywordLabel.text = newDiscoverySign.thumbnailText
+                self.signCollectionView.reloadItems(at: [self.signCollectionView.indexPathForLastRow])
+            }
+            self.discoverySign = newDiscoverySign
         }
     }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -183,10 +230,12 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         resetZPosition()
         
         if toFullscreen {
-            signCollectionLayout.fullScreenItemIndex = indexForItemInFocus
+            signCollectionView.isScrollEnabled = false
+//            signCollectionLayout.fullScreenItemIndex = indexForItemInFocus
         }
         else {
-            stopMagnification()
+            signCollectionView.isScrollEnabled = true
+//            stopMagnification()
         }
         
         cellView.prepareViewForAnimation(toFullscreen: toFullscreen)
@@ -218,7 +267,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             signCell?.prepareViewAfterAnimation(toFullscreen: false)
             self.currentState = .ThumbnailView
             self.updateStateButton()
-
             
             self.signCollectionLayout.fullScreenItemIndex = nil
         }
@@ -239,7 +287,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Card", for: indexPath) as! SignCard
         let signToShow = collectionSigns[indexPath.row]
-//        cell.isOpaque = true
         cell.keywordLabel.text = signToShow.thumbnailText.uppercased()
         cell.contentLabel.text = signToShow.content.uppercased()
         cell.locationLabel.text = signToShow.locationName.uppercased()
@@ -258,7 +305,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         signCollectionView.panGestureRecognizer.require(toFail: cell.panGesture!)
         cell.shareDelegate = self
         cell.startBlur()
-//        cell.layoutIfNeeded()
+        self.updateCardBlur(card: cell)
+        cell.layoutIfNeeded()
         
         return cell
     }
@@ -341,13 +389,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     // MARK: - ScrollViewDelegate
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        let center = signCollectionView.contentOffset.x + signCollectionView.bounds.width / 2
-        signCollectionView.visibleCells.forEach { (cell) in
-            let card = (cell as! SignCard)
-            let ratio = 1 - abs((cell.center.x - center) / self.signCollectionView.bounds.width / 2)
-            card.animator.fractionComplete = ratio
-        }
+        updateCardBlur()
     }
     
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
@@ -365,27 +407,27 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         if let index = indexForItemInFocus {
             scheduleUpdateBackgroundForItemAtImdex(index: index.row)
             
-            if self.signCollectionLayout.fullScreenItemIndex != nil && self.signCollectionLayout.fullScreenItemIndex != index {
-                stopMagnification()
-                
-                if self.currentState == .FullscreenView {
-                    self.currentState = .ThumbnailView
-                }
-            }
+//            if self.signCollectionLayout.fullScreenItemIndex != nil && self.signCollectionLayout.fullScreenItemIndex != index {
+//                stopMagnification()
+//                
+//                if self.currentState == .FullscreenView {
+//                    self.currentState = .ThumbnailView
+//                }
+//            }
         }
     }
-    var startScrollOffset:CGPoint?
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        startScrollOffset = scrollView.contentOffset
-    }
+//    var startScrollOffset:CGPoint?
+//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+//        startScrollOffset = scrollView.contentOffset
+//    }
     
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        
+//    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    
 //        if currentState == .FullscreenView && collectionSigns[index].isDiscovered == false {
 //            delayedTransition = true
 //        }
-    }
-    
+//    }
+        
     
     // MARK: - Helper methods
     
@@ -575,5 +617,21 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                     self.backgroundImage.image = newImageBlurred
                 }, completion:nil)
         }
+    }
+    
+    
+    func updateCardBlur() {
+        let center = signCollectionView.contentOffset.x + signCollectionView.bounds.width / 2
+        signCollectionView.visibleCells.forEach { (cell) in
+            let card = (cell as! SignCard)
+            let ratio = 1 - abs((cell.center.x - center) / self.signCollectionView.bounds.width / 5)
+            card.animator.fractionComplete = ratio
+        }
+    }
+    
+    func updateCardBlur(card:SignCard) {
+        let center = signCollectionView.contentOffset.x + signCollectionView.bounds.width / 2
+        let ratio = 1 - abs((card.center.x - center) / self.signCollectionView.bounds.width / 5)
+        card.animator.fractionComplete = ratio
     }
 }
