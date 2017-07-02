@@ -21,17 +21,17 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var contentLabel: UILabel!
     
-    @IBOutlet var cnstrKeywordTop: NSLayoutConstraint!
-    @IBOutlet var cnstrKeywordAllignY: NSLayoutConstraint!
-    @IBOutlet var cnstrKeywordAlignX: NSLayoutConstraint!
+    @IBOutlet weak var cnstrKeywordTop: NSLayoutConstraint!
+    @IBOutlet weak var cnstrKeywordAllignY: NSLayoutConstraint!
+    @IBOutlet weak var cnstrKeywordAlignX: NSLayoutConstraint!
     
-    @IBOutlet var cnstrKeywordHeight: NSLayoutConstraint!
-    @IBOutlet var cnstrKeywordLead: NSLayoutConstraint!
+    @IBOutlet weak var cnstrKeywordHeight: NSLayoutConstraint!
+    @IBOutlet weak var cnstrKeywordLead: NSLayoutConstraint!
     
     @IBOutlet weak var contentWrapperView: UIView!
     
-    @IBOutlet var cnstrContentWrapperHeightLess: NSLayoutConstraint!
-    @IBOutlet var cnstrContentWrapperHeight: NSLayoutConstraint!
+    @IBOutlet weak var cnstrContentWrapperHeightLess: NSLayoutConstraint!
+    @IBOutlet weak var cnstrContentWrapperHeight: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperWidth: NSLayoutConstraint!
     
     var blurEffectView: UIVisualEffectView!
@@ -46,22 +46,6 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     var panOffset:CGFloat?
 
     var isFullscreen:Bool = false
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-//        self.applyPlainShadow()
-//        
-//        cnstrContentWrapperHeightLess.isActive = false
-//        cnstrContentWrapperHeight.isActive = false
-//        cnstrKeywordHeight.isActive = false
-//        cnstrKeywordLead.isActive = false
-//        cnstrKeywordTop.isActive = false
-//        cnstrKeywordAllignY.isActive = false
-//        cnstrKeywordAlignX.isActive = false
-    }
     
     func applyBorder(visible:Bool) {
         self.layer.borderColor = UIColor.lightGray.cgColor
@@ -150,20 +134,20 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         
-        let ratio = layoutAttributes.frame.height / DimensionGenerator.current.collectionItemSize.height*1.9 - 0.9
-        
-        if isFullscreen {
-            
+//        let ratio = layoutAttributes.frame.height / DimensionGenerator.current.collectionItemSize.height*1.9 - 0.9
+//
+//        if isFullscreen {
+//
 //            let maxDistance = UIScreen.main.bounds.height - DimensionGenerator.current.collectionItemSize.height
 //            let curDistance = UIScreen.main.bounds.height - wrapperView.bounds.height
 //            let ratio = curDistance / maxDistance //0 when fullscreen, 1 when thumbnail
-            
+//
 //            let newHeight = round(70 + 70 * (1-ratio))
 //            cnstrContentWrapperHeight.constant = DimensionGenerator.current/
-            
-            locationLabel.alpha = 1 - ratio
-            contentLabel.alpha = 1 - ratio
-        }
+//
+//            locationLabel.alpha = 1 - ratio
+//            contentLabel.alpha = 1 - ratio
+//        }
     }
 
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -288,64 +272,67 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     }
 
     func setConstraintsForFullscreen() {
-        cnstrContentWrapperHeight.isActive = false
-        cnstrContentWrapperHeightLess.isActive = true
+        
+        cnstrContentWrapperHeight.priority = UILayoutPriorityDefaultLow
+        cnstrContentWrapperHeightLess.priority = 999
         cnstrContentWrapperHeightLess.constant = DimensionGenerator.current.collectionItemContentFullHeight
         cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentFullWidth
         
-        cnstrKeywordAlignX.isActive = false
-        cnstrKeywordLead.isActive = true
-        cnstrKeywordAllignY.isActive = false
-        cnstrKeywordTop.isActive = true
+        cnstrKeywordAlignX.priority = UILayoutPriorityDefaultLow
+        cnstrKeywordLead.priority = 999
+        cnstrKeywordAllignY.priority = UILayoutPriorityDefaultLow
+        cnstrKeywordTop.priority = 999
         
         keywordLabel.numberOfLines = 1
     }
 
     func setConstraintsForThumbnail() {
         
-        cnstrContentWrapperHeightLess.isActive = false
-        cnstrContentWrapperHeight.isActive = true
+        cnstrContentWrapperHeightLess.priority = UILayoutPriorityDefaultLow
+        cnstrContentWrapperHeight.priority = 999
         cnstrContentWrapperHeight.constant = DimensionGenerator.current.collectionItemContentSmallHeight
         cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentSmallWidth
         
-        cnstrKeywordLead.isActive = false
-        cnstrKeywordAlignX.isActive = true
-        cnstrKeywordTop.isActive = false
-        cnstrKeywordAllignY.isActive = true
+        cnstrKeywordAlignX.priority = 999
+        cnstrKeywordLead.priority = UILayoutPriorityDefaultLow
+        cnstrKeywordAllignY.priority = 999
+        cnstrKeywordTop.priority = UILayoutPriorityDefaultLow
         
-        cnstrKeywordHeight.isActive = true
+        cnstrKeywordHeight.priority = 999
         keywordLabel.numberOfLines = 1
     }
     
     
     func setConstraintsForThumbnailNotDiscovered() {
-        cnstrContentWrapperHeightLess.isActive = false
-        cnstrContentWrapperHeight.isActive = true
-        cnstrContentWrapperHeight.constant = wrapperView.bounds.height
-        cnstrContentWrapperWidth.constant = wrapperView.bounds.width
+        cnstrContentWrapperHeightLess.priority = UILayoutPriorityDefaultLow
+        cnstrContentWrapperHeight.priority = 999
+        //TODO: replace with optional top/lead constraints to wrapperView
+        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperWidth.constant = self.bounds.width
         
-        cnstrKeywordLead.isActive = false
-        cnstrKeywordAlignX.isActive = true
-        cnstrKeywordTop.isActive = false
-        cnstrKeywordAllignY.isActive = true
+        cnstrKeywordLead.priority = UILayoutPriorityDefaultLow
+        cnstrKeywordAlignX.priority = 999
+        cnstrKeywordTop.priority = UILayoutPriorityDefaultLow
+        cnstrKeywordAllignY.priority = 999
         
-        cnstrKeywordHeight.isActive = false
+        cnstrKeywordHeight.priority = UILayoutPriorityDefaultLow
         keywordLabel.numberOfLines = 5
     }
     
     func setConstraintsForThumbnailNotCollected() {
-        cnstrContentWrapperHeightLess.isActive = false
-        cnstrContentWrapperHeight.isActive = true
-        cnstrContentWrapperHeight.constant = wrapperView.bounds.height
-        cnstrContentWrapperWidth.constant = wrapperView.bounds.width
+        cnstrContentWrapperHeightLess.priority = UILayoutPriorityDefaultLow
+        cnstrContentWrapperHeight.priority = 999
+        //TODO: replace with optional top/lead constraints to wrapperView
+        cnstrContentWrapperHeight.constant = self.bounds.height
+        cnstrContentWrapperWidth.constant = self.bounds.width
         
-        cnstrKeywordLead.isActive = false
-        cnstrKeywordAlignX.isActive = true
-        cnstrKeywordTop.isActive = false
-        cnstrKeywordAllignY.isActive = true
+        cnstrKeywordLead.priority = UILayoutPriorityDefaultLow
+        cnstrKeywordAlignX.priority = 999
+        cnstrKeywordTop.priority = UILayoutPriorityDefaultLow
+        cnstrKeywordAllignY.priority = 999
         
         
-        cnstrKeywordHeight.isActive = false
-        keywordLabel.numberOfLines = 2
+        cnstrKeywordHeight.priority = UILayoutPriorityDefaultLow
+        keywordLabel.numberOfLines = 5
     }
 }

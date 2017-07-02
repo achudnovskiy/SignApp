@@ -61,7 +61,7 @@
                                                                 <label opaque="NO" userInteractionEnabled="NO" tag="6" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="label" textAlignment="center" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qaR-k0-aw1">
                                                                     <rect key="frame" x="42" y="20" width="67.5" height="30"/>
                                                                     <constraints>
-                                                                        <constraint firstAttribute="height" constant="30" id="3VF-1b-3ya"/>
+                                                                        <constraint firstAttribute="height" priority="999" constant="30" id="3VF-1b-3ya"/>
                                                                     </constraints>
                                                                     <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="30"/>
                                                                     <color key="textColor" white="1" alpha="1" colorSpace="deviceWhite"/>
@@ -83,30 +83,23 @@
                                                             <color key="backgroundColor" red="0.15686274510000001" green="0.1529411765" blue="0.14901960780000001" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <rect key="contentStretch" x="0.050000000000000003" y="0.0" width="1" height="1"/>
                                                             <constraints>
-                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="centerY" secondItem="9bC-70-8AO" secondAttribute="centerY" id="3my-Pd-Ld3"/>
+                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="centerY" secondItem="9bC-70-8AO" secondAttribute="centerY" priority="250" id="3my-Pd-Ld3"/>
                                                                 <constraint firstItem="EFT-Sb-THE" firstAttribute="leading" secondItem="9bC-70-8AO" secondAttribute="leading" constant="20" identifier="ContentLocationLead" id="Jh3-oZ-m6d"/>
-                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="centerX" secondItem="9bC-70-8AO" secondAttribute="centerX" id="LWf-Sf-ZpM"/>
+                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="centerX" secondItem="9bC-70-8AO" secondAttribute="centerX" priority="999" id="LWf-Sf-ZpM"/>
                                                                 <constraint firstAttribute="trailing" secondItem="EFT-Sb-THE" secondAttribute="trailing" constant="20" id="M3I-Wn-Isg"/>
-                                                                <constraint firstAttribute="height" relation="lessThanOrEqual" constant="130" id="Qfc-J0-8mM"/>
-                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="leading" secondItem="9bC-70-8AO" secondAttribute="leading" constant="20" id="USn-in-vtq"/>
+                                                                <constraint firstAttribute="height" relation="lessThanOrEqual" priority="999" constant="130" id="Qfc-J0-8mM"/>
+                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="leading" secondItem="9bC-70-8AO" secondAttribute="leading" priority="250" constant="20" id="USn-in-vtq"/>
                                                                 <constraint firstItem="qaR-k0-aw1" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="9bC-70-8AO" secondAttribute="leading" priority="750" constant="15" id="VQC-XH-cXc"/>
                                                                 <constraint firstItem="M9k-k7-SeD" firstAttribute="trailing" secondItem="EFT-Sb-THE" secondAttribute="trailing" id="WmQ-Om-5By"/>
                                                                 <constraint firstItem="EFT-Sb-THE" firstAttribute="top" secondItem="qaR-k0-aw1" secondAttribute="bottom" constant="5" id="boC-g9-TBf"/>
                                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qaR-k0-aw1" secondAttribute="trailing" priority="750" constant="15" id="cqe-fE-nYY"/>
-                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="top" secondItem="9bC-70-8AO" secondAttribute="top" constant="20" identifier="ContentKeywordTop" id="fxy-Nd-R76"/>
+                                                                <constraint firstItem="qaR-k0-aw1" firstAttribute="top" secondItem="9bC-70-8AO" secondAttribute="top" priority="999" constant="20" identifier="ContentKeywordTop" id="fxy-Nd-R76"/>
                                                                 <constraint firstAttribute="bottom" secondItem="M9k-k7-SeD" secondAttribute="bottom" constant="20" identifier="ContentBottom" id="l8k-pA-Rbj"/>
-                                                                <constraint firstAttribute="height" constant="130" identifier="ContenWrappertHeight" id="mxJ-y6-iaT"/>
+                                                                <constraint firstAttribute="height" priority="250" constant="130" identifier="ContenWrappertHeight" id="mxJ-y6-iaT"/>
                                                                 <constraint firstAttribute="width" constant="150" identifier="ContentWrapperWidth" id="n3B-AP-V3K"/>
                                                                 <constraint firstItem="M9k-k7-SeD" firstAttribute="leading" secondItem="EFT-Sb-THE" secondAttribute="leading" id="taP-Zb-aju"/>
                                                                 <constraint firstItem="M9k-k7-SeD" firstAttribute="top" secondItem="EFT-Sb-THE" secondAttribute="bottom" constant="10" identifier="ContentTop" id="ykB-Me-dhf"/>
                                                             </constraints>
-                                                            <variation key="default">
-                                                                <mask key="constraints">
-                                                                    <exclude reference="mxJ-y6-iaT"/>
-                                                                    <exclude reference="3my-Pd-Ld3"/>
-                                                                    <exclude reference="USn-in-vtq"/>
-                                                                </mask>
-                                                            </variation>
                                                         </view>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
