@@ -55,8 +55,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     @IBOutlet weak var cnstrMapButtonLeading: NSLayoutConstraint!
     @IBOutlet weak var cnstrMapButtonWidth: NSLayoutConstraint!
     
-    
-    
     @IBOutlet weak var backgroundImage: UIImageView!
     
     //MARK: Properties
@@ -86,11 +84,11 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         collectionNewItems = SignDataSource.sharedInstance.newSigns
         
         //load cache for first three signs
-        let cacheCount = collectionSigns.count < 3 ? collectionSigns.count : 3
-        for i in 0...cacheCount {
-            let sign = collectionSigns[i]
-            cachedImages.setObject(sign.proccessImage(), forKey: sign.uniqueId)
-        }
+//        let cacheCount = collectionSigns.count < 3 ? collectionSigns.count : 3
+//        for i in 0...cacheCount {
+//            let sign = collectionSigns[i]
+//            cachedImages.setObject(sign.proccessImage(), forKey: sign.uniqueId)
+//        }
     }
     
     override func viewDidLoad() {
@@ -114,14 +112,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             backgroundImage.image = UIImage(named: "DefaultBackgroundImage")?.applyDefaultEffect()?.optimizedImage()
         }
         
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        DispatchQueue.main.async {
-//            self.signCollectionView.reloadData()
-        }
         
     }
     
@@ -151,14 +141,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.showSignNearby(withNotification:)), name: kNotificationSignNearby, object: nil)
-//        NotificationCenter.default.addObserver(forName: kNotificationSignNearby,
-//                                               object: nil,
-//                                               queue: OperationQueue.current) {
-//                                                (notification) in
-//            let signId = notification.userInfo![kNotificationSignNearbyId] as! String
-//            guard let sign = SignDataSource.sharedInstance.findSignObjById(objectId: signId) else { return }
-//            self.showSignNearby(sign: sign)
-//        }
     }
     
     
@@ -166,7 +148,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         self.discoverySign = nil
         guard
             let signId = notification.userInfo?[kNotificationSignNearbyId] as? String,
-            let distance = notification.userInfo?[kNotificationSignNearbyId] as? Double,
+            let distance = notification.userInfo?[kNotificationSignNearbyDistance] as? Int,
             let newDiscoverySign = SignDataSource.sharedInstance.findSignObjById(objectId: signId)  else { return }
         newDiscoverySign.distance = distance
         
@@ -239,14 +221,14 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
         
         cellView.prepareViewForAnimation(toFullscreen: toFullscreen)
-        
+        self.processSignDiscovery(sign: signInTransition, signCard: cellView)
+
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
             cellView.setViewSizeForAnimation(newSize: newSize, toFullscreen: toFullscreen)
             cellView.layoutIfNeeded()
         }) { (Bool) in
             cellView.prepareViewAfterAnimation(toFullscreen: toFullscreen)
             
-            self.processSignDiscovery(sign: signInTransition, signCard: cellView)
             self.currentState = newState
             self.view.isUserInteractionEnabled = true
             self.updateStateButton()

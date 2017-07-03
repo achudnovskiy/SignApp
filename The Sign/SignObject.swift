@@ -31,7 +31,7 @@ public class SignObject: NSObject {
     let content:String
     var isDiscovered: Bool = false;
     var isCollected: Bool = false;
-    var distance:Double
+    var distance:Int
     
     var location:SignLocation {
         get {

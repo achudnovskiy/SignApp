@@ -125,7 +125,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func setupLocationMonitoring() {
 
-        LocationTracker.sharedInstance.startMonitoringForLocations(SignDataSource.sharedInstance.locations) { (location) in
+        LocationTracker.sharedInstance.startMonitoringForLocations() { (location) in
             
             let sign = SignDataSource.sharedInstance.findSignObjById(objectId: location.objectId)
             if sign == nil {
