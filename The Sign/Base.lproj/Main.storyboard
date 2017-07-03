@@ -53,7 +53,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view tag="4" contentMode="scaleToFill" restorationIdentifier="SignCardContentView" translatesAutoresizingMaskIntoConstraints="NO" id="8jb-DP-DoQ" customClass="UIImageView">
-                                                    <rect key="frame" x="0.0" y="-0.5" width="200" height="354.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="200" height="354"/>
                                                     <subviews>
                                                         <view opaque="NO" clipsSubviews="YES" tag="5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9bC-70-8AO">
                                                             <rect key="frame" x="50" y="229.5" width="150" height="125"/>

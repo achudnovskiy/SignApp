@@ -52,75 +52,20 @@ class SignDataSource: NSObject {
         }
     }
     override init() {
-//        let pathRamen = Bundle.main.path(forResource: "RamenImage", ofType: "png", inDirectory: "Content")!
-//        let pathHomer = Bundle.main.path(forResource: "HomerImage", ofType: "png", inDirectory: "Content")!
-//        let pathRevolver = Bundle.main.path(forResource: "RevolverImage", ofType: "png", inDirectory: "Content")!
-//        let pathMario = Bundle.main.path(forResource: "MarioImage", ofType: "png", inDirectory: "Content")!
-//        let pathThiery = Bundle.main.path(forResource: "ThieryImage", ofType: "png", inDirectory: "Content")!
-//        let pathBuzz = Bundle.main.path(forResource: "BuzzImage", ofType: "png", inDirectory: "Content")!
-//
-//        let ramenSign = SignObject(objectId:"2C518C01-233B-4BE1-9ACC-58DF80B1CC33",
-//                                   title: "Ramen",
-//                                   content: "JAPANESE TO ITS CORE. IT TAKES OVER 20 HOURS TO PREPARE ITS FAMOUS BROTH. TRADITIONAL CUISINE OF SUCH QUALITY IS RARE TO COME BY. PERFECT FOR LUNCH ON A COLD WINTER DAY.",
-//                                   image: UIImage(contentsOfFile: pathRamen)!,
-//                                   latitude: 49.290084,
-//                                   longitude: -123.133972,
-//                                   locationName: "Hokkaido Santouka")
-//        let homerSign = SignObject(objectId:"3D10AA5F-D9C4-4D56-8E39-960AC323AB4E",
-//                                   title: "French",
-//                                   content: "ALTHOUGH NOT FRENCH AS PER DESCRIPTION, HOMER ST CAFE AND BAR IS THE BEST REPRESENTATION OF FRENCH CUISINE IN VANCOUVER WE COULD FIND. ROTISSERIE CHICKEN WITH SIDE DISHES IS A MUST.",
-//                                   image: UIImage(contentsOfFile: pathHomer)!,
-//                                   latitude: 49.278409,
-//                                   longitude: -123.118361,
-//                                   locationName: "Homer St. Cafe")
-//        let revolverSign = SignObject(objectId:"59C370A4-5480-41AA-A431-507D67346A7F",
-//                                      title: "Coffee",
-//                                      content: "BEST WELL-CRAFTED LIVES IN REVOLVER. LOCAL BARISTAS MAKE A CUP SO DELICIOUS, YOU WOULD HAVE TO ALTER YOUR DAILY ROUTE TO POP BY ON A REGULAR BASIS FROM NOW ON.",
-//                                      image: UIImage(contentsOfFile: pathRevolver)!,
-//                                      latitude: 49.283170,
-//                                      longitude: -123.109484,
-//                                      locationName: "Revolver")
-//        let marioSign = SignObject(objectId:"59A7C34B-3963-43B6-A4CC-422E4422D496",
-//                                   title: "Espresso",
-//                                   content: "ONLY ONE ESPRESSO CAN RIVAL THE TRADITIONAL ITALIAN CAFES. MARIO HONED HIS SKILLS FOR DECADES TO BE ABLE TO DELIVER AN AMAZINGLY BALANCE CUP OF COFFEE. FOR DAYS YOU NEED CAFFEINE TO KEEP ROCKING.",
-//                                   image: UIImage(contentsOfFile: pathMario)!,
-//                                   latitude: 49.284614,
-//                                   longitude: -123.117142,
-//                                   locationName: "Mario's Cafe")
-//        let thierySign = SignObject(objectId:"B72D8A76-98D6-4618-B089-EF6FA9E078D8",
-//                                    title: "Deserts",
-//                                    content: "EXQUISITE IS THE PERFECT DESCRIPTION FOR THIERRY BUSSET’S VENTURE IN VANCITY. MACARONS, CROISSANTS & TARTS ARE SECOND TO NONE. PICK UP A SWEET FOR A LOVED ONE ON A WAY FROM A HARD DAY AT WORK.",
-//                                    image: UIImage(contentsOfFile: pathThiery)!,
-//                                    latitude: 49.284789,
-//                                    longitude: -123.122712,
-//                                    locationName: "Therry Chocolatier")
-//        let buzzSign = SignObject(objectId:"ABC34261-6E61-4FF6-AFC0-7C2C785EA968",
-//                                  title: "Gallery",
-//                                  content: "A VISIT TO AN ART GALLERY DOESN’T HAVE TO BE GRANDIOSE. STOP BY HARRISON GALLERIES. GRAB A COFFEE AND WALK AROUND ENJOYING ART. MANY COMFY NOOKS INSIDE FOR WORK TOO.",
-//                                  image: UIImage(contentsOfFile: pathBuzz)!,
-//                                  latitude: 49.27841,
-//                                  longitude: -123.118711,
-//                                  locationName: "Buzz Cafe")
-//
-//        thierySign.isCollected = true
-//        thierySign.isDiscovered = true
-//
-//        ramenSign.isDiscovered = true
-//        ramenSign.isCollected = true
-//
-//        marioSign.isCollected = true
-//
-//        buzzSign.isCollected = true
-//        buzzSign.isDiscovered = true
-//
-//        dataArray = [ramenSign, homerSign, revolverSign, marioSign, thierySign, buzzSign];
-        
         super.init()
         getAllProductsFromCloud { (signObjects) in
             self.dataArray = signObjects
+            
+            //TESTING
+            self.dataArray[0].isCollected = true
+            for index in 1...3 {
+                self.dataArray[index].isDiscovered = true
+                self.dataArray[index].isCollected = true
+            }
+            //TESTING
+            
             self.reloadCollections()
         }
-//        reloadCollections()
     }
     
     func findSignObjById(objectId: String) -> SignObject? {

@@ -34,7 +34,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     internal var detectionHandler:((_ location:SignLocation) -> Void)!
     
-//    internal var closestSignRequestHandler:((_ closestSign:SignLocation?) -> Void)?
     internal var shouldUpdateMonitoredRegions:Bool = false
     
     //MARK:- Public API
@@ -50,9 +49,8 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     open func startMonitoringForLocations(completion:@escaping (_ location:SignLocation) -> Void)
     {
         locationManager.delegate = self
-//        locationManager.distanceFilter = 5
+        locationManager.distanceFilter = 5
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         detectionHandler = completion
         allLocations = SignDataSource.sharedInstance.locations
         prepareForTracking()
@@ -86,7 +84,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         if shouldUpdateCurrentLocation(current: self.currentLocation) {
             shouldUpdateMonitoredRegions = true
             locationManager.startUpdatingLocation()
-//            locationManager.requestLocation()
         }
         else {
             updateMonitoredRegions(location: self.currentLocation!)
@@ -117,15 +114,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         return false
     }
     
-//    if shouldUpdateCurrentLocation(current: self.currentLocation) {
-//    closestSignRequestHandler = completioHandler
-//    locationManager.requestLocation()
-//    }
-//    else {
-//    let closest = getClosestSign(location: self.currentLocation!, from: self.allLocations)
-//    completioHandler(closest)
-//    }
-    
     func notifyAboutSignNearby(sign:SignLocation, distanceInSteps:Int) {
         NotificationCenter.default.post(name: kNotificationSignNearby,
                                         object: nil,
@@ -144,7 +132,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
             print("Detected Enter. Requesting data to update all regions")
             shouldUpdateMonitoredRegions = true
             locationManager.startUpdatingLocation()
-//            locationManager.requestLocation()
         }
         else {
             print("Checking for location hit with \(region.identifier)")
@@ -217,11 +204,10 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
             self.processDeferredLocationUpdates(locations: Array(defferredLocatonUpadtes))
         }
         
-        guard let newCurrentLocation = locations.last,  newCurrentLocation.horizontalAccuracy<=160 else {
+        guard let newCurrentLocation = locations.last,  newCurrentLocation.horizontalAccuracy<=100 else {
             print("location accuracy \(locations.last?.horizontalAccuracy) is too low")
             return
         }
-//        locationManager.stopUpdatingLocation()
         
         currentLocation = newCurrentLocation
         
@@ -276,11 +262,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     func distanceInStepsFromLocation(signLocation:SignLocation)->Int {
         let meterToStepRatio = 1.3123
-//        if self.locationManager.location!.horizontalAccuracy > kCLLocationAccuracyNearestTenMeters {
-//            return
-//        }
         let distance = self.locationManager.location!.distance(from: signLocation.location)
-        
         return Int(distance * meterToStepRatio)
     }
 }

@@ -39,7 +39,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
 
     var viewMode:SignCardViewMode = .Discovered
 
-    var shareDelegate:SignShareProtocol!
+    var shareDelegate:SignShareProtocol?
 
     var panGesture: UIPanGestureRecognizer!
     var originalCenter:CGPoint?
@@ -61,6 +61,8 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         super.prepareForReuse()
         
         removeGestureRecognizer(panGesture)
+        shareDelegate = nil
+        
         contentLabel.alpha = 1
         contentLabel.isHidden = true
         contentLabel.text = nil
@@ -202,13 +204,13 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     
     func reportShareProgress(progress:CGFloat, finished:Bool)  {
         if finished {
-            shareDelegate.resetShareProgress()
+            shareDelegate?.resetShareProgress()
             if didPassShareThreshold(progress: progress) {
-                shareDelegate.didShareSignCard(signCard: self)
+                shareDelegate?.didShareSignCard(signCard: self)
             }
         }
         else {
-            shareDelegate.updateShareProgress(progress: progress, didPassThreshold: didPassShareThreshold(progress: progress))
+            shareDelegate?.updateShareProgress(progress: progress, didPassThreshold: didPassShareThreshold(progress: progress))
         }
     }
     
