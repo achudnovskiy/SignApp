@@ -126,7 +126,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             signLogoHeight.constant = 0
             signLogoTopMargin.constant = -10
             signLogoBottomMargin.constant = 15
-            signLabelBottom.font = UIFont(descriptor: signLabelBottom.font.fontDescriptor, size: signLabelBottom.font.pointSize + 2)
+            signLabelBottom.font = UIFont(descriptor: signLabelBottom.font.fontDescriptor, size: signLabelBottom.font.pointSize + 10)
         case .Loading:
             signLogoHeight.constant = 32
             signLogoTopMargin.constant = 5
@@ -342,7 +342,6 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         keywordLabel.numberOfLines = 1
     }
     
-    
     func setConstraintsForThumbnailNotDiscovered() {
         cnstrContentWrapperHeightLess.priority = UILayoutPriorityDefaultLow
         cnstrContentWrapperHeight.priority = 999
@@ -357,24 +356,5 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         
         cnstrKeywordHeight.priority = UILayoutPriorityDefaultLow
         keywordLabel.numberOfLines = 5
-    }
-    
-    func showOverlayView(showLogo:Bool) {
-
-//        
-//        cnstrContentWrapperHeightLess.priority = UILayoutPriorityDefaultLow
-//        cnstrContentWrapperHeight.priority = 999
-//        //TODO: replace with optional top/lead constraints to wrapperView
-//        cnstrContentWrapperHeight.constant = self.bounds.height
-//        cnstrContentWrapperWidth.constant = self.bounds.width
-//        
-//        cnstrKeywordLead.priority = UILayoutPriorityDefaultLow
-//        cnstrKeywordAlignX.priority = 999
-//        cnstrKeywordTop.priority = UILayoutPriorityDefaultLow
-//        cnstrKeywordAllignY.priority = 999
-//        
-//        
-//        cnstrKeywordHeight.priority = UILayoutPriorityDefaultLow
-//        keywordLabel.numberOfLines = 5
     }
 }

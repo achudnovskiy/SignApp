@@ -158,20 +158,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         DispatchQueue.main.async {
             //TODO: do something smarter than nuking the cache
             self.cachedImages.removeAllObjects()
-            let animate = self.collectionSigns.count == 0
+            let pastLastIndex = self.signCollectionView.indexPathForLastRow
             self.collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
-            
-//            if animate {
-//                self.signCollectionView.performBatchUpdates({
-//                    self.signCollectionView.reloadData()
-//                }, completion: nil)
-//            }
-//            else {
-//            self.signCollectionView.reloadItems(at: <#T##[IndexPath]#>)
-//                self.signCollectionView.reloadData()
-//            }
-            
             self.signCollectionView.reloadData()
+            self.signCollectionView.reloadItems(at: [pastLastIndex])
         }
     }
         
@@ -186,46 +176,14 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             
             self.currentExtraSignType = .Discovery
             
-            let needReload = self.discoverySign != newDiscoverySign ||  self.discoverySign?.distance != distanceInSteps
-            self.discoverySign = newDiscoverySign
-            
-            if needReload {
+            if self.discoverySign != newDiscoverySign ||  self.discoverySign?.distance != distanceInSteps {
+                self.discoverySign = newDiscoverySign
                 DispatchQueue.main.async {
-                    self.signCollectionView.performBatchUpdates({
-                        self.signCollectionView.reloadItems(at: [self.signCollectionView.indexPathForLastRow])
-                    }, completion: nil)
-                }                
+                    self.signCollectionView.reloadItems(at: [self.signCollectionView.indexPathForLastRow])
+                }
             }
-
-//            self.showSignNearby(sign: newDiscoverySign)
         }
     }
-    
-//    func showSignNearby(sign:SignObject) {
-//            let animate = self.discoverySign == nil
-//            
-//            if animate {
-// 
-//            }
-//          
-//
-////            switch discoveryMode {
-////            case .FirstDiscovery:
-////            case .NewDiscovery:
-////                self.discoverySign = sign
-////                self.signCollectionView.reloadItems(at: [self.signCollectionView.indexPathForLastRow])
-////
-//////                self.signCollectionView.performBatchUpdates({
-//////                    self.discoverySign = sign
-//////                    self.signCollectionView.deleteItems(at: [self.signCollectionView.indexPathForLastRow])
-//////                    self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
-//////                }, completion: nil)
-////            
-////            case .DistanceUpdate:
-////            }
-//    }
-    
-
     
     // MARK: - UI Animations
     func transitionCollectionView(newState:SignAppState) {
@@ -354,7 +312,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     func extraSignText()->[String:String] {
         switch currentExtraSignType {
         case .Discovery:
-            return ["top":"steps to new sign",
+            return ["top":"steps to new sign:",
                     "bottom":"\(discoverySign!.distance)"]
         case .Loading:
             return ["top":"Loading signs",
