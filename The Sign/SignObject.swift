@@ -68,17 +68,6 @@ public class SignObject: NSObject {
         return "ID:\(objectId) LocationName:\(locationName) Coordinates:\(location.location) Title:\(title) IsDiscovered:\(isDiscovered) isCollected:\(isCollected)"
     }
     
-    var viewMode:SignCardViewMode {
-        get {
-            if isCollected {
-                return isDiscovered ? .Discovered : .NotDiscovered
-            }
-            else {
-                return .NotCollected
-            }
-        }
-    }
-    
     var thumbnailText:String {
         get {
             if isCollected {

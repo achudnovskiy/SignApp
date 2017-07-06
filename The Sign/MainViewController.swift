@@ -16,17 +16,21 @@ enum SignAppState {
     case MapView
 }
 
-enum SignDiscovery {
-    case FirstDiscovery
-    case NewDiscovery
-    case DistanceUpdate
+enum ExtraSignType {
+    case Discovery
+    case Problem
+    case StayTuned
+    case Loading
 }
+
+
 
 protocol SignShareProtocol {
     func updateShareProgress(progress:CGFloat, didPassThreshold:Bool)
     func resetShareProgress()
     func didShareSignCard(signCard:SignCard)
 }
+
 
 extension UICollectionView {
     var indexPathForLastRow:IndexPath {
@@ -60,17 +64,14 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     //MARK: Properties
     
-    var mapViewController:MapViewController!
-    var delayedTransition = false
-    var currentState:SignAppState = .ThumbnailView
-    var discoverySign:SignObject?
-    var cachedImages = NSCache<NSString,UIImage>()
-    
     let discoveryQueue = DispatchQueue(label: "thesign.discoveryQueue")
+    var mapViewController:MapViewController!
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
+    var delayedTransition = false
+    var discoverySign:SignObject?
+    var currentState:SignAppState = .ThumbnailView
+    var currentExtraSignType:ExtraSignType = .Loading
+    var cachedImages = NSCache<NSString,UIImage>()
     
     func prepareConstraints() {
         
@@ -78,21 +79,16 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         self.cnstrMapButtonWidth.constant = DimensionGenerator.current.mapButtonWidth
     }
     
-    var collectionSigns:[SignObject] {
-        if self.discoverySign != nil {
-            return SignDataSource.sharedInstance.collectedSignsOrdered + [self.discoverySign!]
-        }
-        else {
-            return SignDataSource.sharedInstance.collectedSignsOrdered
-        }
-    }
+    var collectionSigns:[SignObject] = []
     
-    var collectionNewItems:[SignObject] {
-        return SignDataSource.sharedInstance.newSigns
+    var collectionNewItemsCount:Int {
+        return SignDataSource.sharedInstance.newSigns.count
     }
     
     //TODO: REVIEW
     func prepareDataSource() {
+        
+        collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
         if collectionSigns.count == 0
         {
             return
@@ -106,6 +102,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
+    
+    //MARK: - UIViewController methods
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareConstraints()
@@ -128,9 +126,20 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        cachedImages.removeAllObjects()
+    }
+    
+    
+    // MARK: - Local notifications
     func observerNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.processSignReloadNotification(_:)), name: kNotificationReloadData, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.processSignOpenNotification(_:)), name: kNotificationScrollToSign, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.processSignReloadNotification(_:)), name: kNotificationReloadData, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.processSignDicoveryNotification(_:)), name: kNotificationSignNearby, object: nil)
     }
     
@@ -147,15 +156,26 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     func processSignReloadNotification(_ notification:Notification) {
         DispatchQueue.main.async {
+            //TODO: do something smarter than nuking the cache
+            self.cachedImages.removeAllObjects()
+            let animate = self.collectionSigns.count == 0
+            self.collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
+            
+//            if animate {
+//                self.signCollectionView.performBatchUpdates({
+//                    self.signCollectionView.reloadData()
+//                }, completion: nil)
+//            }
+//            else {
+//            self.signCollectionView.reloadItems(at: <#T##[IndexPath]#>)
+//                self.signCollectionView.reloadData()
+//            }
+            
             self.signCollectionView.reloadData()
         }
     }
         
     func processSignDicoveryNotification(_ notification:Notification) {
-//        if true {
-//            return
-//        }
-//
         discoveryQueue.async {
             guard
                 let signId = notification.userInfo?[kNotificationSignNearbyId] as? String,
@@ -164,49 +184,48 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             
             newDiscoverySign.distance = distanceInSteps
             
-            let discoveryMode:SignDiscovery
-            if self.discoverySign != nil {
-                if self.discoverySign == newDiscoverySign {
-                    discoveryMode = .DistanceUpdate
-                }
-                else {
-                    discoveryMode = .NewDiscovery
-                }
+            self.currentExtraSignType = .Discovery
+            
+            let needReload = self.discoverySign != newDiscoverySign ||  self.discoverySign?.distance != distanceInSteps
+            self.discoverySign = newDiscoverySign
+            
+            if needReload {
+                DispatchQueue.main.async {
+                    self.signCollectionView.performBatchUpdates({
+                        self.signCollectionView.reloadItems(at: [self.signCollectionView.indexPathForLastRow])
+                    }, completion: nil)
+                }                
             }
-            else {
-                discoveryMode = .FirstDiscovery
-            }
-            self.showSignNearby(sign: newDiscoverySign, discoveryMode: discoveryMode)
+
+//            self.showSignNearby(sign: newDiscoverySign)
         }
     }
     
-    func showSignNearby(sign:SignObject, discoveryMode:SignDiscovery) {
-        DispatchQueue.main.async {
-            switch discoveryMode {
-            case .FirstDiscovery:
-                self.signCollectionView.performBatchUpdates({
-                    self.discoverySign = sign
-                    self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
-                }, completion: nil)
-            case .NewDiscovery:
-                self.signCollectionView.performBatchUpdates({
-                    self.discoverySign = sign
-                    self.signCollectionView.deleteItems(at: [self.signCollectionView.indexPathForLastRow])
-                    self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
-                }, completion: nil)
-                
-            case .DistanceUpdate:
-                self.signCollectionView.reloadItems(at: [self.signCollectionView.indexPathForLastRow])
-            }
-        }
-    }
+//    func showSignNearby(sign:SignObject) {
+//            let animate = self.discoverySign == nil
+//            
+//            if animate {
+// 
+//            }
+//          
+//
+////            switch discoveryMode {
+////            case .FirstDiscovery:
+////            case .NewDiscovery:
+////                self.discoverySign = sign
+////                self.signCollectionView.reloadItems(at: [self.signCollectionView.indexPathForLastRow])
+////
+//////                self.signCollectionView.performBatchUpdates({
+//////                    self.discoverySign = sign
+//////                    self.signCollectionView.deleteItems(at: [self.signCollectionView.indexPathForLastRow])
+//////                    self.signCollectionView.insertItems(at: [self.signCollectionView.indexPathForLastRow])
+//////                }, completion: nil)
+////            
+////            case .DistanceUpdate:
+////            }
+//    }
     
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        cachedImages.removeAllObjects()
-    }
-    
+
     
     // MARK: - UI Animations
     func transitionCollectionView(newState:SignAppState) {
@@ -221,7 +240,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         let signInTransition = collectionSigns[cellId.row]
         let cellView = signInFocus!
         
-        resetZPosition()
+//        resetZPosition()
         
         if toFullscreen {
             signCollectionView.isScrollEnabled = false
@@ -249,61 +268,105 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     func processSignDiscovery(sign:SignObject, signCard:SignCard) {
         print("sign discovered \(sign.objectId)")
+        if cachedImages.object(forKey: sign.uniqueId) != nil {
+            cachedImages.removeObject(forKey: sign.uniqueId)
+        }
         sign.isDiscovered = true
         signCard.viewMode = .Discovered
         signCard.keywordLabel.text = sign.thumbnailText.uppercased()
     }
     
-    func stopMagnification() {
-        if self.signCollectionLayout.fullScreenItemIndex != nil {
-            
-            let signCell = self.signCollectionView.cellForItem(at: self.signCollectionLayout.fullScreenItemIndex!) as? SignCard
-            signCell?.prepareViewAfterAnimation(toFullscreen: false)
-            self.currentState = .ThumbnailView
-            self.updateStateButton()
-            
-            self.signCollectionLayout.fullScreenItemIndex = nil
-        }
-    }
-    func resetZPosition() {
-        self.signCollectionView.visibleCells.forEach { (cell) in
-            cell.layer.zPosition = 0
-        }
-    }
+//    func stopMagnification() {
+//        if self.signCollectionLayout.fullScreenItemIndex != nil {
+//            
+//            let signCell = self.signCollectionView.cellForItem(at: self.signCollectionLayout.fullScreenItemIndex!) as? SignCard
+//            signCell?.prepareViewAfterAnimation(toFullscreen: false)
+//            self.currentState = .ThumbnailView
+//            self.updateStateButton()
+//            
+//            self.signCollectionLayout.fullScreenItemIndex = nil
+//        }
+//    }
+    
+//    func resetZPosition() {
+//        self.signCollectionView.visibleCells.forEach { (cell) in
+//            cell.layer.zPosition = 0
+//        }
+//    }
     
     
     // MARK: - UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return collectionSigns.count
+        return collectionSigns.count + 1
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Card", for: indexPath) as! SignCard
-        let signToShow = collectionSigns[indexPath.row]
-        cell.keywordLabel.text = signToShow.thumbnailText.uppercased()
-        cell.contentLabel.text = signToShow.content.uppercased()
-        cell.locationLabel.text = signToShow.locationName.uppercased()
         
-        var cachedImage = cachedImages.object(forKey: signToShow.uniqueId)
-        if cachedImage == nil {
-            let imageToCache = signToShow.proccessImage()
-            cachedImages.setObject(imageToCache, forKey: signToShow.uniqueId)
-            cachedImage = imageToCache
+        if indexPath != collectionView.indexPathForLastRow {
+            let signToShow = collectionSigns[indexPath.row]
+            
+            //TODO: remove later
+            if signToShow.isCollected == false {
+                print("*************Shouldn't be here*************")
+                return cell
+            }
+            
+            if signToShow.isDiscovered {
+                cell.shareDelegate = self
+                cell.prepareViewForMode(viewMode: .Discovered, isFullscreenView: false)
+            }
+            else {
+                cell.prepareViewForMode(viewMode: .NotDiscovered, isFullscreenView: false)
+            }
+            
+            cell.keywordLabel.text = signToShow.thumbnailText.uppercased()
+            cell.contentLabel.text = signToShow.content.uppercased()
+            cell.locationLabel.text = signToShow.locationName.uppercased()
+            cell.wrapperView.image = cachedImageForSign(signToCache: signToShow)
+            
+        }
+        else {
+            let cellText = self.extraSignText()
+            cell.prepareForExtraSign(extraType: currentExtraSignType, topText: cellText["top"]!, bottomText: cellText["bottom"]!)
         }
         
-        cell.wrapperView.image = cachedImages.object(forKey: signToShow.uniqueId)
-        cell.prepareViewForMode(viewMode: signToShow.viewMode, isFullscreenView: false)
+        
         cell.prepareGestureRecognition()
         signCollectionView.panGestureRecognizer.require(toFail: cell.panGesture!)
-        if signToShow.isCollected && signToShow.isDiscovered {
-            cell.shareDelegate = self
-        }
-        cell.startBlur()
-        self.updateCardBlur(card: cell)
+        cell.prepareBlur()
         cell.layoutIfNeeded()
+        self.updateCardBlur(card: cell)
         
         return cell
+    }
+    
+    func cachedImageForSign(signToCache:SignObject) -> UIImage {
+        var cachedImage = cachedImages.object(forKey: signToCache.uniqueId)
+        if cachedImage == nil {
+            cachedImage = signToCache.proccessImage()
+            cachedImages.setObject(cachedImage!, forKey: signToCache.uniqueId)
+        }
+        return cachedImage!
+    }
+    
+    func extraSignText()->[String:String] {
+        switch currentExtraSignType {
+        case .Discovery:
+            return ["top":"steps to new sign",
+                    "bottom":"\(discoverySign!.distance)"]
+        case .Loading:
+            return ["top":"Loading signs",
+                    "bottom":"please wait"]
+        case .Problem:
+            return ["top":"Something's wrong",
+                    "bottom":"Can't load the signs"]
+        case .StayTuned:
+            return ["top":"all signs collected",
+                    "bottom":"more to come soon"]
+        }
+    
     }
     
     //MARK:- SignShareProtocol
@@ -360,7 +423,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     // MARK: - UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if currentState == .ThumbnailView  && collectionSigns[indexPath.row].isCollected {
+        if currentState == .ThumbnailView && indexPath != signCollectionView.indexPathForLastRow && collectionSigns[indexPath.row].isCollected {
             if indexPath != indexForItemInFocus {
                 delayedTransition = true
                 collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
@@ -482,7 +545,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             return "See Collection"
         case .ThumbnailView:
             // TODO: get number of new signs
-            let newSigns = collectionNewItems.count
+            let newSigns = collectionNewItemsCount
             if newSigns == 0 && self.discoverySign == nil {
                 return "Collected signs"
             } else {
@@ -546,7 +609,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         case .FullscreenView:
             transitionCollectionView(newState: .ThumbnailView)
         case .ThumbnailView:
-            if collectionNewItems.count != 0 {
+            if collectionNewItemsCount != 0 {
                 signCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: true)
             }
         case .MapView:
@@ -593,6 +656,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
             if self.signCollectionView.isDecelerating || self.signCollectionView.isDragging {
                 self.scheduleUpdateBackgroundForItemAtImdex(index: index)
+                return
+            }
+            
+            if index == self.signCollectionView.indexPathForLastRow.row {
                 return
             }
             

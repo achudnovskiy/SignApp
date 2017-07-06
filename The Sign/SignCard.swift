@@ -11,7 +11,6 @@ import UIKit
 enum SignCardViewMode {
     case Discovered
     case NotDiscovered
-    case NotCollected
 }
 
 class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
@@ -21,18 +20,26 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var contentLabel: UILabel!
     
+    @IBOutlet weak var signOverlayView: UIView!
+    @IBOutlet weak var signLabelTop: UILabel!
+    @IBOutlet weak var signLabelBottom: UILabel!
+    
     @IBOutlet weak var cnstrKeywordTop: NSLayoutConstraint!
     @IBOutlet weak var cnstrKeywordAllignY: NSLayoutConstraint!
     @IBOutlet weak var cnstrKeywordAlignX: NSLayoutConstraint!
-    
     @IBOutlet weak var cnstrKeywordHeight: NSLayoutConstraint!
     @IBOutlet weak var cnstrKeywordLead: NSLayoutConstraint!
     
     @IBOutlet weak var contentWrapperView: UIView!
-    
     @IBOutlet weak var cnstrContentWrapperHeightLess: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperHeight: NSLayoutConstraint!
     @IBOutlet weak var cnstrContentWrapperWidth: NSLayoutConstraint!
+    
+    @IBOutlet weak var signLogoHeight: NSLayoutConstraint!
+    @IBOutlet weak var signLogoTopMargin: NSLayoutConstraint!
+    @IBOutlet weak var signLogoBottomMargin: NSLayoutConstraint!
+    
+    
     
     var blurEffectView: UIVisualEffectView!
     var animator: UIViewPropertyAnimator!
@@ -63,6 +70,9 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         removeGestureRecognizer(panGesture)
         shareDelegate = nil
         
+        contentWrapperView.isHidden = false
+        signOverlayView.isHidden = true
+        
         contentLabel.alpha = 1
         contentLabel.isHidden = true
         contentLabel.text = nil
@@ -80,6 +90,8 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         animator = nil
         blurEffectView.removeFromSuperview()
         blurEffectView = nil
+        
+        signLabelBottom.font = UIFont(descriptor: signLabelBottom.font.fontDescriptor, size: signLabelTop.font.pointSize)
     }
     
     func prepareViewForMode(viewMode:SignCardViewMode, isFullscreenView isFullscreen :Bool) {
@@ -97,15 +109,41 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
                 setConstraintsForThumbnail()
             case .NotDiscovered:
                 setConstraintsForThumbnailNotDiscovered()
-            case .NotCollected:
-                setConstraintsForThumbnailNotCollected()
             }
+            
             updateElementsVisibility(isVisible: false)
         }
     }
     
+    func prepareForExtraSign(extraType:ExtraSignType, topText:String, bottomText:String) {
+        signOverlayView.isHidden = false
+        contentWrapperView.isHidden = true
+        signLabelTop.text = topText.uppercased()
+        signLabelBottom.text = bottomText.uppercased()
+        
+        switch extraType {
+        case .Discovery:
+            signLogoHeight.constant = 0
+            signLogoTopMargin.constant = -10
+            signLogoBottomMargin.constant = 15
+            signLabelBottom.font = UIFont(descriptor: signLabelBottom.font.fontDescriptor, size: signLabelBottom.font.pointSize + 2)
+        case .Loading:
+            signLogoHeight.constant = 32
+            signLogoTopMargin.constant = 5
+            signLogoBottomMargin.constant = 5
+        case .Problem:
+            signLogoHeight.constant = 32
+            signLogoTopMargin.constant = 5
+            signLogoBottomMargin.constant = 5
+        case .StayTuned:
+            signLogoHeight.constant = 32
+            signLogoTopMargin.constant = 5
+            signLogoBottomMargin.constant = 5
+        }
+    }
     
-    func startBlur() {
+    
+    func prepareBlur() {
         self.blurEffectView = UIVisualEffectView(frame: self.bounds)
         self.blurEffectView.effect = UIBlurEffect(style: .light)
         self.addSubview(self.blurEffectView)
@@ -321,20 +359,22 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         keywordLabel.numberOfLines = 5
     }
     
-    func setConstraintsForThumbnailNotCollected() {
-        cnstrContentWrapperHeightLess.priority = UILayoutPriorityDefaultLow
-        cnstrContentWrapperHeight.priority = 999
-        //TODO: replace with optional top/lead constraints to wrapperView
-        cnstrContentWrapperHeight.constant = self.bounds.height
-        cnstrContentWrapperWidth.constant = self.bounds.width
-        
-        cnstrKeywordLead.priority = UILayoutPriorityDefaultLow
-        cnstrKeywordAlignX.priority = 999
-        cnstrKeywordTop.priority = UILayoutPriorityDefaultLow
-        cnstrKeywordAllignY.priority = 999
-        
-        
-        cnstrKeywordHeight.priority = UILayoutPriorityDefaultLow
-        keywordLabel.numberOfLines = 5
+    func showOverlayView(showLogo:Bool) {
+
+//        
+//        cnstrContentWrapperHeightLess.priority = UILayoutPriorityDefaultLow
+//        cnstrContentWrapperHeight.priority = 999
+//        //TODO: replace with optional top/lead constraints to wrapperView
+//        cnstrContentWrapperHeight.constant = self.bounds.height
+//        cnstrContentWrapperWidth.constant = self.bounds.width
+//        
+//        cnstrKeywordLead.priority = UILayoutPriorityDefaultLow
+//        cnstrKeywordAlignX.priority = 999
+//        cnstrKeywordTop.priority = UILayoutPriorityDefaultLow
+//        cnstrKeywordAllignY.priority = 999
+//        
+//        
+//        cnstrKeywordHeight.priority = UILayoutPriorityDefaultLow
+//        keywordLabel.numberOfLines = 5
     }
 }

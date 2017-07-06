@@ -204,7 +204,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
             self.processDeferredLocationUpdates(locations: Array(defferredLocatonUpadtes))
         }
         
-        guard let newCurrentLocation = locations.last,  newCurrentLocation.horizontalAccuracy<=100 else {
+        guard let newCurrentLocation = locations.last,  newCurrentLocation.horizontalAccuracy<=70 else {
             print("location accuracy \(locations.last?.horizontalAccuracy) is too low")
             return
         }

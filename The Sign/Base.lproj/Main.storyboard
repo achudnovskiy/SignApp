@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.19" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="H27-qS-sTL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="H27-qS-sTL">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.16"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -55,6 +55,43 @@
                                                 <view tag="4" contentMode="scaleToFill" restorationIdentifier="SignCardContentView" translatesAutoresizingMaskIntoConstraints="NO" id="8jb-DP-DoQ" customClass="UIImageView">
                                                     <rect key="frame" x="0.0" y="0.0" width="200" height="354"/>
                                                     <subviews>
+                                                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XDz-NZ-Efo">
+                                                            <rect key="frame" x="0.0" y="0.0" width="200" height="354"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1fX-hC-1Ra">
+                                                                    <rect key="frame" x="67.5" y="120" width="65.5" height="36"/>
+                                                                    <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="26"/>
+                                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="signLogo" translatesAutoresizingMaskIntoConstraints="NO" id="cml-0O-Ktc">
+                                                                    <rect key="frame" x="92.5" y="161" width="15" height="32"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="15" id="X7g-Di-RNB"/>
+                                                                        <constraint firstAttribute="height" constant="32" id="hos-qR-aSe"/>
+                                                                    </constraints>
+                                                                </imageView>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hxj-14-qgf">
+                                                                    <rect key="frame" x="67.5" y="198.5" width="65.5" height="36"/>
+                                                                    <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="26"/>
+                                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                            <color key="backgroundColor" red="0.15686274510000001" green="0.1529411765" blue="0.14901960780000001" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Hxj-14-qgf" secondAttribute="trailing" constant="20" id="0OV-Xp-LUV"/>
+                                                                <constraint firstItem="Hxj-14-qgf" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="XDz-NZ-Efo" secondAttribute="leading" constant="20" id="2yj-zf-wMX"/>
+                                                                <constraint firstItem="cml-0O-Ktc" firstAttribute="centerX" secondItem="XDz-NZ-Efo" secondAttribute="centerX" id="7sZ-jj-dB7"/>
+                                                                <constraint firstItem="cml-0O-Ktc" firstAttribute="top" secondItem="1fX-hC-1Ra" secondAttribute="bottom" constant="5" id="8v3-NE-Qac"/>
+                                                                <constraint firstItem="Hxj-14-qgf" firstAttribute="top" secondItem="cml-0O-Ktc" secondAttribute="bottom" constant="5" id="993-3v-pNg"/>
+                                                                <constraint firstItem="cml-0O-Ktc" firstAttribute="centerY" secondItem="XDz-NZ-Efo" secondAttribute="centerY" id="Dgm-Kl-0vg"/>
+                                                                <constraint firstItem="Hxj-14-qgf" firstAttribute="centerX" secondItem="XDz-NZ-Efo" secondAttribute="centerX" id="Im5-Qh-uyY"/>
+                                                                <constraint firstItem="1fX-hC-1Ra" firstAttribute="centerX" secondItem="XDz-NZ-Efo" secondAttribute="centerX" id="RrO-BC-L8f"/>
+                                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="1fX-hC-1Ra" secondAttribute="trailing" constant="20" id="jC6-tN-zjm"/>
+                                                                <constraint firstItem="1fX-hC-1Ra" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="XDz-NZ-Efo" secondAttribute="leading" constant="20" id="txe-Om-GTo"/>
+                                                            </constraints>
+                                                        </view>
                                                         <view opaque="NO" clipsSubviews="YES" tag="5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9bC-70-8AO">
                                                             <rect key="frame" x="50" y="229.5" width="150" height="125"/>
                                                             <subviews>
@@ -104,8 +141,12 @@
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
+                                                        <constraint firstItem="XDz-NZ-Efo" firstAttribute="top" secondItem="8jb-DP-DoQ" secondAttribute="top" id="N9O-GL-w0S"/>
+                                                        <constraint firstItem="XDz-NZ-Efo" firstAttribute="leading" secondItem="8jb-DP-DoQ" secondAttribute="leading" id="SlD-4l-TBx"/>
                                                         <constraint firstAttribute="bottom" secondItem="9bC-70-8AO" secondAttribute="bottom" identifier="ContentBottom" id="WuL-4k-iRq"/>
                                                         <constraint firstAttribute="trailing" secondItem="9bC-70-8AO" secondAttribute="trailing" identifier="ContentTrail" id="aa2-QE-JdR"/>
+                                                        <constraint firstAttribute="bottom" secondItem="XDz-NZ-Efo" secondAttribute="bottom" id="bny-33-yF2"/>
+                                                        <constraint firstAttribute="trailing" secondItem="XDz-NZ-Efo" secondAttribute="trailing" id="hLk-Ey-gTA"/>
                                                     </constraints>
                                                 </view>
                                             </subviews>
@@ -130,6 +171,12 @@
                                             <outlet property="contentWrapperView" destination="9bC-70-8AO" id="6vR-EC-kPA"/>
                                             <outlet property="keywordLabel" destination="qaR-k0-aw1" id="ntV-tN-sGb"/>
                                             <outlet property="locationLabel" destination="EFT-Sb-THE" id="0zr-1L-5aU"/>
+                                            <outlet property="signLabelBottom" destination="Hxj-14-qgf" id="jXc-ay-8E3"/>
+                                            <outlet property="signLabelTop" destination="1fX-hC-1Ra" id="g3o-bG-kMu"/>
+                                            <outlet property="signLogoBottomMargin" destination="993-3v-pNg" id="LFF-gK-HlC"/>
+                                            <outlet property="signLogoHeight" destination="hos-qR-aSe" id="d61-cS-2se"/>
+                                            <outlet property="signLogoTopMargin" destination="8v3-NE-Qac" id="h6w-54-LFq"/>
+                                            <outlet property="signOverlayView" destination="XDz-NZ-Efo" id="sYv-ga-Npi"/>
                                             <outlet property="wrapperView" destination="8jb-DP-DoQ" id="Up6-Kz-NkD"/>
                                         </connections>
                                     </collectionViewCell>
@@ -305,7 +352,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DefaultBackgroundImage" translatesAutoresizingMaskIntoConstraints="NO" id="QFT-Ao-Ivi" userLabel="Background Image">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5k3-xr-aax" userLabel="Overlay">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -454,5 +501,6 @@
         <image name="Logo" width="89" height="55"/>
         <image name="MapIcon" width="21" height="21"/>
         <image name="loginFacebook" width="204" height="44"/>
+        <image name="signLogo" width="14" height="31"/>
     </resources>
 </document>

@@ -56,7 +56,7 @@ class SignDataSource: NSObject {
         getAllProductsFromCloud { (signObjects) in
             self.dataArray = signObjects
             
-            //TESTING
+//            //TESTING
             self.dataArray[0].isCollected = true
             for index in 1...3 {
                 self.dataArray[index].isDiscovered = true
