@@ -59,6 +59,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
                                                object: nil,
                                                queue: OperationQueue.main) {
                                                 (notification) in
+            guard self.currentLocation != nil else { return }
             self.allLocations = SignDataSource.sharedInstance.locations
             if let closest = self.getClosestSign(location: self.currentLocation!, from: self.allLocations) {
                 let distance = self.distanceInStepsFromLocation(signLocation: closest)

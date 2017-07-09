@@ -23,8 +23,6 @@ enum ExtraSignType {
     case Loading
 }
 
-
-
 protocol SignShareProtocol {
     func updateShareProgress(progress:CGFloat, didPassThreshold:Bool)
     func resetShareProgress()
@@ -82,7 +80,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     var collectionSigns:[SignObject] = []
     
     var collectionNewItemsCount:Int {
-        return SignDataSource.sharedInstance.newSigns.count
+        return SignDataSource.sharedInstance.newSignsCount
     }
     
     //TODO: REVIEW
@@ -229,6 +227,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         if cachedImages.object(forKey: sign.uniqueId) != nil {
             cachedImages.removeObject(forKey: sign.uniqueId)
         }
+        _ = SignDataSource.sharedInstance.discoverSignWith(sign.objectId)
         sign.isDiscovered = true
         signCard.viewMode = .Discovered
         signCard.keywordLabel.text = sign.thumbnailText.uppercased()

@@ -17,6 +17,7 @@ public struct SignLocation: CustomStringConvertible{
     let objectId:String
     let location:CLLocation
     let isCollected:Bool
+    let name:String
     func regionWithRadius(radius:CLLocationDistance) -> CLCircularRegion {
         return CLCircularRegion(center: location.coordinate, radius: radius, identifier: objectId)
     }
@@ -35,7 +36,7 @@ public class SignObject: NSObject {
     
     var location:SignLocation {
         get {
-            return SignLocation(objectId: objectId, location: CLLocation(latitude: latitude, longitude: longitude), isCollected: isCollected)
+            return SignLocation(objectId: objectId, location: CLLocation(latitude: latitude, longitude: longitude), isCollected: isCollected, name:locationName)
         }
     }
     let latitude:Double

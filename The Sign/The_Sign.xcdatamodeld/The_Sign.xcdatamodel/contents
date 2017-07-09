@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13154.30" systemVersion="16F73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class"/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16F73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="SignEntity" representedClassName="SignEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="business" attributeType="String" syncable="YES"/>
+        <attribute name="changeTag" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="content" attributeType="String" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="isCollected" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="isDiscovered" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="keyword" attributeType="String" syncable="YES"/>
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="recordId" attributeType="String" syncable="YES"/>
+    </entity>
+    <fetchRequest name="AllSigns" entity="SignEntity"/>
+    <fetchRequest name="CollectedSigns" entity="SignEntity" predicateString="isCollected == 1"/>
+    <fetchRequest name="NewSigns" entity="SignEntity" predicateString="isCollected == 1 AND isDiscovered == 0"/>
+    <fetchRequest name="SignById" entity="SignEntity" predicateString="recordId == &quot;$signId&quot;"/>
+    <fetchRequest name="SignsToDiscover" entity="SignEntity" predicateString="isCollected == 0 AND isDiscovered == 0"/>
     <elements>
-        <element name="Entity" positionX="-63" positionY="-18" width="128" height="45"/>
+        <element name="SignEntity" positionX="-63" positionY="-18" width="128" height="195"/>
     </elements>
 </model>
