@@ -59,12 +59,9 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
                                                object: nil,
                                                queue: OperationQueue.main) {
                                                 (notification) in
-            guard self.currentLocation != nil else { return }
             self.allLocations = SignDataSource.sharedInstance.locations
-            if let closest = self.getClosestSign(location: self.currentLocation!, from: self.allLocations) {
-                let distance = self.distanceInStepsFromLocation(signLocation: closest)
-                self.notifyAboutSignNearby(sign: closest, distanceInSteps: distance)
-            }
+            guard self.currentLocation != nil else { return }
+            self.discoverLocationIfNeeded(location: self.currentLocation!)
         }
     }
     
@@ -87,7 +84,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
             locationManager.startUpdatingLocation()
         }
         else {
-            updateMonitoredRegions(location: self.currentLocation!)
+            updateMonitoredRegionsIfNeeded(location: self.currentLocation!)
         }
     }
 
@@ -162,9 +159,12 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         return getClosestSignFrom(locationSet: allUndiscovered, to: location)
     }
     
-    func updateMonitoredRegions(location:CLLocation) {
-        updateHomeRegion(location: location)
-        updateSignRegions(location: location)
+    func updateMonitoredRegionsIfNeeded(location:CLLocation) {
+        if location.horizontalAccuracy<20 && shouldUpdateMonitoredRegions {
+            updateHomeRegion(location: location)
+            updateSignRegions(location: location)
+            shouldUpdateMonitoredRegions = false
+        }
     }
     
     func updateSignRegions(location:CLLocation) {
@@ -205,26 +205,26 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
             self.processDeferredLocationUpdates(locations: Array(defferredLocatonUpadtes))
         }
         
-        guard let newCurrentLocation = locations.last,  newCurrentLocation.horizontalAccuracy<=70 else {
-            print("location accuracy \(locations.last?.horizontalAccuracy) is too low")
-            return
-        }
-        
-        currentLocation = newCurrentLocation
-        
+        guard let newCurrentLocation = locations.last else { return }
         print("Updating current location to \(String(describing: newCurrentLocation.coordinate))")
-        if let closest = getClosestSign(location: newCurrentLocation, from: self.allLocations) {
-            let distance = self.distanceInStepsFromLocation(signLocation: closest)
-            self.notifyAboutSignNearby(sign: closest, distanceInSteps: distance)
-        }
         
-        if shouldUpdateMonitoredRegions {
-            print("Starting Updating regions")
-            updateMonitoredRegions(location: newCurrentLocation)
-            shouldUpdateMonitoredRegions = false
-        }
+        discoverLocationIfNeeded(location: newCurrentLocation)
+        updateMonitoredRegionsIfNeeded(location: newCurrentLocation)
+        currentLocation = newCurrentLocation
     }
     
+    func discoverLocationIfNeeded(location: CLLocation) {
+        if location.horizontalAccuracy <= minDistanceToDiscoverySign {
+            if let closest = getClosestSign(location: location, from: self.allLocations) {
+                let distance = self.distanceInStepsFromLocation(signLocation: closest)
+                self.notifyAboutSignNearby(sign: closest, distanceInSteps: distance)
+            }
+        }
+        else {
+            print("location accuracy \(location.horizontalAccuracy) is too low")
+        }
+    }
+
     
     
     
@@ -265,5 +265,20 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         let meterToStepRatio = 1.3123
         let distance = self.locationManager.location!.distance(from: signLocation.location)
         return Int(distance * meterToStepRatio)
+    }
+    
+    var currentMinDistanceToDiscoverySign: CLLocationDistance = 0
+    
+    
+    var minDistanceToDiscoverySign:CLLocationDistance {
+        if currentMinDistanceToDiscoverySign == 0 {
+            currentMinDistanceToDiscoverySign = Double.infinity
+        }
+        else if currentMinDistanceToDiscoverySign == Double.infinity {
+            currentMinDistanceToDiscoverySign = 100
+        } else if currentMinDistanceToDiscoverySign >= 20 {
+            currentMinDistanceToDiscoverySign -= 10
+        }
+        return currentMinDistanceToDiscoverySign
     }
 }

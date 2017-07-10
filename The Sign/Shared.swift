@@ -33,3 +33,5 @@ let kNotificationSignNearbyDistance = "kNotificationSignNearbyDistance"
 let kNotificationReloadData         = NSNotification.Name(rawValue:"ReloadData")
 let kNotificationScrollToSign       = NSNotification.Name(rawValue:"NotificationScrollToSign")
 let kNotificationScrollToSignId     = "NotificationScrollToSignId"
+
+let signColor = UIColor(red: 226.0 / 255.0, green: 106.0 / 255.0, blue: 42.0 / 255.0, alpha: 1.0)

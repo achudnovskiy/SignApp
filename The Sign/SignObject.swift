@@ -42,6 +42,7 @@ public class SignObject: NSObject {
     let latitude:Double
     let longitude:Double
     let locationName:String
+    let appLinkUrl:String
     
     var lastVisitedDate:Date?
     var sharedDate:Date?
@@ -52,12 +53,13 @@ public class SignObject: NSObject {
          image:UIImage,
          latitude: CLLocationDegrees,
          longitude: CLLocationDegrees,
-         locationName:String) {
+         locationName:String,
+         appLinkUrl:String) {
         self.objectId = objectId
         self.title = title
         self.image = image
         self.content = content
-        
+        self.appLinkUrl = appLinkUrl
         self.latitude = latitude
         self.longitude = longitude
         self.locationName = locationName
@@ -94,37 +96,12 @@ public class SignObject: NSObject {
         }
     }
     
-    func processSignDiscovery() {
-        isDiscovered = true
-    }
-
     func processLocationVisit() {
         if isCollected == false {
             isCollected = true
         }
         
         lastVisitedDate = Date()
-    }
-    
-    func unarchive(archivedData:[String:AnyObject]) {
-        isDiscovered = archivedData["isDiscovered"] as! Bool
-        isCollected = archivedData["isCollected"] as! Bool
-        lastVisitedDate = archivedData["lastVisitedDate"] as? Date
-        sharedDate = archivedData["sharedDate"] as? Date
-
-    }
-    var archivedData:[String:AnyObject] {
-        var result:[String:AnyObject] = ["isDiscovered":isDiscovered as AnyObject,
-                                   "isCollected":isCollected as AnyObject]
-
-        if lastVisitedDate != nil {
-            result["lastVisitedDate"] = lastVisitedDate! as AnyObject!
-        }
-        if sharedDate != nil {
-            result["sharedDate"] = sharedDate! as AnyObject!
-        }
-        
-        return result
     }
 
     var uniqueId:NSString {

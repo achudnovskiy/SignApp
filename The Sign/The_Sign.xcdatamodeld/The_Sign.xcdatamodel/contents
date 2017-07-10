@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16F73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="SignEntity" representedClassName="SignEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="appLinkUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="business" attributeType="String" syncable="YES"/>
         <attribute name="changeTag" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="content" attributeType="String" syncable="YES"/>
@@ -15,9 +16,9 @@
     <fetchRequest name="AllSigns" entity="SignEntity"/>
     <fetchRequest name="CollectedSigns" entity="SignEntity" predicateString="isCollected == 1"/>
     <fetchRequest name="NewSigns" entity="SignEntity" predicateString="isCollected == 1 AND isDiscovered == 0"/>
-    <fetchRequest name="SignById" entity="SignEntity" predicateString="recordId == &quot;$signId&quot;"/>
+    <fetchRequest name="SignById" entity="SignEntity" predicateString="recordId == $signId"/>
     <fetchRequest name="SignsToDiscover" entity="SignEntity" predicateString="isCollected == 0 AND isDiscovered == 0"/>
     <elements>
-        <element name="SignEntity" positionX="-63" positionY="-18" width="128" height="195"/>
+        <element name="SignEntity" positionX="-63" positionY="-18" width="128" height="210"/>
     </elements>
 </model>

@@ -21,7 +21,7 @@ class SignDataSource: NSObject {
             let signEntities = try persistentContainer.viewContext.fetch(self.collectedSignsRequest)
             var result:[SignObject] = []
             signEntities.forEach({ (signEntity) in
-                result.append(SignObject(objectId: signEntity.recordId!, title: signEntity.keyword!, content: signEntity.content!, image: UIImage(data: signEntity.image! as Data)!, latitude: signEntity.latitude, longitude: signEntity.longitude, locationName: signEntity.business!))
+                result.append(signEntityToSignObject(entity: signEntity))
             })
             return result
         }
@@ -71,17 +71,16 @@ class SignDataSource: NSObject {
         return true
     }
     
-    func discoverSignWith(_ signId:String) -> Bool {
-        guard let sign = self.findSignEntityById(objectId: signId) else { return false }
+    func discoverSignWith(_ signId:String) {
+        guard let sign = self.findSignEntityById(objectId: signId) else { return }
         sign.isDiscovered = true
         saveData(notifyUI: false)
-        return true
     }
 
     
     func findSignEntityById(objectId: String) -> SignEntity? {
         do {
-            let signEntities = try persistentContainer.viewContext.fetch(self.signByIdRequest(signId: objectId))
+            let signEntities = try backgroundContext.fetch(self.signByIdRequest(signId: objectId))
             return signEntities.first
         }
         catch {
@@ -93,7 +92,21 @@ class SignDataSource: NSObject {
     
     func findSignObjById(objectId: String) -> SignObject? {
         guard let signEntity = self.findSignEntityById(objectId: objectId) else { return nil }
-        return SignObject(objectId: signEntity.recordId!, title: signEntity.keyword!, content: signEntity.content!, image: UIImage(data: signEntity.image! as Data)!, latitude: signEntity.latitude, longitude: signEntity.longitude, locationName: signEntity.business!)
+        return signEntityToSignObject(entity: signEntity)
+    }
+    
+    func signEntityToSignObject(entity:SignEntity) -> SignObject {
+        let signObject = SignObject(objectId: entity.recordId!,
+                                    title: entity.keyword!,
+                                    content: entity.content!,
+                                    image: UIImage(data: entity.image! as Data)!,
+                                    latitude: entity.latitude,
+                                    longitude: entity.longitude,
+                                    locationName: entity.business!,
+                                    appLinkUrl: entity.appLinkUrl!)
+        signObject.isDiscovered = entity.isDiscovered
+        signObject.isCollected  = entity.isCollected
+        return signObject
     }
     
     //MARK: - CoreData
@@ -135,6 +148,7 @@ class SignDataSource: NSObject {
     var collectedSignsRequest:NSFetchRequest<SignEntity> {
         let fetchRequest = (persistentContainer.managedObjectModel.fetchRequestTemplate(forName: "CollectedSigns") as! NSFetchRequest<SignEntity>).copy() as! NSFetchRequest<SignEntity>
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "isDiscovered", ascending: true)]
+        
         return fetchRequest
     }
     var undiscoveredSignsRequest:NSFetchRequest<SignEntity> {
@@ -150,34 +164,37 @@ class SignDataSource: NSObject {
     }
     
     func signByIdRequest(signId:String) ->NSFetchRequest<SignEntity> {
-        return persistentContainer.managedObjectModel.fetchRequestFromTemplate(withName: "SignById", substitutionVariables: [signId:"signId"]) as! NSFetchRequest<SignEntity>
+        return persistentContainer.managedObjectModel.fetchRequestFromTemplate(withName: "SignById", substitutionVariables: ["signId":signId]) as! NSFetchRequest<SignEntity>
     }
     
     
     func addCloudRecordToLocalStorage(cloudKitRecord:CKRecord) {
         let newSignEntity = NSEntityDescription.insertNewObject(forEntityName: "SignEntity", into: backgroundContext) as! SignEntity
         
-        newSignEntity.recordId = cloudKitRecord.recordID.recordName
-        newSignEntity.changeTag = cloudKitRecord.recordChangeTag
-        newSignEntity.business = cloudKitRecord.object(forKey: "businessName") as? String
-        newSignEntity.content = cloudKitRecord.object(forKey: "content") as? String
-        newSignEntity.keyword = cloudKitRecord.object(forKey: "keyword") as? String
-        newSignEntity.latitude = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.latitude)!
-        newSignEntity.longitude = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.longitude)!
-        newSignEntity.image = NSData(contentsOf: (cloudKitRecord.object(forKey: "image") as! CKAsset).fileURL)
-
+        newSignEntity.recordId   = cloudKitRecord.recordID.recordName
+        newSignEntity.changeTag  = cloudKitRecord.recordChangeTag
+        newSignEntity.business   = cloudKitRecord.object(forKey: "businessName") as? String
+        newSignEntity.content    = cloudKitRecord.object(forKey: "content") as? String
+        newSignEntity.keyword    = cloudKitRecord.object(forKey: "keyword") as? String
+        newSignEntity.appLinkUrl = cloudKitRecord.object(forKey: "appLinkUrl") as? String
+        
+        newSignEntity.latitude   = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.latitude)!
+        newSignEntity.longitude  = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.longitude)!
+        newSignEntity.image      = NSData(contentsOf: (cloudKitRecord.object(forKey: "image") as! CKAsset).fileURL)
+        
         self.backgroundContext.insert(newSignEntity)
     }
     
     func updateLocalStorageWithCloudRecord(coreDataEntity:SignEntity, cloudKitRecord:CKRecord) {
-        coreDataEntity.recordId = cloudKitRecord.recordID.recordName
-        coreDataEntity.changeTag = cloudKitRecord.recordChangeTag
-        coreDataEntity.business = cloudKitRecord.object(forKey: "businessName") as? String
-        coreDataEntity.content = cloudKitRecord.object(forKey: "content") as? String
-        coreDataEntity.keyword = cloudKitRecord.object(forKey: "keyword") as? String
-        coreDataEntity.latitude = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.latitude)!
-        coreDataEntity.longitude = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.longitude)!
-        coreDataEntity.image = NSData(contentsOf: (cloudKitRecord.object(forKey: "image") as! CKAsset).fileURL)
+        coreDataEntity.changeTag  = cloudKitRecord.recordChangeTag
+        coreDataEntity.business   = cloudKitRecord.object(forKey: "businessName") as? String
+        coreDataEntity.content    = cloudKitRecord.object(forKey: "content") as? String
+        coreDataEntity.keyword    = cloudKitRecord.object(forKey: "keyword") as? String
+        coreDataEntity.appLinkUrl = cloudKitRecord.object(forKey: "appLinkUrl") as? String
+
+        coreDataEntity.latitude   = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.latitude)!
+        coreDataEntity.longitude  = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.longitude)!
+        coreDataEntity.image      = NSData(contentsOf: (cloudKitRecord.object(forKey: "image") as! CKAsset).fileURL)
     }
     
     func localCopyForCloudRecordWithId(_ recordId:CKRecordID) -> SignEntity? {
@@ -219,6 +236,7 @@ class SignDataSource: NSObject {
         queryOperation.desiredKeys = []
         queryOperation.recordFetchedBlock = {(record) in
             let localCopy = self.localCopyForCloudRecordWithId(record.recordID)
+            
             if localCopy == nil {
                 recordsToInsert.append(record.recordID)
             }

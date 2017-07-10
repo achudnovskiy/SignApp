@@ -35,7 +35,7 @@ class FbHandler: NSObject, FBSDKSharingDelegate {
             "og:title":sign.title,
             "place:location:latitude":sign.latitude,
             "place:location:longitude":sign.longitude,
-            "og:url":"https://olfe.app.link/aYiRtHw2wD"
+            "og:url":sign.appLinkUrl
         ] as [String : Any]
         return FBSDKShareOpenGraphObject(properties: properties)
     }

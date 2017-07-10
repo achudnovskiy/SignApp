@@ -69,6 +69,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     var discoverySign:SignObject?
     var currentState:SignAppState = .ThumbnailView
     var currentExtraSignType:ExtraSignType = .Loading
+
     var cachedImages = NSCache<NSString,UIImage>()
     
     func prepareConstraints() {
@@ -173,7 +174,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             newDiscoverySign.distance = distanceInSteps
             
             self.currentExtraSignType = .Discovery
-            
+            self.updateStateButton()
+
             if self.discoverySign != newDiscoverySign ||  self.discoverySign?.distance != distanceInSteps {
                 self.discoverySign = newDiscoverySign
                 DispatchQueue.main.async {
@@ -227,7 +229,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         if cachedImages.object(forKey: sign.uniqueId) != nil {
             cachedImages.removeObject(forKey: sign.uniqueId)
         }
-        _ = SignDataSource.sharedInstance.discoverSignWith(sign.objectId)
+        SignDataSource.sharedInstance.discoverSignWith(sign.objectId)
         sign.isDiscovered = true
         signCard.viewMode = .Discovered
         signCard.keywordLabel.text = sign.thumbnailText.uppercased()
@@ -287,6 +289,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         else {
             let cellText = self.extraSignText()
             cell.prepareForExtraSign(extraType: currentExtraSignType, topText: cellText["top"]!, bottomText: cellText["bottom"]!)
+            cell.startLogoAnimatoin()
         }
         
         

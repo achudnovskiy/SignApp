@@ -66,6 +66,7 @@
                                                                 </label>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="signLogo" translatesAutoresizingMaskIntoConstraints="NO" id="cml-0O-Ktc">
                                                                     <rect key="frame" x="92.5" y="161" width="15" height="32"/>
+                                                                    <color key="tintColor" red="0.8862745098" green="0.41568627450000001" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" constant="15" id="X7g-Di-RNB"/>
                                                                         <constraint firstAttribute="height" constant="32" id="hos-qR-aSe"/>
@@ -175,6 +176,7 @@
                                             <outlet property="signLabelTop" destination="1fX-hC-1Ra" id="g3o-bG-kMu"/>
                                             <outlet property="signLogoBottomMargin" destination="993-3v-pNg" id="LFF-gK-HlC"/>
                                             <outlet property="signLogoHeight" destination="hos-qR-aSe" id="d61-cS-2se"/>
+                                            <outlet property="signLogoImageView" destination="cml-0O-Ktc" id="VPi-UF-EeA"/>
                                             <outlet property="signLogoTopMargin" destination="8v3-NE-Qac" id="h6w-54-LFq"/>
                                             <outlet property="signOverlayView" destination="XDz-NZ-Efo" id="sYv-ga-Npi"/>
                                             <outlet property="wrapperView" destination="8jb-DP-DoQ" id="Up6-Kz-NkD"/>
@@ -202,7 +204,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.8862745098" green="0.41568627450000001" blue="0.1647058824" alpha="0.90000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.88627450980392153" green="0.41568627450980389" blue="0.16470588235294117" alpha="0.90000000000000002" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstItem="NFu-Aa-es4" firstAttribute="leading" secondItem="b8F-zC-7yI" secondAttribute="leading" constant="15" id="Jn5-oE-0sz"/>
@@ -225,7 +227,7 @@
                                         </constraints>
                                     </imageView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.8862745098" green="0.41568627450000001" blue="0.1647058824" alpha="0.90000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.8862745098" green="0.41568627450000001" blue="0.1647058824" alpha="0.90000000000000002" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="49" id="N0R-Ed-Wnn"/>

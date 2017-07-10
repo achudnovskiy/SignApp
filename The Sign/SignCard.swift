@@ -24,6 +24,8 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     @IBOutlet weak var signLabelTop: UILabel!
     @IBOutlet weak var signLabelBottom: UILabel!
     
+    @IBOutlet weak var signLogoImageView: UIImageView!
+    
     @IBOutlet weak var cnstrKeywordTop: NSLayoutConstraint!
     @IBOutlet weak var cnstrKeywordAllignY: NSLayoutConstraint!
     @IBOutlet weak var cnstrKeywordAlignX: NSLayoutConstraint!
@@ -86,6 +88,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         wrapperView.isOpaque = true
         
         animator.stopAnimation(false)
+        stopLogoAnimatoin()
         animator.finishAnimation(at: .end)
         animator = nil
         blurEffectView.removeFromSuperview()
@@ -140,8 +143,21 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             signLogoTopMargin.constant = 5
             signLogoBottomMargin.constant = 5
         }
+        self.applyBorder(visible: true)
     }
-    
+
+    func startLogoAnimatoin() {
+        stopLogoAnimatoin()
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 2.0, delay: 0, options: [.curveEaseInOut, .autoreverse, .repeat], animations: {
+                self.signLogoImageView.alpha =  0.5
+            }, completion: nil)
+            
+        }
+    }
+    func stopLogoAnimatoin() {
+        self.signLogoImageView.layer.removeAllAnimations()
+    }
     
     func prepareBlur() {
         self.blurEffectView = UIVisualEffectView(frame: self.bounds)
@@ -281,7 +297,6 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             self.updateElementsVisibility(isVisible: true)
             locationLabel.alpha = 0
             contentLabel.alpha = 0
-            
         }
         else {
         }
