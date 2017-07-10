@@ -188,8 +188,8 @@
                                     <outlet property="delegate" destination="H27-qS-sTL" id="NI4-DA-REG"/>
                                 </connections>
                             </collectionView>
-                            <containerView hidden="YES" tag="8" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Imj-SB-jqe" userLabel="Map Container View">
-                                <rect key="frame" x="1" y="0.0" width="375" height="667"/>
+                            <containerView hidden="YES" tag="8" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Imj-SB-jqe" userLabel="Map Container View">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <connections>
                                     <segue destination="vqW-2v-j4w" kind="embed" identifier="EmbeddedMap" id="U4t-yG-N2f"/>
                                 </connections>

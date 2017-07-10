@@ -149,7 +149,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     func startLogoAnimatoin() {
         stopLogoAnimatoin()
         DispatchQueue.main.async {
-            UIView.animate(withDuration: 2.0, delay: 0, options: [.curveEaseInOut, .autoreverse, .repeat], animations: {
+            UIView.animate(withDuration: 1.0, delay: 0, options: [.curveEaseInOut, .autoreverse, .repeat], animations: {
                 self.signLogoImageView.alpha =  0.5
             }, completion: nil)
             

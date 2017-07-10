@@ -214,8 +214,9 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     }
     
     func discoverLocationIfNeeded(location: CLLocation) {
-        if location.horizontalAccuracy <= minDistanceToDiscoverySign {
+        if location.horizontalAccuracy <= currentMinDistanceToDiscoverySign {
             if let closest = getClosestSign(location: location, from: self.allLocations) {
+                self.bumbDistanceToDiscoverySign()
                 let distance = self.distanceInStepsFromLocation(signLocation: closest)
                 self.notifyAboutSignNearby(sign: closest, distanceInSteps: distance)
             }
@@ -267,18 +268,14 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         return Int(distance * meterToStepRatio)
     }
     
-    var currentMinDistanceToDiscoverySign: CLLocationDistance = 0
+    var currentMinDistanceToDiscoverySign: CLLocationDistance = Double.infinity
     
     
-    var minDistanceToDiscoverySign:CLLocationDistance {
-        if currentMinDistanceToDiscoverySign == 0 {
-            currentMinDistanceToDiscoverySign = Double.infinity
-        }
-        else if currentMinDistanceToDiscoverySign == Double.infinity {
+    func bumbDistanceToDiscoverySign() {
+        if currentMinDistanceToDiscoverySign == Double.infinity {
             currentMinDistanceToDiscoverySign = 100
         } else if currentMinDistanceToDiscoverySign >= 20 {
             currentMinDistanceToDiscoverySign -= 10
         }
-        return currentMinDistanceToDiscoverySign
     }
 }
