@@ -173,12 +173,12 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             
             newDiscoverySign.distance = distanceInSteps
             
-            self.currentExtraSignType = .Discovery
-            self.updateStateButton()
 
             if self.discoverySign != newDiscoverySign ||  self.discoverySign?.distance != distanceInSteps {
                 self.discoverySign = newDiscoverySign
+                self.currentExtraSignType = .Discovery
                 DispatchQueue.main.async {
+                    self.updateStateButton()
                     self.signCollectionView.reloadItems(at: [self.signCollectionView.indexPathForLastRow])
                 }
             }
