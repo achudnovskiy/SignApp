@@ -63,6 +63,7 @@ class SignCollectionLayout: UICollectionViewFlowLayout {
             layoutAttributes.transform3D = CATransform3DScale(CATransform3DIdentity, scale, scale, 1)
             
         }
+
         return layoutAttributes
     }
     
@@ -82,7 +83,7 @@ class SignCollectionLayout: UICollectionViewFlowLayout {
         var targetContentOffset: CGPoint
         let closest = layoutAttributes.sorted { abs($0.center.x - proposedContentOffsetCenterOrigin) < abs($1.center.x - proposedContentOffsetCenterOrigin) }.first ?? UICollectionViewLayoutAttributes()
         targetContentOffset = CGPoint(x: floor(closest.center.x - midSide), y: proposedContentOffset.y)
-        
+
         return targetContentOffset
     }
 }

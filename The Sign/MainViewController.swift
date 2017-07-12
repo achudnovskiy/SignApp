@@ -109,7 +109,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         prepareDataSource()
         observerNotifications()
         
-        
         stateButtonView.applyPlainShadow()
         mapButtonView.applyPlainShadow()
         setCollectionLayoutProperties(collectionLayout: signCollectionLayout, isFullscreen: false)
@@ -123,6 +122,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         else {
             backgroundImage.image = UIImage(named: "DefaultBackgroundImage")?.applyDefaultEffect()?.optimizedImage()
         }
+        self.view.layoutIfNeeded()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -317,8 +317,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             return ["top":"steps to new sign:",
                     "bottom":"\(discoverySign!.distance)"]
         case .Loading:
-            return ["top":"Loading signs",
-                    "bottom":"please wait"]
+            return ["top":"Looking for a sign",
+                    "bottom":"Might take a moment"]
         case .Problem:
             return ["top":"Something's wrong",
                     "bottom":"Can't load the signs"]
@@ -435,11 +435,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
 //            }
         }
     }
-//    var startScrollOffset:CGPoint?
-//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//        startScrollOffset = scrollView.contentOffset
-//    }
-    
+
 //    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
     
 //        if currentState == .FullscreenView && collectionSigns[index].isDiscovered == false {
@@ -490,7 +486,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         else {
             collectionLayout.itemSize = DimensionGenerator.current.collectionItemSize
             collectionLayout.minimumLineSpacing = DimensionGenerator.current.collectionItemSpacing
-            let sideInset = signCollectionView.bounds.size.width / 2 - collectionLayout.itemSize.width / 2
+            let sideInset:CGFloat = self.view.bounds.size.width / 2 - collectionLayout.itemSize.width / 2
             collectionLayout.sectionInset = UIEdgeInsets(top: DimensionGenerator.current.collectionItemThumbnailInset + DimensionGenerator.current.collectionItemThumbnailOffset, left: sideInset, bottom: DimensionGenerator.current.collectionItemThumbnailInset, right: sideInset)
         }
         collectionLayout.invalidateLayout()

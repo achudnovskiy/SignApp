@@ -206,7 +206,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         }
         
         guard let newCurrentLocation = locations.last else { return }
-        print("Updating current location to \(String(describing: newCurrentLocation.coordinate))")
         
         discoverLocationIfNeeded(location: newCurrentLocation)
         updateMonitoredRegionsIfNeeded(location: newCurrentLocation)
@@ -226,12 +225,12 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    
+
     
     
     open func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
     {
-        print("Something failed")
+        print("Something failed \(error)")
         //TODO: notify UI about a problem
     }
 

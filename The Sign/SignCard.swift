@@ -66,6 +66,11 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         }
     }
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        adjustFontSize()
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -117,6 +122,16 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             updateElementsVisibility(isVisible: false)
         }
     }
+   
+    func adjustFontSize() {
+        
+        keywordLabel.font = UIFont(descriptor: keywordLabel.font.fontDescriptor, size: DimensionGenerator.current.cardKeywordFontSize)
+        locationLabel.font = UIFont(descriptor: locationLabel.font.fontDescriptor, size: DimensionGenerator.current.carLocationFontSize)
+        contentLabel.font = UIFont(descriptor: contentLabel.font.fontDescriptor, size: DimensionGenerator.current.cardContentFontSize)
+        signLabelTop.font = UIFont(descriptor: signLabelTop.font.fontDescriptor, size: DimensionGenerator.current.cardExtraTopSize)
+        signLabelBottom.font = UIFont(descriptor: signLabelBottom.font.fontDescriptor, size: DimensionGenerator.current.cardExtraTopSize)
+
+    }
     
     func prepareForExtraSign(extraType:ExtraSignType, topText:String, bottomText:String) {
         signOverlayView.isHidden = false
@@ -129,7 +144,8 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             signLogoHeight.constant = 0
             signLogoTopMargin.constant = -10
             signLogoBottomMargin.constant = 15
-            signLabelBottom.font = UIFont(descriptor: signLabelBottom.font.fontDescriptor, size: signLabelBottom.font.pointSize + 10)
+            signLabelBottom.font = UIFont(descriptor: signLabelBottom.font.fontDescriptor, size: DimensionGenerator.current.cardExtraBottomFontSize)
+
         case .Loading:
             signLogoHeight.constant = 32
             signLogoTopMargin.constant = 5

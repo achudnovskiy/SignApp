@@ -33,6 +33,7 @@
 		559F2ECB1E399F1A00A1C955 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */; };
 		55BAF3D71F09A37B003FF5D1 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55BAF3D61F09A37B003FF5D1 /* CloudKit.framework */; };
 		55C2220A1ED9F184007E2E7C /* FbHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C222091ED9F184007E2E7C /* FbHandler.swift */; };
+		55FCC8271F15A4BF000237B2 /* DimensionGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FCC8261F15A4BF000237B2 /* DimensionGenerator.swift */; };
 		55FF72581E2AD15D00562B65 /* SignCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72571E2AD15D00562B65 /* SignCard.swift */; };
 		55FF725A1E2AD1D900562B65 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF72591E2AD1D900562B65 /* MainViewController.swift */; };
 		55FF725C1E2AF9DA00562B65 /* SignObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF725B1E2AF9DA00562B65 /* SignObject.swift */; };
@@ -92,6 +93,7 @@
 		559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
 		55BAF3D61F09A37B003FF5D1 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		55C222091ED9F184007E2E7C /* FbHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FbHandler.swift; sourceTree = "<group>"; };
+		55FCC8261F15A4BF000237B2 /* DimensionGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DimensionGenerator.swift; sourceTree = "<group>"; };
 		55FF72571E2AD15D00562B65 /* SignCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignCard.swift; sourceTree = "<group>"; };
 		55FF72591E2AD1D900562B65 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		55FF725B1E2AF9DA00562B65 /* SignObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignObject.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 				55FF725B1E2AF9DA00562B65 /* SignObject.swift */,
 				550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */,
 				55305CE91EDA8400004DC615 /* Shared.swift */,
+				55FCC8261F15A4BF000237B2 /* DimensionGenerator.swift */,
 				A84EF5921ECA91D200CDE19B /* User.swift */,
 				55C222091ED9F184007E2E7C /* FbHandler.swift */,
 				550728461E354B020060D88B /* SignDataSource.swift */,
@@ -385,6 +388,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55FCC8271F15A4BF000237B2 /* DimensionGenerator.swift in Sources */,
 				55305CEA1EDA8400004DC615 /* Shared.swift in Sources */,
 				A84EF5931ECA91D200CDE19B /* User.swift in Sources */,
 				55FF725C1E2AF9DA00562B65 /* SignObject.swift in Sources */,

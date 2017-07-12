@@ -26,11 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         UNUserNotificationCenter.current().delegate = self
-        UNUserNotificationCenter.current().getNotificationSettings { (UNNotificationSettings) in
-            print(UNNotificationSettings)
-        }
+
 //        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
-//            <#code#>
+//            print(settings)
 //        }
         User.current.locationPermissionCheck = {() in return CLLocationManager.authorizationStatus() == .authorizedAlways}
 //        User.current.notificationPermissionCheck = {() in return }
