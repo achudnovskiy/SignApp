@@ -16,7 +16,12 @@ class SignDataSource: NSObject {
     
     let publicDB = CKContainer.default().publicCloudDatabase
     
-    var collectedSignsOrdered:[SignObject] {
+    override init() {
+        super.init()
+        checkDataForUpdate()
+    }
+    
+    public var collectedSignsOrdered:[SignObject] {
         do {
             let signEntities = try persistentContainer.viewContext.fetch(self.collectedSignsRequest)
             var result:[SignObject] = []
@@ -32,7 +37,35 @@ class SignDataSource: NSObject {
         }
     }
     
-    var locations:[SignLocation] {
+    public var uncollectedSigns:[SignObject] {
+        do {
+            let signEntities = try persistentContainer.viewContext.fetch(self.undiscoveredSignsRequest)
+            var result:[SignObject] = []
+            signEntities.forEach({ (signEntity) in
+                result.append(signEntityToSignObject(entity: signEntity))
+            })
+            return result
+        }
+        catch {
+            let nserror = error as NSError
+            print("uncollected signs querying error \(nserror), \(nserror.userInfo)")
+            return []
+        }
+    }
+    
+    public var isEverythingCollected:Bool {
+        do {
+            return try persistentContainer.viewContext.count(for:self.undiscoveredSignsRequest) == 0
+        }
+        catch {
+            let nserror = error as NSError
+            print("new signs querying error \(nserror), \(nserror.userInfo)")
+            return false
+        }
+    }
+    
+    
+    public var locations:[SignLocation] {
         do {
             let signEntities = try persistentContainer.viewContext.fetch(self.allSignsRequest)
             var result:[SignLocation] = []
@@ -48,10 +81,7 @@ class SignDataSource: NSObject {
         }
     }
     
-    override init() {
-        super.init()
-        checkDataForUpdate()
-    }
+  
     
     var newSignsCount:Int {
         do {
@@ -114,7 +144,7 @@ class SignDataSource: NSObject {
     
     // MARK: - Core Data stack
     
-    lazy var persistentContainer: NSPersistentContainer = {
+    private lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "The_Sign")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -125,13 +155,13 @@ class SignDataSource: NSObject {
         return container
     }()
     
-    lazy var backgroundContext:NSManagedObjectContext = {
+    private lazy var backgroundContext:NSManagedObjectContext = {
         return self.persistentContainer.newBackgroundContext()
     }()
 
     // MARK: - Core Data Saving support
     
-    func saveContext () {
+    private func saveContext () {
         let context = self.backgroundContext
         if context.hasChanges {
             do {
@@ -141,21 +171,22 @@ class SignDataSource: NSObject {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+        persistentContainer.viewContext.refreshAllObjects()
     }
     
     
     
-    var collectedSignsRequest:NSFetchRequest<SignEntity> {
+    private var collectedSignsRequest:NSFetchRequest<SignEntity> {
         let fetchRequest = (persistentContainer.managedObjectModel.fetchRequestTemplate(forName: "CollectedSigns") as! NSFetchRequest<SignEntity>).copy() as! NSFetchRequest<SignEntity>
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "isDiscovered", ascending: true)]
         
         return fetchRequest
     }
-    var undiscoveredSignsRequest:NSFetchRequest<SignEntity> {
+    private var undiscoveredSignsRequest:NSFetchRequest<SignEntity> {
         return (persistentContainer.managedObjectModel.fetchRequestTemplate(forName: "SignsToDiscover") as! NSFetchRequest<SignEntity>).copy() as! NSFetchRequest<SignEntity>
     }
     
-    var newSignsRequest:NSFetchRequest<SignEntity> {
+    private var newSignsRequest:NSFetchRequest<SignEntity> {
         return (persistentContainer.managedObjectModel.fetchRequestTemplate(forName: "NewSigns") as! NSFetchRequest<SignEntity>).copy() as! NSFetchRequest<SignEntity>
     }
     
@@ -163,12 +194,12 @@ class SignDataSource: NSObject {
         return (persistentContainer.managedObjectModel.fetchRequestTemplate(forName: "AllSigns") as! NSFetchRequest<SignEntity>).copy() as! NSFetchRequest<SignEntity>
     }
     
-    func signByIdRequest(signId:String) ->NSFetchRequest<SignEntity> {
+    private func signByIdRequest(signId:String) ->NSFetchRequest<SignEntity> {
         return persistentContainer.managedObjectModel.fetchRequestFromTemplate(withName: "SignById", substitutionVariables: ["signId":signId]) as! NSFetchRequest<SignEntity>
     }
     
     
-    func addCloudRecordToLocalStorage(cloudKitRecord:CKRecord) {
+    private func addCloudRecordToLocalStorage(cloudKitRecord:CKRecord) {
         let newSignEntity = NSEntityDescription.insertNewObject(forEntityName: "SignEntity", into: backgroundContext) as! SignEntity
         
         newSignEntity.recordId   = cloudKitRecord.recordID.recordName
@@ -185,7 +216,7 @@ class SignDataSource: NSObject {
         self.backgroundContext.insert(newSignEntity)
     }
     
-    func updateLocalStorageWithCloudRecord(coreDataEntity:SignEntity, cloudKitRecord:CKRecord) {
+    private func updateLocalStorageWithCloudRecord(coreDataEntity:SignEntity, cloudKitRecord:CKRecord) {
         coreDataEntity.changeTag  = cloudKitRecord.recordChangeTag
         coreDataEntity.business   = cloudKitRecord.object(forKey: "businessName") as? String
         coreDataEntity.content    = cloudKitRecord.object(forKey: "content") as? String
@@ -197,7 +228,7 @@ class SignDataSource: NSObject {
         coreDataEntity.image      = NSData(contentsOf: (cloudKitRecord.object(forKey: "image") as! CKAsset).fileURL)
     }
     
-    func localCopyForCloudRecordWithId(_ recordId:CKRecordID) -> SignEntity? {
+    private func localCopyForCloudRecordWithId(_ recordId:CKRecordID) -> SignEntity? {
         do {
             let request:NSFetchRequest<SignEntity> = SignEntity.fetchRequest()
             request.predicate = NSPredicate(format:"recordId == %@", recordId.recordName)
@@ -208,7 +239,7 @@ class SignDataSource: NSObject {
         }
     }
     
-    func queryCloudForRecords(recordIds:[CKRecordID], completionBlock:@escaping ([CKRecord])->Void){
+    private func queryCloudForRecords(recordIds:[CKRecordID], completionBlock:@escaping ([CKRecord])->Void){
         
         var recordRefs:[CKReference] = []
         recordIds.forEach { (recordId) in
@@ -261,7 +292,7 @@ class SignDataSource: NSObject {
         CKContainer.default().publicCloudDatabase.add(queryOperation)
     }
     
-    func syncCloudWithLocalStorage(recordsToUpdate:[CKRecordID], recordsToInsert:[CKRecordID]) {
+    private func syncCloudWithLocalStorage(recordsToUpdate:[CKRecordID], recordsToInsert:[CKRecordID]) {
         self.queryCloudForRecords(recordIds: recordsToUpdate + recordsToInsert, completionBlock: { (records) in
             guard records.count != 0 else { return }
             
@@ -280,12 +311,13 @@ class SignDataSource: NSObject {
                 
                 self.updateLocalStorageWithCloudRecord(coreDataEntity: localCopy, cloudKitRecord: newRecord)
             })
+            print("records inserted: \(recordsToInsert.count), records updated \(recordsToUpdate.count)")
             self.saveData(notifyUI: true)
         })
     }
 
     
-    func saveSubscription() {
+    private func saveSubscription() {
         let subscription = CKQuerySubscription(recordType: "SignData",
                                                predicate: NSPredicate(value: true),
                                                options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])

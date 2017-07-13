@@ -24,10 +24,11 @@ class DimensionGenerator {
     var collectionItemContentFullWidth:CGFloat { return round(gridSize * 1.2) }
     var collectionItemContentFullHeight:CGFloat { return round(gridSize*1.5) }
     
-    var cardKeywordFontSize:CGFloat { return ceil(phoneSizeRatio*27)}
+    var cardKeywordFontSize:CGFloat { return ceil(phoneSizeRatio*25)}
     var carLocationFontSize:CGFloat { return ceil(phoneSizeRatio*13)}
     var cardContentFontSize:CGFloat { return ceil(phoneSizeRatio*11)}
     var cardExtraTopSize:CGFloat { return ceil(phoneSizeRatio*20)}
     var cardExtraBottomFontSize:CGFloat { return ceil(phoneSizeRatio*32)}
     
+    var stateButtonFontSize:CGFloat { return ceil(phoneSizeRatio*16)}
 }

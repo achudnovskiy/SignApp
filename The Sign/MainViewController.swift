@@ -88,6 +88,11 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     func prepareDataSource() {
         
         collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
+        
+        if SignDataSource.sharedInstance.isEverythingCollected {
+            currentExtraSignType = .StayTuned
+        }
+        
         if collectionSigns.count == 0
         {
             return
@@ -99,7 +104,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             let sign = collectionSigns[i]
             cachedImages.setObject(sign.proccessImage(), forKey: sign.uniqueId)
         }
+        
+     
     }
+    
     
     
     //MARK: - UIViewController methods
@@ -108,6 +116,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         prepareConstraints()
         prepareDataSource()
         observerNotifications()
+        adjustFont()
         
         stateButtonView.applyPlainShadow()
         mapButtonView.applyPlainShadow()
@@ -123,6 +132,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             backgroundImage.image = UIImage(named: "DefaultBackgroundImage")?.applyDefaultEffect()?.optimizedImage()
         }
         self.view.layoutIfNeeded()
+    }
+    
+    func adjustFont() {
+        self.stateButtonLabel.font = UIFont(descriptor: stateButtonLabel.font.fontDescriptor, size: DimensionGenerator.current.stateButtonFontSize)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -268,7 +281,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             
             //TODO: remove later
             if signToShow.isCollected == false {
-                print("*************Shouldn't be here*************")
                 return cell
             }
             
@@ -573,19 +585,25 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
                 self.mapViewController.clearMapView()
                 self.mapContainerView.isHidden = true
                 self.currentState = self.isCollectionViewFullscreen ? .FullscreenView : .ThumbnailView
+                self.updateStateButton()
                 self.updateMapButton(hide: false)
             }
         }        
     }
     
     @IBAction func mapButtonAction(_ sender: Any) {
-        if currentState == .FullscreenView {
+        
+        if indexForItemInFocus == signCollectionView.indexPathForLastRow && currentExtraSignType == .Discovery && self.discoverySign != nil {
+            mapViewController.prepareMapViewToShow(locations: [self.discoverySign!])
+        }
+        else if currentState == .FullscreenView {
             let signToLocate = collectionSigns[indexForItemInFocus!.row]
             mapViewController.prepareMapViewToShow(locations: [signToLocate])
         }
         else if currentState == .ThumbnailView {
             mapViewController.prepareMapViewToShow(locations: collectionSigns)
         }
+        
         mapContainerView.isHidden = false
         mapViewController.animateAppearance {
             self.currentState = .MapView
@@ -657,5 +675,28 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         let center = signCollectionView.contentOffset.x + signCollectionView.bounds.width / 2
         let ratio = 1 - abs((card.center.x - center) / self.signCollectionView.bounds.width / 5)
         card.animator.fractionComplete = ratio
+    }
+    
+    
+    //TESTING
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    var motionCount = 3
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            if motionCount > 0 {
+                motionCount -= 1
+                return
+            }
+            var discoverCount = 3
+            for sign in SignDataSource.sharedInstance.uncollectedSigns {
+                if discoverCount > 0 {
+                    _ = SignDataSource.sharedInstance.collectSignWithId(sign.objectId)
+                    discoverCount -= 1
+                }
+            }
+        }
     }
 }
