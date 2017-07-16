@@ -34,13 +34,17 @@ class LoginViewController: UIViewController {
         
         loginManager.logIn(withPublishPermissions: ["publish_actions"], from: self) { (result, error) in
             if error != nil {
+                self.fbErrorLabel.text = "Something wrong happened"
                 print("\(String(describing: error))")
                 return
             }
             
             if result!.isCancelled  || !result!.grantedPermissions.contains("publish_actions"){
                 self.fbErrorLabel.text = "Not enough permissions granted"
+                return
             }
+            
+            self.dismiss(animated: true, completion: nil)
         }
     }
 }

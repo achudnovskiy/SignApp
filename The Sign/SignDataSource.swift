@@ -94,16 +94,16 @@ class SignDataSource: NSObject {
         }
     }
     
-    func collectSignWithId(_ signId:String) -> Bool {
-        guard let signEntity = self.findSignEntityById(objectId: signId) else { return false }
+    func collectSignWithId(_ signId:String) {
+        guard let signEntity = self.findSignEntityById(objectId: signId) else { return }
         signEntity.isCollected = true
         saveData(notifyUI: true)
-        return true
     }
     
     func discoverSignWith(_ signId:String) {
         guard let sign = self.findSignEntityById(objectId: signId) else { return }
         sign.isDiscovered = true
+        sign.isCollected = true
         saveData(notifyUI: false)
     }
 
@@ -234,8 +234,25 @@ class SignDataSource: NSObject {
             request.predicate = NSPredicate(format:"recordId == %@", recordId.recordName)
             return try backgroundContext.fetch(request).first
         } catch {
-            print("error in fetching cloudkit. Error info:\(String(describing: error))")
+            print("error in getting local record for cloudkit record. Error info:\(String(describing: error))")
             return nil
+        }
+    }
+    
+    private func allRecordsIds() -> [CKRecordID] {
+        do {
+            let request = self.allSignsRequest
+            request.propertiesToFetch = ["recordId"]
+            let entities  = try persistentContainer.viewContext.fetch(self.allSignsRequest)
+            
+            var result:[CKRecordID] = []
+            entities.forEach({ (entity) in
+                result.append(CKRecordID(recordName: entity.recordId!))
+            })
+            return result
+        } catch {
+            print("error in return all entities. Error info:\(String(describing: error))")
+            return []
         }
     }
     
@@ -262,17 +279,21 @@ class SignDataSource: NSObject {
     func checkDataForUpdate() {
         let query = CKQuery(recordType: "SignData", predicate: NSPredicate(value: true))
         let queryOperation = CKQueryOperation(query: query)
-        var recordsToUpdate:[CKRecordID] = []
-        var recordsToInsert:[CKRecordID] = []
+        var recordsToUpdate = Set<CKRecordID>()
+        var recordsToInsert = Set<CKRecordID>()
+        var recordsUpToDate = Set<CKRecordID>()
+        
         queryOperation.desiredKeys = []
         queryOperation.recordFetchedBlock = {(record) in
+            
             let localCopy = self.localCopyForCloudRecordWithId(record.recordID)
             
             if localCopy == nil {
-                recordsToInsert.append(record.recordID)
-            }
-            if localCopy != nil && localCopy?.changeTag != record.recordChangeTag  {
-                recordsToUpdate.append(record.recordID)
+                recordsToInsert.insert(record.recordID)
+            } else if localCopy != nil && localCopy!.changeTag != record.recordChangeTag  {
+                recordsToUpdate.insert(record.recordID)
+            } else if localCopy != nil && localCopy!.changeTag == record.recordChangeTag {
+                recordsUpToDate.insert(record.recordID)
             }
         }
         
@@ -282,18 +303,22 @@ class SignDataSource: NSObject {
                 return
             }
             
-            if recordsToUpdate.count == 0 && recordsToInsert.count == 0 {
+            let allLocalRecordIds = Set(self.allRecordsIds())
+            let allCloudRecordIds = recordsToUpdate.union(recordsToInsert).union(recordsUpToDate)
+            let recordsToDelete = allCloudRecordIds.subtracting(allCloudRecordIds)
+            if recordsToUpdate.count == 0 && recordsToInsert.count == 0 && recordsUpToDate.count == allLocalRecordIds.count {
                 print("everything is up to date")
             }
             else {
-                self.syncCloudWithLocalStorage(recordsToUpdate: recordsToUpdate, recordsToInsert: recordsToInsert)
+        
+                self.syncCloudWithLocalStorage(recordsToUpdate: recordsToUpdate, recordsToInsert: recordsToInsert, recordsToDelete: recordsToDelete)
             }
         }
         CKContainer.default().publicCloudDatabase.add(queryOperation)
     }
     
-    private func syncCloudWithLocalStorage(recordsToUpdate:[CKRecordID], recordsToInsert:[CKRecordID]) {
-        self.queryCloudForRecords(recordIds: recordsToUpdate + recordsToInsert, completionBlock: { (records) in
+    private func syncCloudWithLocalStorage(recordsToUpdate:Set<CKRecordID>, recordsToInsert:Set<CKRecordID>, recordsToDelete:Set<CKRecordID>) {
+        self.queryCloudForRecords(recordIds: Array(recordsToUpdate.union(recordsToInsert)), completionBlock: { (records) in
             guard records.count != 0 else { return }
             
             recordsToInsert.forEach({ (recordToInsert) in
@@ -311,6 +336,12 @@ class SignDataSource: NSObject {
                 
                 self.updateLocalStorageWithCloudRecord(coreDataEntity: localCopy, cloudKitRecord: newRecord)
             })
+            
+            recordsToDelete.forEach({ (recordToDelete) in
+                guard let localCopy = self.localCopyForCloudRecordWithId(recordToDelete) else { return }
+                self.backgroundContext.delete(localCopy)
+            })
+            
             print("records inserted: \(recordsToInsert.count), records updated \(recordsToUpdate.count)")
             self.saveData(notifyUI: true)
         })

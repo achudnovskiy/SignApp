@@ -11,7 +11,6 @@ import CoreData
 import CoreLocation
 import UserNotifications
 import FBSDKCoreKit
-import Branch
 
 let regionRadius:Double = 30
 let kUserNotificationSignId = "Notificaiton_SignId"
@@ -32,7 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().delegate = self
 
 //        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
-//            print(settings)
 //        }
         User.current.locationPermissionCheck = {() in return CLLocationManager.authorizationStatus() == .authorizedAlways}
 //        User.current.notificationPermissionCheck = {() in return }
@@ -43,15 +41,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         setupLocationMonitoring()
         
         
-        let branch: Branch = Branch.getInstance()
-        branch.initSession(launchOptions: launchOptions, automaticallyDisplayDeepLinkController: true, deepLinkHandler: { params, error in
-            if error == nil {
-                // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
-                // params will be empty if no data found
-                // ... insert custom logic here ...
-                print("params: %@", params!.description)
-            }
-        })
         
         
         return true
@@ -103,14 +92,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         LocationTracker.sharedInstance.startMonitoringForLocations() { (location) in
             
-            if SignDataSource.sharedInstance.collectSignWithId(location.objectId) == false {
-                print("Couldn't discover sign with id \(location.objectId)")
-                return
-            }
+            SignDataSource.sharedInstance.collectSignWithId(location.objectId)
             
             let notificationContent = UNMutableNotificationContent()
             notificationContent.title = location.name
-            notificationContent.subtitle = "You got the new sign!"
+            notificationContent.subtitle = "You got a new sign!"
 //             notificationContent.attachments
             // notificationContent.body - add for more descriptive notifcation
             // notificationContent.categoryIdentifier - Add for actions i.e. add or skip the sign
@@ -154,25 +140,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        Branch.getInstance().handleDeepLink(url);
+        if url.host == "sign" {
+            
+            let signId = url.lastPathComponent
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                NotificationCenter.default.post(name: kNotificationScrollToSign, object: nil, userInfo: [kNotificationScrollToSignId:signId])
+                
+            })
+        }
 
         return FBSDKApplicationDelegate.sharedInstance().application(app, open: url, options: options)
     }
     
-    // Respond to Universal Links
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        // pass the url to the handle deep link call
-        Branch.getInstance().continue(userActivity)
-        
-        return true
-    }
-    
     // TODO: update the content of the already notification
-    
-    
-
-
-   
 
 }
 

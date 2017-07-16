@@ -88,8 +88,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     func prepareDataSource() {
         
         collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
-        
-        if SignDataSource.sharedInstance.isEverythingCollected {
+        if collectionSigns.count != 0 && SignDataSource.sharedInstance.isEverythingCollected {
             currentExtraSignType = .StayTuned
         }
         
@@ -104,11 +103,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             let sign = collectionSigns[i]
             cachedImages.setObject(sign.proccessImage(), forKey: sign.uniqueId)
         }
-        
-     
     }
-    
-    
+
     
     //MARK: - UIViewController methods
     override func viewDidLoad() {
@@ -150,9 +146,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     // MARK: - Local notifications
     func observerNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.processSignOpenNotification(_:)), name: kNotificationScrollToSign, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.processSignReloadNotification(_:)), name: kNotificationReloadData, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.processSignDicoveryNotification(_:)), name: kNotificationSignNearby, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(processSignOpenNotification(_:)), name: kNotificationScrollToSign, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(processSignReloadNotification(_:)), name: kNotificationReloadData, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(processSignDicoveryNotification(_:)), name: kNotificationSignNearby, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(processErrorStateNotification(_:)), name: kNotificationErrorState, object: nil)
     }
     
     func processSignOpenNotification(_ notification:Notification) {
@@ -198,6 +195,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
+    func processErrorStateNotification(_ notification:Notification) {
+    
+    }
+    
     // MARK: - UI Animations
     func transitionCollectionView(newState:SignAppState) {
         if newState != .FullscreenView && newState != .ThumbnailView {
@@ -211,20 +212,12 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         let signInTransition = collectionSigns[cellId.row]
         let cellView = signInFocus!
         
-//        resetZPosition()
-        
-        if toFullscreen {
-            signCollectionView.isScrollEnabled = false
-//            signCollectionLayout.fullScreenItemIndex = indexForItemInFocus
-        }
-        else {
-            signCollectionView.isScrollEnabled = true
-//            stopMagnification()
-        }
-        
+        resetZPosition()
+    
+        signCollectionView.isScrollEnabled = !toFullscreen
         cellView.prepareViewForAnimation(toFullscreen: toFullscreen)
         self.processSignDiscovery(sign: signInTransition, signCard: cellView)
-
+    
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
             cellView.setViewSizeForAnimation(newSize: newSize, toFullscreen: toFullscreen)
             cellView.layoutIfNeeded()
@@ -238,7 +231,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     }
     
     func processSignDiscovery(sign:SignObject, signCard:SignCard) {
-        print("sign discovered \(sign.objectId)")
         if cachedImages.object(forKey: sign.uniqueId) != nil {
             cachedImages.removeObject(forKey: sign.uniqueId)
         }
@@ -260,11 +252,11 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
 //        }
 //    }
     
-//    func resetZPosition() {
-//        self.signCollectionView.visibleCells.forEach { (cell) in
-//            cell.layer.zPosition = 0
-//        }
-//    }
+    func resetZPosition() {
+        self.signCollectionView.visibleCells.forEach { (cell) in
+            cell.layer.zPosition = 0
+        }
+    }
     
     
     // MARK: - UICollectionViewDataSource
@@ -365,6 +357,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             FbHandler.shared.createFbStory(sign: sign)
         }
         else {
+    
             performSegue(withIdentifier: "authorizationSegue", sender: nil)
         }
     }
@@ -428,7 +421,13 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             delayedTransition = false
             if currentState == .ThumbnailView {
                 if let index = indexForItemInFocus {
-                    openThumbnailSignAt(indexPath: index)
+                    DispatchQueue.main.async {
+                        self.openThumbnailSignAt(indexPath: index)
+                        
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                        
+                    })
                 }
             }
         }

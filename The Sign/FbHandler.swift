@@ -20,7 +20,6 @@ class FbHandler: NSObject, FBSDKSharingDelegate {
     
     func createFbStory(sign:SignObject) {
         let object = convertSignToFbObject(sign: sign)
-        // /me/og.likes
         let action = FBSDKShareOpenGraphAction(type: "/me/og.likes", object: object, key: "object")
         let content = FBSDKShareOpenGraphContent()
         content.action = action
@@ -37,6 +36,7 @@ class FbHandler: NSObject, FBSDKSharingDelegate {
             "place:location:longitude":sign.longitude,
             "og:url":sign.appLinkUrl
         ] as [String : Any]
+        
         return FBSDKShareOpenGraphObject(properties: properties)
     }
     

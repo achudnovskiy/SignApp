@@ -124,7 +124,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     }
    
     func adjustFontSize() {
-        
+
         keywordLabel.font = UIFont(descriptor: keywordLabel.font.fontDescriptor, size: DimensionGenerator.current.cardKeywordFontSize)
         locationLabel.font = UIFont(descriptor: locationLabel.font.fontDescriptor, size: DimensionGenerator.current.carLocationFontSize)
         contentLabel.font = UIFont(descriptor: contentLabel.font.fontDescriptor, size: DimensionGenerator.current.cardContentFontSize)
@@ -314,15 +314,11 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
             locationLabel.alpha = 0
             contentLabel.alpha = 0
         }
-        else {
-        }
     }
     
     func setViewSizeForAnimation(newSize:CGSize, toFullscreen:Bool) {
-        var frame = self.bounds;
         let center = self.center
-        frame.size = newSize
-        self.bounds = frame;
+        self.bounds.size = newSize
         if toFullscreen {
             self.center = CGPoint(x: center.x, y: center.y - DimensionGenerator.current.collectionItemThumbnailOffset / 2)
             locationLabel.alpha = 1

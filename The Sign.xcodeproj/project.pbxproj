@@ -13,12 +13,6 @@
 		550F89721EABEF2A008993F6 /* SignCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */; };
 		5512317D1E5AABC900443840 /* TestRoute1.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 5512317C1E5AABC900443840 /* TestRoute1.gpx */; };
 		55305CEA1EDA8400004DC615 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55305CE91EDA8400004DC615 /* Shared.swift */; };
-		55305CEC1EDA8EC8004DC615 /* Branch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CEB1EDA8EC8004DC615 /* Branch.framework */; };
-		55305CEE1EDA8F07004DC615 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CED1EDA8F07004DC615 /* AdSupport.framework */; };
-		55305CF01EDA8F26004DC615 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CEF1EDA8F26004DC615 /* CoreTelephony.framework */; };
-		55305CF21EDA8F2E004DC615 /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CF11EDA8F2E004DC615 /* CoreSpotlight.framework */; };
-		55305CF41EDA8F35004DC615 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CF31EDA8F35004DC615 /* MobileCoreServices.framework */; };
-		55305CF61EDA8F3C004DC615 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55305CF51EDA8F3C004DC615 /* iAd.framework */; };
 		553CFED61E6698A8004618A6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */; };
 		553CFED71E6698A8004618A6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */; };
 		553CFED81E6698A8004618A6 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */; };
@@ -67,12 +61,6 @@
 		550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignCollectionLayout.swift; sourceTree = "<group>"; };
 		5512317C1E5AABC900443840 /* TestRoute1.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TestRoute1.gpx; sourceTree = "<group>"; };
 		55305CE91EDA8400004DC615 /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
-		55305CEB1EDA8EC8004DC615 /* Branch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Branch.framework; path = "The Sign/frameworks/Branch.framework"; sourceTree = "<group>"; };
-		55305CED1EDA8F07004DC615 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
-		55305CEF1EDA8F26004DC615 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
-		55305CF11EDA8F2E004DC615 /* CoreSpotlight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreSpotlight.framework; path = System/Library/Frameworks/CoreSpotlight.framework; sourceTree = SDKROOT; };
-		55305CF31EDA8F35004DC615 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		55305CF51EDA8F3C004DC615 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "The Sign/frameworks/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "The Sign/frameworks/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "The Sign/frameworks/FBSDKShareKit.framework"; sourceTree = "<group>"; };
@@ -109,18 +97,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55305CF61EDA8F3C004DC615 /* iAd.framework in Frameworks */,
-				55305CF41EDA8F35004DC615 /* MobileCoreServices.framework in Frameworks */,
-				55305CF21EDA8F2E004DC615 /* CoreSpotlight.framework in Frameworks */,
-				55305CF01EDA8F26004DC615 /* CoreTelephony.framework in Frameworks */,
-				55305CEE1EDA8F07004DC615 /* AdSupport.framework in Frameworks */,
 				55FF72791E2C81E500562B65 /* UserNotifications.framework in Frameworks */,
 				553CFED61E6698A8004618A6 /* FBSDKCoreKit.framework in Frameworks */,
 				553CFED71E6698A8004618A6 /* FBSDKLoginKit.framework in Frameworks */,
 				55BAF3D71F09A37B003FF5D1 /* CloudKit.framework in Frameworks */,
 				553CFED81E6698A8004618A6 /* FBSDKShareKit.framework in Frameworks */,
 				553CFEDC1E67C7BB004618A6 /* Bolts.framework in Frameworks */,
-				55305CEC1EDA8EC8004DC615 /* Branch.framework in Frameworks */,
 				55FF72731E2C6F2F00562B65 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -221,12 +203,6 @@
 			isa = PBXGroup;
 			children = (
 				55BAF3D61F09A37B003FF5D1 /* CloudKit.framework */,
-				55305CF51EDA8F3C004DC615 /* iAd.framework */,
-				55305CF31EDA8F35004DC615 /* MobileCoreServices.framework */,
-				55305CF11EDA8F2E004DC615 /* CoreSpotlight.framework */,
-				55305CEF1EDA8F26004DC615 /* CoreTelephony.framework */,
-				55305CED1EDA8F07004DC615 /* AdSupport.framework */,
-				55305CEB1EDA8EC8004DC615 /* Branch.framework */,
 				553CFEDB1E67C7BB004618A6 /* Bolts.framework */,
 				553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */,
 				553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */,
@@ -315,7 +291,7 @@
 								enabled = 1;
 							};
 							com.apple.SafariKeychain = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.iCloud = {
 								enabled = 1;

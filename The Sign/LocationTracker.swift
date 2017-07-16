@@ -127,16 +127,13 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
             return
         }
         if region.identifier == "CurrentRegion" {
-            print("Detected Enter. Requesting data to update all regions")
             shouldUpdateMonitoredRegions = true
             locationManager.startUpdatingLocation()
         }
         else {
-            print("Checking for location hit with \(region.identifier)")
             guard let hit = allLocations.first(where: { (sign) -> Bool in
                 return sign.objectId == region.identifier
             }) else {return}
-            print("Got location hit \(hit.objectId)")
             detectionHandler(hit)
         }
     }
@@ -146,7 +143,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         if manager.location!.horizontalAccuracy > kCLLocationAccuracyNearestTenMeters {
             return
         }
-        print("Detected Exit. Requesting data to update all regions")
         shouldUpdateMonitoredRegions = true
         locationManager.startUpdatingLocation()
     }
@@ -168,26 +164,21 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     }
     
     func updateSignRegions(location:CLLocation) {
-        print("Updating sign regions")
         let signsToMonitor = self.findCloseSignsFrom(locationSet: self.allLocations, to: location, within: kCloseSignRadius)
-        print("Setting sign regions for \(signsToMonitor)")
 
         signsToMonitor.forEach({ (sign) in
             let region = sign.regionWithRadius(radius: kRegionRadius)
             //TODO: maintain a low number of monitored regions, cleanup old ones
-            print("Monitoring \(region.identifier) for sign \(sign.objectId)")
             self.locationManager.startMonitoring(for: region)
         })
         
 
     }
     func updateHomeRegion(location:CLLocation) {
-        print("Updating home region")
         if currentRegion != nil {
             locationManager.stopMonitoring(for: currentRegion!)
         }
         if currentLocation != nil {
-            print("Setting home region to \(location.coordinate)")
             currentRegion = CLCircularRegion(center: currentLocation!.coordinate, radius: kCurrentLocationRadius, identifier: "CurrentRegion")
             locationManager.startMonitoring(for: currentRegion!)
         }
@@ -219,9 +210,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
                 let distance = self.distanceInStepsFromLocation(signLocation: closest)
                 self.notifyAboutSignNearby(sign: closest, distanceInSteps: distance)
             }
-        }
-        else {
-            print("location accuracy \(location.horizontalAccuracy) is too low")
         }
     }
 
