@@ -18,7 +18,7 @@ let kUserNotificationSignId = "Notificaiton_SignId"
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, LocationTrackerDelegate {
 
     var window: UIWindow?
 
@@ -26,22 +26,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         //for testing purpose
         application.applicationSupportsShakeToEdit = true
-        
-        
         UNUserNotificationCenter.current().delegate = self
 
-//        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
-//        }
-        User.current.locationPermissionCheck = {() in return CLLocationManager.authorizationStatus() == .authorizedAlways}
-//        User.current.notificationPermissionCheck = {() in return }
-        
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 
-        setupLocalNotifications()
-        setupLocationMonitoring()
-        
-        
-        
+        if UserDefaults.standard.object(forKey: "introCompleted") != nil {
+            User.current.evaluatePermissions()
+            LocationTracker.sharedInstance.prepareForMonitoring(delegate: self, startMonitoring: true)
+        }
+        else {
+            LocationTracker.sharedInstance.prepareForMonitoring(delegate: self, startMonitoring: false)
+        }
         
         return true
     }
@@ -88,56 +83,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     //MARK: - Location Monitoring
     
-    func setupLocationMonitoring() {
-
-        LocationTracker.sharedInstance.startMonitoringForLocations() { (location) in
-            
-            SignDataSource.sharedInstance.collectSignWithId(location.objectId)
-            
-            let notificationContent = UNMutableNotificationContent()
-            notificationContent.title = location.name
-            notificationContent.subtitle = "You got a new sign!"
-//             notificationContent.attachments
-            // notificationContent.body - add for more descriptive notifcation
-            // notificationContent.categoryIdentifier - Add for actions i.e. add or skip the sign
-            notificationContent.userInfo = [kUserNotificationSignId: location.objectId]
-
-            
-            let notificationRequest = UNNotificationRequest(identifier: "SignDiscover", content: notificationContent, trigger: nil)
-            UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-                if (error != nil) {
-                    NSLog("Error with delivering the notification, details: \(String(describing: error))")
-                }
-            })
-        }
+    func didHitLocation(location: SignLocation) {
+        SignDataSource.sharedInstance.collectSignWithId(location.objectId)
+        
+        let notificationContent = UNMutableNotificationContent()
+        notificationContent.title = location.name
+        notificationContent.subtitle = "You got a new sign!"
+        //             notificationContent.attachments
+        // notificationContent.body - add for more descriptive notifcation
+        // notificationContent.categoryIdentifier - Add for actions i.e. add or skip the sign
+        notificationContent.userInfo = [kUserNotificationSignId: location.objectId]
+        
+        
+        let notificationRequest = UNNotificationRequest(identifier: "SignDiscover", content: notificationContent, trigger: nil)
+        UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+            if (error != nil) {
+                NSLog("Error with delivering the notification, details: \(String(describing: error))")
+            }
+        })
     }
-    
-    func requestLocationPermissions() {
-//        UIApplication.shared.currentUserNotificationSettings
+    func didFailWithError(error: String) {
+        
     }
-    
     
     //  let settingsURL = URL(string: UIApplicationOpenSettingsURLString)!
     //  UIApplication.shared.open(settingsURL, options: [:], detectionHandler: nil)
 
-    func notifyAboutPermissionProblem() {
-        
-    }
-    
-    //MARK: - Local Notificaitons
-    
-    func setupLocalNotifications()
-    {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge]) { (granted, error) in
-            if granted {
-                
-            }
-            else {
-                // TODO: Prompt user about not having permissions
-            }
-        }
-    }
-    
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         if url.host == "sign" {
@@ -152,7 +123,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         return FBSDKApplicationDelegate.sharedInstance().application(app, open: url, options: options)
     }
     
-    // TODO: update the content of the already notification
 
 }
 

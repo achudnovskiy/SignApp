@@ -203,24 +203,6 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         panGesture.delaysTouchesBegan = true
         addGestureRecognizer(panGesture)
     }
-    
-    override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
-        
-//        let ratio = layoutAttributes.frame.height / DimensionGenerator.current.collectionItemSize.height*1.9 - 0.9
-//
-//        if isFullscreen {
-//
-//            let maxDistance = UIScreen.main.bounds.height - DimensionGenerator.current.collectionItemSize.height
-//            let curDistance = UIScreen.main.bounds.height - wrapperView.bounds.height
-//            let ratio = curDistance / maxDistance //0 when fullscreen, 1 when thumbnail
-//
-//            let newHeight = round(70 + 70 * (1-ratio))
-//            cnstrContentWrapperHeight.constant = DimensionGenerator.current/
-//
-//            locationLabel.alpha = 1 - ratio
-//            contentLabel.alpha = 1 - ratio
-//        }
-    }
 
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         let velocity = panGesture!.velocity(in: self)

@@ -130,6 +130,22 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         self.view.layoutIfNeeded()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        showIntroViewIfNeeded()
+    }
+    
+    func showIntroViewIfNeeded() {
+        if UserDefaults.standard.object(forKey: "firstLaunch") == nil {
+            let introVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "introScreen")
+            
+            self.present(introVC, animated: true, completion: {
+                UserDefaults.standard.set(true, forKey: "firstLaunch")
+            })
+        }
+    }
+    
     func adjustFont() {
         self.stateButtonLabel.font = UIFont(descriptor: stateButtonLabel.font.fontDescriptor, size: DimensionGenerator.current.stateButtonFontSize)
     }
@@ -239,18 +255,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         signCard.viewMode = .Discovered
         signCard.keywordLabel.text = sign.thumbnailText.uppercased()
     }
-    
-//    func stopMagnification() {
-//        if self.signCollectionLayout.fullScreenItemIndex != nil {
-//            
-//            let signCell = self.signCollectionView.cellForItem(at: self.signCollectionLayout.fullScreenItemIndex!) as? SignCard
-//            signCell?.prepareViewAfterAnimation(toFullscreen: false)
-//            self.currentState = .ThumbnailView
-//            self.updateStateButton()
-//            
-//            self.signCollectionLayout.fullScreenItemIndex = nil
-//        }
-//    }
     
     func resetZPosition() {
         self.signCollectionView.visibleCells.forEach { (cell) in
@@ -436,24 +440,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if let index = indexForItemInFocus {
             scheduleUpdateBackgroundForItemAtImdex(index: index.row)
-            
-//            if self.signCollectionLayout.fullScreenItemIndex != nil && self.signCollectionLayout.fullScreenItemIndex != index {
-//                stopMagnification()
-//                
-//                if self.currentState == .FullscreenView {
-//                    self.currentState = .ThumbnailView
-//                }
-//            }
         }
     }
-
-//    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-    
-//        if currentState == .FullscreenView && collectionSigns[index].isDiscovered == false {
-//            delayedTransition = true
-//        }
-//    }
-        
     
     // MARK: - Helper methods
     
@@ -660,7 +648,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
-    
     func updateCardBlur() {
         let center = signCollectionView.contentOffset.x + signCollectionView.bounds.width / 2
         signCollectionView.visibleCells.forEach { (cell) in
@@ -675,8 +662,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         let ratio = 1 - abs((card.center.x - center) / self.signCollectionView.bounds.width / 5)
         card.animator.fractionComplete = ratio
     }
-    
-    
     //TESTING
     
     override var canBecomeFirstResponder: Bool {

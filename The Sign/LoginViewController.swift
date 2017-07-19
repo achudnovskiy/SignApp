@@ -13,19 +13,32 @@ import FBSDKLoginKit
 class LoginViewController: UIViewController {
 
     @IBOutlet weak var backgroundImageView: UIImageView!
-    @IBOutlet weak var fbErrorLabel: UILabel!
+    @IBOutlet weak var fbStatusLabel: UILabel!
     @IBOutlet weak var termsConditionsLabel: UILabel!
     @IBOutlet weak var fbLoginButton: UIButton!
+    @IBOutlet weak var skipButton: UIButton!
+    @IBOutlet weak var backgrounImageVIew: UIImageView!
+    @IBOutlet weak var overlayView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fbStatusLabel.text = ""
         fbLoginButton.layer.cornerRadius = 5
         fbLoginButton.layer.masksToBounds = true
+        
+        backgroundImageView.isHidden = isAppIntro
+        overlayView.isHidden = isAppIntro
+        skipButton.isHidden = !isAppIntro
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    var isAppIntro:Bool {
+        return self.parent?.isKind(of: IntroViewController.self) == true
+    }
+  
+    @IBAction func skipAction(_ sender: Any) {
+        guard let introVc = self.parent as? IntroViewController else { return }
+        
+        introVc.skipRegistration()
     }
 
     @IBAction func fbLoginAction(_ sender: Any) {
@@ -34,17 +47,24 @@ class LoginViewController: UIViewController {
         
         loginManager.logIn(withPublishPermissions: ["publish_actions"], from: self) { (result, error) in
             if error != nil {
-                self.fbErrorLabel.text = "Something wrong happened"
+                self.fbStatusLabel.text = "Something wrong happened"
                 print("\(String(describing: error))")
                 return
             }
             
             if result!.isCancelled  || !result!.grantedPermissions.contains("publish_actions"){
-                self.fbErrorLabel.text = "Not enough permissions granted"
+                self.fbStatusLabel.text = "Not enough permissions granted"
                 return
             }
             
-            self.dismiss(animated: true, completion: nil)
+            if self.isAppIntro {
+                self.fbStatusLabel.text = "Registered".uppercased()
+                guard let introVc = self.parent as? IntroViewController else { return }
+                introVc.skipRegistration()
+            }
+            else {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
 }

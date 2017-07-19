@@ -8,9 +8,17 @@
 
 import UIKit
 import FBSDKCoreKit
+import CoreLocation
+import UserNotifications
 
 typealias LocationPermissionCheck = () -> Bool
 typealias NotificationPermissionCheck = () -> Bool
+
+enum PermissionStatus:String {
+    case Granted
+    case Evaluating
+    case Denied
+}
 
 class User: NSObject {
     
@@ -26,14 +34,14 @@ class User: NSObject {
         }
     }
     
-    var locatingPermitted:Bool {
-        get {
-            return locationPermissionCheck()
+    func evaluatePermissions() {
+        locatingPermitted = CLLocationManager.authorizationStatus() == .authorizedAlways ? .Granted : .Denied
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            self.notificationsPermitted = settings.alertSetting == .enabled ? .Granted : .Denied
+            NotificationCenter.default.post(name: kNotificationPermissionsUpdate, object: nil)
         }
     }
-    var notificationsPermitted:Bool {
-        get {
-            return notificationPermissionCheck()
-        }
-    }
+    
+    var locatingPermitted:PermissionStatus = .Evaluating
+    var notificationsPermitted:PermissionStatus = .Evaluating
 }

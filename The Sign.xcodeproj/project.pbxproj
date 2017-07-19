@@ -13,6 +13,8 @@
 		550F89721EABEF2A008993F6 /* SignCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */; };
 		5512317D1E5AABC900443840 /* TestRoute1.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 5512317C1E5AABC900443840 /* TestRoute1.gpx */; };
 		55305CEA1EDA8400004DC615 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55305CE91EDA8400004DC615 /* Shared.swift */; };
+		55307DC51F1C57B600E9930A /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55307DC41F1C57B600E9930A /* IntroViewController.swift */; };
+		55307DC81F1DB50A00E9930A /* PermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55307DC71F1DB50A00E9930A /* PermissionsViewController.swift */; };
 		553CFED61E6698A8004618A6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */; };
 		553CFED71E6698A8004618A6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */; };
 		553CFED81E6698A8004618A6 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */; };
@@ -61,6 +63,8 @@
 		550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignCollectionLayout.swift; sourceTree = "<group>"; };
 		5512317C1E5AABC900443840 /* TestRoute1.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TestRoute1.gpx; sourceTree = "<group>"; };
 		55305CE91EDA8400004DC615 /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
+		55307DC41F1C57B600E9930A /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
+		55307DC71F1DB50A00E9930A /* PermissionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionsViewController.swift; sourceTree = "<group>"; };
 		553CFED31E6698A8004618A6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "The Sign/frameworks/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		553CFED41E6698A8004618A6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "The Sign/frameworks/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		553CFED51E6698A8004618A6 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "The Sign/frameworks/FBSDKShareKit.framework"; sourceTree = "<group>"; };
@@ -162,6 +166,8 @@
 				550728461E354B020060D88B /* SignDataSource.swift */,
 				559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */,
 				550728421E33052E0060D88B /* MapViewController.swift */,
+				55307DC41F1C57B600E9930A /* IntroViewController.swift */,
+				55307DC71F1DB50A00E9930A /* PermissionsViewController.swift */,
 				5559F72D1E248475007354BE /* Main.storyboard */,
 				5559F7331E248475007354BE /* Assets.xcassets */,
 				5559F7381E248475007354BE /* Info.plist */,
@@ -369,8 +375,10 @@
 				A84EF5931ECA91D200CDE19B /* User.swift in Sources */,
 				55FF725C1E2AF9DA00562B65 /* SignObject.swift in Sources */,
 				55C2220A1ED9F184007E2E7C /* FbHandler.swift in Sources */,
+				55307DC81F1DB50A00E9930A /* PermissionsViewController.swift in Sources */,
 				55FF72581E2AD15D00562B65 /* SignCard.swift in Sources */,
 				550728451E34627F0060D88B /* UIView+Extension.swift in Sources */,
+				55307DC51F1C57B600E9930A /* IntroViewController.swift in Sources */,
 				55FF72611E2C31A100562B65 /* UIImage+Effects.swift in Sources */,
 				5559F7321E248475007354BE /* The_Sign.xcdatamodeld in Sources */,
 				5559F72A1E248475007354BE /* AppDelegate.swift in Sources */,
