@@ -344,8 +344,8 @@
             <objects>
                 <pageViewController storyboardIdentifier="introScreen" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="Pjl-gY-kBZ" customClass="IntroViewController" customModule="The_Sign" customModuleProvider="target" sceneMemberID="viewController">
                     <connections>
-                        <segue destination="9dd-li-gtp" kind="show" id="XN6-cY-oi8"/>
-                        <segue destination="P0M-16-5q3" kind="show" id="bOH-hq-o5P"/>
+                        <segue destination="9dd-li-gtp" kind="show" identifier="NOT_SEGUE_INTRO_2" id="XN6-cY-oi8"/>
+                        <segue destination="P0M-16-5q3" kind="show" identifier="NOT_SEGUE_INTRO" id="bOH-hq-o5P"/>
                     </connections>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PIr-h9-RQN" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -657,7 +657,7 @@
         <image name="signLogo" width="14" height="31"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="qM1-9r-4xE"/>
-        <segue reference="ZbE-cs-ONv"/>
+        <segue reference="XN6-cY-oi8"/>
+        <segue reference="bOH-hq-o5P"/>
     </inferredMetricsTieBreakers>
 </document>

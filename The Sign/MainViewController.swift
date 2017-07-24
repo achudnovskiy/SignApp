@@ -662,25 +662,4 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         let ratio = 1 - abs((card.center.x - center) / self.signCollectionView.bounds.width / 5)
         card.animator.fractionComplete = ratio
     }
-    //TESTING
-    
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-    var motionCount = 3
-    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
-        if motion == .motionShake {
-            if motionCount > 0 {
-                motionCount -= 1
-                return
-            }
-            var discoverCount = 3
-            for sign in SignDataSource.sharedInstance.uncollectedSigns {
-                if discoverCount > 0 {
-                    _ = SignDataSource.sharedInstance.collectSignWithId(sign.objectId)
-                    discoverCount -= 1
-                }
-            }
-        }
-    }
 }
