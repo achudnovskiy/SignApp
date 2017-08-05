@@ -27,7 +27,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>14</string>
+	<string>16</string>
 	<key>FacebookAppID</key>
 	<string>764041143646669</string>
 	<key>FacebookDisplayName</key>
@@ -40,7 +40,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Please allow updating location in the background</string>
+	<string>Knowing your location Sign will find the best places around you</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
