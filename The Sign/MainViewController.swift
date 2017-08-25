@@ -54,6 +54,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     @IBOutlet weak var stateButtonView: UIView!
     @IBOutlet weak var stateButtonLabel: UILabel!
     @IBOutlet weak var shareProgressLabel: UILabel!
+    @IBOutlet weak var shareProgressView: UIView!
+    @IBOutlet weak var shareProgressLogo: UIImageView!
     
     @IBOutlet weak var cnstrMapButtonLeading: NSLayoutConstraint!
     @IBOutlet weak var cnstrMapButtonWidth: NSLayoutConstraint!
@@ -343,7 +345,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
             self.updateProgressShareLabel(alphaValue: 1)
         }
         else {
-            self.updateProgressShareLabel(alphaValue: progress / 2)
+            self.updateProgressShareLabel(alphaValue: progress)
         }
     }
     
@@ -367,16 +369,20 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     }
     
     func updateProgressShareLabel(alphaValue:CGFloat) {
-        if alphaValue == 0 {
-            self.shareProgressLabel.textColor = UIColor.white
-            self.shareProgressLabel.alpha = 0
-            return
+        var newAlpha:CGFloat = alphaValue
+        if alphaValue < 0.1 {
+            newAlpha = 0
+        }
+        else if alphaValue < 1 {
+            newAlpha = alphaValue * 0.75 - 0.1
+        }
+        else {
+            newAlpha = 1
         }
         
-        self.shareProgressLabel.alpha = alphaValue
-        if alphaValue == 1 {
-            self.shareProgressLabel.textColor = UIColor(red: 226.0/255, green: 106.0/255, blue: 42.0/255, alpha: 1)
-        }
+        self.shareProgressLabel.alpha = newAlpha
+        self.shareProgressLogo.alpha = newAlpha
+        self.shareProgressLogo.isHighlighted = newAlpha == 1
     }
 
     
@@ -613,7 +619,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     //MARK: - Background blurred image update
     
     func scheduleUpdateBackgroundForItemAtImdex(index:Int) {
-        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(2.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(1.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
             if self.signCollectionView.isDecelerating || self.signCollectionView.isDragging {
                 self.scheduleUpdateBackgroundForItemAtImdex(index: index)

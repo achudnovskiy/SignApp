@@ -28,7 +28,6 @@ class LoginViewController: UIViewController {
         
         backgroundImageView.isHidden = isAppIntro
         overlayView.isHidden = isAppIntro
-        skipButton.isHidden = !isAppIntro
     }
 
     var isAppIntro:Bool {
@@ -36,9 +35,12 @@ class LoginViewController: UIViewController {
     }
   
     @IBAction func skipAction(_ sender: Any) {
-        guard let introVc = self.parent as? IntroViewController else { return }
-        
-        introVc.skipRegistration()
+        if let introVc = self.parent as? IntroViewController {
+            introVc.skipRegistration()
+        }
+        else {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 
     @IBAction func fbLoginAction(_ sender: Any) {

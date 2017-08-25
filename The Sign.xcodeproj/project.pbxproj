@@ -154,8 +154,7 @@
 			children = (
 				55FF72741E2C6F3900562B65 /* The Sign.entitlements */,
 				5559F7291E248475007354BE /* AppDelegate.swift */,
-				553CFED91E67C349004618A6 /* LoginViewController.swift */,
-				55FF72591E2AD1D900562B65 /* MainViewController.swift */,
+				55F650E11F4FBCE3001DF2BA /* View Controllers */,
 				55FF72571E2AD15D00562B65 /* SignCard.swift */,
 				55FF725B1E2AF9DA00562B65 /* SignObject.swift */,
 				550F89711EABEF2A008993F6 /* SignCollectionLayout.swift */,
@@ -165,9 +164,6 @@
 				55C222091ED9F184007E2E7C /* FbHandler.swift */,
 				550728461E354B020060D88B /* SignDataSource.swift */,
 				559F2ECA1E399F1A00A1C955 /* LocationTracker.swift */,
-				550728421E33052E0060D88B /* MapViewController.swift */,
-				55307DC41F1C57B600E9930A /* IntroViewController.swift */,
-				55307DC71F1DB50A00E9930A /* PermissionsViewController.swift */,
 				5559F72D1E248475007354BE /* Main.storyboard */,
 				5559F7331E248475007354BE /* Assets.xcassets */,
 				5559F7381E248475007354BE /* Info.plist */,
@@ -194,6 +190,18 @@
 				5559F74E1E248475007354BE /* Info.plist */,
 			);
 			path = "The SignUITests";
+			sourceTree = "<group>";
+		};
+		55F650E11F4FBCE3001DF2BA /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				55FF72591E2AD1D900562B65 /* MainViewController.swift */,
+				553CFED91E67C349004618A6 /* LoginViewController.swift */,
+				550728421E33052E0060D88B /* MapViewController.swift */,
+				55307DC41F1C57B600E9930A /* IntroViewController.swift */,
+				55307DC71F1DB50A00E9930A /* PermissionsViewController.swift */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 		55FF72621E2C31AC00562B65 /* 3rd party */ = {
