@@ -81,7 +81,7 @@ class PermissionsViewController: UIViewController, UIGestureRecognizerDelegate {
         return true
     }
     
-    func processUpdateUserPermissionsNotification(_ notification:Notification) {
+    @objc func processUpdateUserPermissionsNotification(_ notification:Notification) {
         DispatchQueue.main.async {
             self.locationPermissionLabel.text     = User.current.locatingPermitted.rawValue.uppercased()
             self.notificationsPermssionLabel.text = User.current.notificationsPermitted.rawValue.uppercased()

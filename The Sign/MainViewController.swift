@@ -170,7 +170,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         NotificationCenter.default.addObserver(self, selector: #selector(processErrorStateNotification(_:)), name: kNotificationErrorState, object: nil)
     }
     
-    func processSignOpenNotification(_ notification:Notification) {
+    @objc func processSignOpenNotification(_ notification:Notification) {
         let signId = notification.userInfo![kNotificationScrollToSignId] as! String
         guard let sign = SignDataSource.sharedInstance.findSignObjById(objectId: signId) else { return }
         
@@ -181,7 +181,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
-    func processSignReloadNotification(_ notification:Notification) {
+    @objc func processSignReloadNotification(_ notification:Notification) {
         DispatchQueue.main.async {
             //TODO: do something smarter than nuking the cache
             self.cachedImages.removeAllObjects()
@@ -192,7 +192,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
         
-    func processSignDicoveryNotification(_ notification:Notification) {
+    @objc func processSignDicoveryNotification(_ notification:Notification) {
         discoveryQueue.async {
             guard
                 let signId = notification.userInfo?[kNotificationSignNearbyId] as? String,
@@ -213,7 +213,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
-    func processErrorStateNotification(_ notification:Notification) {
+    @objc func processErrorStateNotification(_ notification:Notification) {
     
     }
     

@@ -213,7 +213,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
         return true
     }
     
-    func actionPan(_ sender: UIGestureRecognizer) {
+    @objc func actionPan(_ sender: UIGestureRecognizer) {
         let location:CGPoint = sender.location(in: superview)
 
         switch sender.state {
@@ -322,48 +322,48 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
 
     func setConstraintsForFullscreen() {
         
-        cnstrContentWrapperHeight.priority = UILayoutPriorityDefaultLow
-        cnstrContentWrapperHeightLess.priority = 999
+        cnstrContentWrapperHeight.priority = UILayoutPriority.defaultLow
+        cnstrContentWrapperHeightLess.priority = UILayoutPriority(rawValue: 999)
         cnstrContentWrapperHeightLess.constant = DimensionGenerator.current.collectionItemContentFullHeight
         cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentFullWidth
         
-        cnstrKeywordAlignX.priority = UILayoutPriorityDefaultLow
-        cnstrKeywordLead.priority = 999
-        cnstrKeywordAllignY.priority = UILayoutPriorityDefaultLow
-        cnstrKeywordTop.priority = 999
+        cnstrKeywordAlignX.priority = UILayoutPriority.defaultLow
+        cnstrKeywordLead.priority = UILayoutPriority(rawValue: 999)
+        cnstrKeywordAllignY.priority = UILayoutPriority.defaultLow
+        cnstrKeywordTop.priority = UILayoutPriority(rawValue: 999)
         
         keywordLabel.numberOfLines = 1
     }
 
     func setConstraintsForThumbnail() {
         
-        cnstrContentWrapperHeightLess.priority = UILayoutPriorityDefaultLow
-        cnstrContentWrapperHeight.priority = 999
+        cnstrContentWrapperHeightLess.priority = UILayoutPriority.defaultLow
+        cnstrContentWrapperHeight.priority = UILayoutPriority(rawValue: 999)
         cnstrContentWrapperHeight.constant = DimensionGenerator.current.collectionItemContentSmallHeight
         cnstrContentWrapperWidth.constant = DimensionGenerator.current.collectionItemContentSmallWidth
         
-        cnstrKeywordAlignX.priority = 999
-        cnstrKeywordLead.priority = UILayoutPriorityDefaultLow
-        cnstrKeywordAllignY.priority = 999
-        cnstrKeywordTop.priority = UILayoutPriorityDefaultLow
+        cnstrKeywordAlignX.priority = UILayoutPriority(rawValue: 999)
+        cnstrKeywordLead.priority = UILayoutPriority.defaultLow
+        cnstrKeywordAllignY.priority = UILayoutPriority(rawValue: 999)
+        cnstrKeywordTop.priority = UILayoutPriority.defaultLow
         
-        cnstrKeywordHeight.priority = 999
+        cnstrKeywordHeight.priority = UILayoutPriority(rawValue: 999)
         keywordLabel.numberOfLines = 1
     }
     
     func setConstraintsForThumbnailNotDiscovered() {
-        cnstrContentWrapperHeightLess.priority = UILayoutPriorityDefaultLow
-        cnstrContentWrapperHeight.priority = 999
+        cnstrContentWrapperHeightLess.priority = UILayoutPriority.defaultLow
+        cnstrContentWrapperHeight.priority = UILayoutPriority(rawValue: 999)
         //TODO: replace with optional top/lead constraints to wrapperView
         cnstrContentWrapperHeight.constant = self.bounds.height
         cnstrContentWrapperWidth.constant = self.bounds.width
         
-        cnstrKeywordLead.priority = UILayoutPriorityDefaultLow
-        cnstrKeywordAlignX.priority = 999
-        cnstrKeywordTop.priority = UILayoutPriorityDefaultLow
-        cnstrKeywordAllignY.priority = 999
+        cnstrKeywordLead.priority = UILayoutPriority.defaultLow
+        cnstrKeywordAlignX.priority = UILayoutPriority(rawValue: 999)
+        cnstrKeywordTop.priority = UILayoutPriority.defaultLow
+        cnstrKeywordAllignY.priority = UILayoutPriority(rawValue: 999)
         
-        cnstrKeywordHeight.priority = UILayoutPriorityDefaultLow
+        cnstrKeywordHeight.priority = UILayoutPriority.defaultLow
         keywordLabel.numberOfLines = 5
     }
 }
