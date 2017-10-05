@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Knowing your location Sign will find the best places around you</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Knowing your location Sign will find the best places around you</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Knowing your location Sign will find the best places around you</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -21,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.01</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -33,7 +27,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>16</string>
+	<string>1</string>
 	<key>FacebookAppID</key>
 	<string>764041143646669</string>
 	<key>FacebookDisplayName</key>
@@ -45,6 +39,12 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Knowing your location Sign will find the best places around you</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Knowing your location Sign will find the best places around you</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Knowing your location Sign will find the best places around you</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
