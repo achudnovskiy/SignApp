@@ -198,7 +198,7 @@ class SignCard: UICollectionViewCell, UIGestureRecognizerDelegate {
     }
     
     func prepareGestureRecognition() {
-        panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.actionPan(_:)))
+        panGesture = UIPanGestureRecognizer(target: self, action:#selector(SignCard.actionPan(_:)))
         panGesture.delegate = self
         panGesture.delaysTouchesBegan = true
         addGestureRecognizer(panGesture)

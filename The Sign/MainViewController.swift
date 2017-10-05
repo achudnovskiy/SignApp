@@ -57,6 +57,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     @IBOutlet weak var shareProgressView: UIView!
     @IBOutlet weak var shareProgressLogo: UIImageView!
     
+    @IBOutlet weak var cnstrStatusBarHighligtherHeight: NSLayoutConstraint!
     @IBOutlet weak var cnstrMapButtonLeading: NSLayoutConstraint!
     @IBOutlet weak var cnstrMapButtonWidth: NSLayoutConstraint!
     
@@ -78,6 +79,10 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         
         DimensionGenerator.current.phoneSizeRatio = view.bounds.width / 320
         self.cnstrMapButtonWidth.constant = DimensionGenerator.current.mapButtonWidth
+        
+        if UIScreen.main.nativeBounds.height == 2436 {
+            cnstrStatusBarHighligtherHeight.constant = 32
+        }
     }
     
     var collectionSigns:[SignObject] = []
@@ -164,13 +169,13 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     // MARK: - Local notifications
     func observerNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(processSignOpenNotification(_:)), name: kNotificationScrollToSign, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(processSignReloadNotification(_:)), name: kNotificationReloadData, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(processSignDicoveryNotification(_:)), name: kNotificationSignNearby, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(processErrorStateNotification(_:)), name: kNotificationErrorState, object: nil)
+        NotificationCenter.default.addObserver(forName: kNotificationScrollToSign, object: nil, queue: .current, using: processSignOpenNotification)
+        NotificationCenter.default.addObserver(forName: kNotificationReloadData, object: nil, queue: .current, using: processSignReloadNotification)
+        NotificationCenter.default.addObserver(forName: kNotificationSignNearby, object: nil, queue: .current, using: processSignDicoveryNotification)
+        NotificationCenter.default.addObserver(forName: kNotificationErrorState, object: nil, queue: .current, using: processErrorStateNotification)
     }
     
-    @objc func processSignOpenNotification(_ notification:Notification) {
+    func processSignOpenNotification(_ notification:Notification) {
         let signId = notification.userInfo![kNotificationScrollToSignId] as! String
         guard let sign = SignDataSource.sharedInstance.findSignObjById(objectId: signId) else { return }
         
@@ -181,7 +186,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
-    @objc func processSignReloadNotification(_ notification:Notification) {
+    func processSignReloadNotification(_ notification:Notification) {
         DispatchQueue.main.async {
             //TODO: do something smarter than nuking the cache
             self.cachedImages.removeAllObjects()
@@ -192,7 +197,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
         
-    @objc func processSignDicoveryNotification(_ notification:Notification) {
+    func processSignDicoveryNotification(_ notification:Notification) {
         discoveryQueue.async {
             guard
                 let signId = notification.userInfo?[kNotificationSignNearbyId] as? String,
@@ -213,7 +218,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         }
     }
     
-    @objc func processErrorStateNotification(_ notification:Notification) {
+    func processErrorStateNotification(_ notification:Notification) {
     
     }
     

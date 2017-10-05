@@ -211,9 +211,13 @@ class SignDataSource: NSObject {
         
         newSignEntity.latitude   = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.latitude)!
         newSignEntity.longitude  = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.longitude)!
-        newSignEntity.image      = NSData(contentsOf: (cloudKitRecord.object(forKey: "image") as! CKAsset).fileURL)
-        
-        self.backgroundContext.insert(newSignEntity)
+        do {
+            newSignEntity.image      = try Data(contentsOf: (cloudKitRecord.object(forKey: "image") as! CKAsset).fileURL)
+            self.backgroundContext.insert(newSignEntity)
+        }
+        catch {
+            print("error in getting data for the image. Error info:\(String(describing: error))")
+        }
     }
     
     private func updateLocalStorageWithCloudRecord(coreDataEntity:SignEntity, cloudKitRecord:CKRecord) {
@@ -225,7 +229,12 @@ class SignDataSource: NSObject {
 
         coreDataEntity.latitude   = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.latitude)!
         coreDataEntity.longitude  = ((cloudKitRecord.object(forKey: "location") as? CLLocation)?.coordinate.longitude)!
-        coreDataEntity.image      = NSData(contentsOf: (cloudKitRecord.object(forKey: "image") as! CKAsset).fileURL)
+        do {
+        coreDataEntity.image      = try Data(contentsOf: (cloudKitRecord.object(forKey: "image") as! CKAsset).fileURL)
+        }
+        catch {
+            print("error in getting data for the image. Error info:\(String(describing: error))")
+        }
     }
     
     private func localCopyForCloudRecordWithId(_ recordId:CKRecordID) -> SignEntity? {

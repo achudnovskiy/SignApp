@@ -21,8 +21,9 @@ class PermissionsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.startButton.isHidden = !isAppIntro
         
-        NotificationCenter.default.addObserver(self, selector: #selector(processUpdateUserPermissionsNotification(_:)), name: kNotificationPermissionsUpdate, object: nil)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { 
+        NotificationCenter.default.addObserver(forName: kNotificationPermissionsUpdate, object: nil, queue: .current, using: processUpdateUserPermissionsNotification)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.requestLocationnPermissions(completion: {() in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.requestNotificationPermissions(completion: nil)
@@ -81,7 +82,7 @@ class PermissionsViewController: UIViewController, UIGestureRecognizerDelegate {
         return true
     }
     
-    @objc func processUpdateUserPermissionsNotification(_ notification:Notification) {
+    func processUpdateUserPermissionsNotification(_ notification:Notification) {
         DispatchQueue.main.async {
             self.locationPermissionLabel.text     = User.current.locatingPermitted.rawValue.uppercased()
             self.notificationsPermssionLabel.text = User.current.notificationsPermitted.rawValue.uppercased()

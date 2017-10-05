@@ -2,7 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Knowing your location Sign will find the best places around you</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Knowing your location Sign will find the best places around you</string>
+	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Knowing your location Sign will find the best places around you</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
@@ -41,8 +45,6 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Knowing your location Sign will find the best places around you</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
