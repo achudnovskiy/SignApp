@@ -22,11 +22,6 @@ protocol LocationTrackerDelegate {
 open class LocationTracker: NSObject, CLLocationManagerDelegate {
 
     static var sharedInstance:LocationTracker = LocationTracker()
-//    enum TrackerState {
-//        case ReadyToTrack
-//        case NeedConfiguration
-//        case NotReadyToTrack
-//    }
 
     internal let locationManager:CLLocationManager
     internal let regionRadius:CLLocationDistance = kRegionRadius
@@ -34,16 +29,11 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     internal var allLocations:[SignLocation]
     internal var currentLocation:CLLocation?
     internal var currentRegion:CLCircularRegion?
-    
     internal var monitoredRegions:[CLCircularRegion] = []
-    
-    internal var detectionHandler:((_ location:SignLocation) -> Void)!
-    
     internal var permissionRequestHandler:((_ granted:Bool) -> Void)?
-
     internal var shouldUpdateMonitoredRegions:Bool = false
-    
     internal var delegate:LocationTrackerDelegate?
+    
     //MARK:- Public API
     
     override init ()
@@ -59,6 +49,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     func prepareForMonitoring(delegate:LocationTrackerDelegate?, startMonitoring:Bool)
     {
+        self.delegate = delegate
         locationManager.delegate = self
         allLocations = SignDataSource.sharedInstance.locations
         NotificationCenter.default.addObserver(forName: kNotificationReloadData,
@@ -79,17 +70,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
         self.permissionRequestHandler = completion
         locationManager.requestAlwaysAuthorization()
     }
-    
-//    func prepareForTracking() {
-//        switch checkIfPermissionsAreSufficient() {
-//        case .NeedConfiguration:
-//            requestPermission()
-//        case .NotReadyToTrack:
-//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kNotificationNotEnoughPermissions), object: nil)
-//        case .ReadyToTrack:
-//            startTracking()
-//        }
-//    }
     
     fileprivate func startTracking()
     {
@@ -115,20 +95,7 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
             return false
         }
     }
-    
-//    func checkIfPermissionsAreSufficient() -> TrackerState
-//    {
-//        let currentPermission = CLLocationManager.authorizationStatus()
-//        switch(currentPermission) {
-//        case .notDetermined:
-//            return .NeedConfiguration
-//        case .authorizedAlways:
-//            return .ReadyToTrack
-//        case .authorizedWhenInUse, .denied, .restricted:
-//            return .NotReadyToTrack
-//        }
-//    }
-//    
+
     open func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if self.permissionRequestHandler != nil {
             self.permissionRequestHandler!(permittedByUser())
@@ -168,7 +135,6 @@ open class LocationTracker: NSObject, CLLocationManagerDelegate {
                 return sign.objectId == region.identifier
             }) else {return}
             self.delegate?.didHitLocation(location: hit)
-            detectionHandler(hit)
         }
     }
 

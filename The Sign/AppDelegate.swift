@@ -43,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.alert])
     }
+    
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
             let signId = response.notification.request.content.userInfo[kUserNotificationSignId]!
@@ -52,6 +53,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         else if (response.actionIdentifier == UNNotificationDismissActionIdentifier) {
         
         }
+        
+        completionHandler()
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
