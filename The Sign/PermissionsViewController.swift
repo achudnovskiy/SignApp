@@ -23,9 +23,9 @@ class PermissionsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         NotificationCenter.default.addObserver(forName: kNotificationPermissionsUpdate, object: nil, queue: .current, using: processUpdateUserPermissionsNotification)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             self.requestLocationnPermissions(completion: {() in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                     self.requestNotificationPermissions(completion: nil)
                 }
             })

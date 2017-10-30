@@ -64,7 +64,6 @@ class SignDataSource: NSObject {
         }
     }
     
-    
     public var locations:[SignLocation] {
         do {
             let signEntities = try persistentContainer.viewContext.fetch(self.allSignsRequest)
@@ -80,8 +79,6 @@ class SignDataSource: NSObject {
             return []
         }
     }
-    
-  
     
     var newSignsCount:Int {
         do {
@@ -106,7 +103,6 @@ class SignDataSource: NSObject {
         sign.isCollected = true
         saveData(notifyUI: false)
     }
-
     
     func findSignEntityById(objectId: String) -> SignEntity? {
         do {

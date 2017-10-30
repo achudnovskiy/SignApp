@@ -93,22 +93,9 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     
     //TODO: REVIEW
     func prepareDataSource() {
-        
         collectionSigns = SignDataSource.sharedInstance.collectedSignsOrdered
         if collectionSigns.count != 0 && SignDataSource.sharedInstance.isEverythingCollected {
             currentExtraSignType = .StayTuned
-        }
-        
-        if collectionSigns.count == 0
-        {
-            return
-        }
-        
-        //load cache for first three signs
-        let cacheCount = collectionSigns.count < 3 ? collectionSigns.count : 3
-        for i in 0...cacheCount - 1 {
-            let sign = collectionSigns[i]
-            cachedImages.setObject(sign.proccessImage(), forKey: sign.uniqueId)
         }
     }
 
@@ -119,27 +106,25 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         prepareConstraints()
         prepareDataSource()
         observerNotifications()
-        adjustFont()
         
+        adjustFont()
         stateButtonView.applyPlainShadow()
         mapButtonView.applyPlainShadow()
         setCollectionLayoutProperties(collectionLayout: signCollectionLayout, isFullscreen: false)
         signCollectionView.backgroundColor = UIColor.clear
-        
         updateStateButton()
         
         if collectionSigns.count != 0 {
             backgroundImage.image = collectionSigns.first?.image.applyDefaultEffect()?.optimizedImage()
         }
         else {
-            backgroundImage.image = UIImage(named: "DefaultBackgroundImage")?.applyDefaultEffect()?.optimizedImage()
+            backgroundImage.image = #imageLiteral(resourceName: "DefaultBackgroundImage").applyDefaultEffect()?.optimizedImage()
         }
         self.view.layoutIfNeeded()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
         showIntroViewIfNeeded()
     }
     
@@ -282,7 +267,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
         if indexPath != collectionView.indexPathForLastRow {
             let signToShow = collectionSigns[indexPath.row]
             
-            //TODO: remove later
             if signToShow.isCollected == false {
                 return cell
             }
@@ -434,16 +418,11 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         if delayedTransition {
             delayedTransition = false
-            if currentState == .ThumbnailView {
-                if let index = indexForItemInFocus {
-                    DispatchQueue.main.async {
-                        self.openThumbnailSignAt(indexPath: index)
-                        
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                        
-                    })
-                }
+            if currentState == .ThumbnailView,
+                let index = indexForItemInFocus {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
+                    self.openThumbnailSignAt(indexPath: index)
+                })
             }
         }
     }
@@ -624,8 +603,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate, UIScrollVi
     //MARK: - Background blurred image update
     
     func scheduleUpdateBackgroundForItemAtImdex(index:Int) {
-        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(1.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             if self.signCollectionView.isDecelerating || self.signCollectionView.isDragging {
                 self.scheduleUpdateBackgroundForItemAtImdex(index: index)
                 return
