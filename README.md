@@ -14,6 +14,7 @@ A groundbreaking idea? No. Just something to make your day a little better.
 
 Currently in Vancouver, BC. But slowly growing.
 
+<img src="Screenshots/UI.gif" height="600">
 
 ## Under the hood
 - iOS 10/11 compatibility
